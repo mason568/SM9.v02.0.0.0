@@ -9,34 +9,34 @@ typedef struct
 }BNPoint2;
 
 
-void BNPoint2_init(BNPoint2 *p); //BNPoint2 ³õÊ¼»¯  
+void BNPoint2_init(BNPoint2 *p); //BNPoint2 åˆå§‹åŒ–  
 
-void P2_construct(BNPoint2 *p, BNField2 x, BNField2 y, BNField2 z); // BNPoint2 ¹¹Ôìº¯Êı  
+void P2_construct(BNPoint2 *p, BNField2 x, BNField2 y, BNField2 z); // BNPoint2 æ„é€ å‡½æ•°  
 
-void P2_construct_xy(BNPoint2 *p, BNField2 x, BNField2 y); // BNPoint2 ¹¹Ôìº¯Êı  
+void P2_construct_xy(BNPoint2 *p, BNField2 x, BNField2 y); // BNPoint2 æ„é€ å‡½æ•°  
 
-void P2_assign(BNPoint2 *p, BNPoint2 b); // ¸³Öµº¯Êı p = b
+void P2_assign(BNPoint2 *p, BNPoint2 b); // èµ‹å€¼å‡½æ•° p = b
 
-int P2_isZero(BNPoint2 p); // ÈôBNPoint2Îª0,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+int P2_isZero(BNPoint2 p); // è‹¥BNPoint2ä¸º0,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
 
-void  P2_normorlize(BNPoint2 *p, BNPoint2 b); // Jacobian×ø±êÏµÏÂµÄ¹æÔ¼´¦Àí:  x = X/Z^2, y = Y/Z^3
+void  P2_normorlize(BNPoint2 *p, BNPoint2 b); // Jacobianåæ ‡ç³»ä¸‹çš„è§„çº¦å¤„ç†:  x = X/Z^2, y = Y/Z^3
 
-int P2_isNormal(BNPoint2 p); // ÅĞ¶ÏBNPointÊÇ·ñÎª¹æ·¶ÀàĞÍ£¬ÈôÊÇ·µ¼Ó1£¬·ñÔò·µ»Ø0£»
+int P2_isNormal(BNPoint2 p); // åˆ¤æ–­BNPointæ˜¯å¦ä¸ºè§„èŒƒç±»å‹ï¼Œè‹¥æ˜¯è¿”åŠ 1ï¼Œå¦åˆ™è¿”å›0ï¼›
 
-int P2_equal(BNPoint2 p1, BNPoint2 p2); // ÈôÁ½¸öÓòÔªËØÏàµÈ,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+int P2_equal(BNPoint2 p1, BNPoint2 p2); // è‹¥ä¸¤ä¸ªåŸŸå…ƒç´ ç›¸ç­‰,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
 
-void  P2_negate(BNPoint2 *p, BNPoint2 b); //    BNPoint2µÄ¸ºÖµ£»
+void  P2_negate(BNPoint2 *p, BNPoint2 b); //    BNPoint2çš„è´Ÿå€¼ï¼›
 
-void P2_add(BNPoint2 *p, BNPoint2 p1, BNPoint2 p2); // BNPoint2: p = p1 + p2£»
+void P2_add(BNPoint2 *p, BNPoint2 p1, BNPoint2 p2); // BNPoint2: p = p1 + p2ï¼›
 
-void P2_twice(BNPoint2 *p, BNPoint2 q); // BNPoint: p = 2*q£»
+void P2_twice(BNPoint2 *p, BNPoint2 q); // BNPoint: p = 2*qï¼›
 
-void P2_multiply(BNPoint2 *p, BNPoint2 q, CBigInt k); //  ¼ÆËã BNPoint: p = k*q£»
+void P2_multiply(BNPoint2 *p, BNPoint2 q, CBigInt k); //  è®¡ç®— BNPoint: p = k*qï¼›
 
-int P2_isOnBNTCurve(BNPoint2 p); // ÅĞ¶ÏµãÊÇ·ñÔÚBNÅ¤ÇúÏßy^2 = x^3 + 5u z^6
+int P2_isOnBNTCurve(BNPoint2 p); // åˆ¤æ–­ç‚¹æ˜¯å¦åœ¨BNæ‰­æ›²çº¿y^2 = x^3 + 5u z^6
 
-void P2_frobenius(BNPoint2 *p, BNPoint2 q); //  BNPoint2: Frobeniuse ¼ÆËã
+void P2_frobenius(BNPoint2 *p, BNPoint2 q); //  BNPoint2: Frobeniuse è®¡ç®—
 
-void P2_toString_d(BNPoint2 p,unsigned int system); // ´òÓ¡ÏÔÊ¾BNPoint£»
+void P2_toString_d(BNPoint2 p,unsigned int system); // æ‰“å°æ˜¾ç¤ºBNPointï¼›
 
-void P2_toString(BNPoint2 p,unsigned int system); // Ê®Áù½øÖÆ»òÊ®½øÖÆ´òÓ¡ÏÔÊ¾BNPoint2£»
+void P2_toString(BNPoint2 p,unsigned int system); // åå…­è¿›åˆ¶æˆ–åè¿›åˆ¶æ‰“å°æ˜¾ç¤ºBNPoint2ï¼›

@@ -1,7 +1,7 @@
 #include "BNField2.h"
 
 /*
-   ³õÊ¼»¯
+   åˆå§‹åŒ–
  */
  void BNField2_init(BNField2 *b)
 {    
@@ -11,7 +11,7 @@
 
 
 /*
-   ¶ş´ÎÀ©ÓòµÄ¹¹Ôìº¯Êı 
+   äºŒæ¬¡æ‰©åŸŸçš„æ„é€ å‡½æ•° 
 */
 void F2_construct(BNField2 *b,CBigInt re, CBigInt im)
 {
@@ -27,7 +27,7 @@ void F2_construct(BNField2 *b,CBigInt re, CBigInt im)
 
 
 /*
-   ¶ş´ÎÀ©ÓòµÄ¹¹Ôìº¯Êı,Ğé²¿Îª0  
+   äºŒæ¬¡æ‰©åŸŸçš„æ„é€ å‡½æ•°,è™šéƒ¨ä¸º0  
  */
 void F2_construct_I(BNField2 *b,CBigInt re)
 {	
@@ -38,7 +38,7 @@ void F2_construct_I(BNField2 *b,CBigInt re)
 }
 
 /*
-  ¸³Öµº¯Êıb=p 
+  èµ‹å€¼å‡½æ•°b=p 
  */
 void F2_assign(BNField2 *b, BNField2 p)
 {     
@@ -48,7 +48,7 @@ void F2_assign(BNField2 *b, BNField2 p)
 
 
 /*
-   ºÍ¶ş´ÎÀ©ÓòÔªËØÏà¼Ó  
+   å’ŒäºŒæ¬¡æ‰©åŸŸå…ƒç´ ç›¸åŠ   
 
  */
 void F2_add(BNField2 *b3, BNField2 b1, BNField2 b2)
@@ -65,7 +65,7 @@ void F2_add(BNField2 *b3, BNField2 b1, BNField2 b2)
 
 
 /*
-   ºÍÕûÊıÏà¼Ó  
+   å’Œæ•´æ•°ç›¸åŠ   
  */
 void F2_add_I(BNField2 *p, BNField2 b, CBigInt k)
 {
@@ -78,7 +78,7 @@ void F2_add_I(BNField2 *p, BNField2 b, CBigInt k)
 }
 
 /*
-   ·µ»Ø X = £¨a-b£©mod p
+   è¿”å› X = ï¼ˆa-bï¼‰mod p
 */
 void CBigInt_substract(CBigInt *X, CBigInt a, CBigInt b)
 {
@@ -106,7 +106,7 @@ void CBigInt_substract(CBigInt *X, CBigInt a, CBigInt b)
 
 
 /*
-   ¶ş´ÎÀ©ÓòÔªËØÏà¼õ  
+   äºŒæ¬¡æ‰©åŸŸå…ƒç´ ç›¸å‡  
  */
 void  F2_substract(BNField2 *b3, BNField2 b1, BNField2 b2)
 {
@@ -117,7 +117,7 @@ void  F2_substract(BNField2 *b3, BNField2 b1, BNField2 b2)
 
 
 /*
-   ¶ş´ÎÀ©ÓòÔªËØ¼õÈ¥Ò»¸öÕıÕûÊı  
+   äºŒæ¬¡æ‰©åŸŸå…ƒç´ å‡å»ä¸€ä¸ªæ­£æ•´æ•°  
 */
  void  F2_substract_I(BNField2 *p,BNField2 b, CBigInt k)
  {
@@ -129,7 +129,7 @@ void  F2_substract(BNField2 *b3, BNField2 b1, BNField2 b2)
 
 
 /*
-   ÈôÓòÔªËØÎª0,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+   è‹¥åŸŸå…ƒç´ ä¸º0,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
 
  */
 int F2_isZero(BNField2 b)
@@ -138,7 +138,7 @@ int F2_isZero(BNField2 b)
 }
 
 /*
-   ÈôÓòÔªËØÎª1,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+   è‹¥åŸŸå…ƒç´ ä¸º1,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
 
  */
 int F2_isOne(BNField2 b)
@@ -147,7 +147,7 @@ int F2_isOne(BNField2 b)
 }
 
 /*
-   ÈôÁ½¸öÓòÔªËØÏàµÈ,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+   è‹¥ä¸¤ä¸ªåŸŸå…ƒç´ ç›¸ç­‰,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
 
  */
 int F2_equal(BNField2 b1, BNField2 b2)
@@ -158,7 +158,7 @@ int F2_equal(BNField2 b1, BNField2 b2)
 		return 0;
 }
 /*
-   ¼ÆËãCBigIntµÄ¸ºÖµ£¬¼´£¨-a£©mod p
+   è®¡ç®—CBigIntçš„è´Ÿå€¼ï¼Œå³ï¼ˆ-aï¼‰mod p
 */
 void CBigInt_neg(CBigInt *p, CBigInt a)
 {
@@ -166,7 +166,7 @@ void CBigInt_neg(CBigInt *p, CBigInt a)
 }
 
 /*
-   ÓòÔªËØµÄ¸ºÖµ£»
+   åŸŸå…ƒç´ çš„è´Ÿå€¼ï¼›
  */
 void F2_negate(BNField2 *p,BNField2 b)
 {
@@ -176,7 +176,7 @@ void F2_negate(BNField2 *p,BNField2 b)
 }
 
 /*
-   ÓòÔªËØµÄFrobeniusÖµ£»
+   åŸŸå…ƒç´ çš„Frobeniuså€¼ï¼›
 
  */
 void  F2_frobenius(BNField2 *p,BNField2 b)
@@ -188,7 +188,7 @@ void  F2_frobenius(BNField2 *p,BNField2 b)
 }
 
 /*
-   ÓòÔªËØµÄ¹ãÒåFrobeniusÖµ£»
+   åŸŸå…ƒç´ çš„å¹¿ä¹‰Frobeniuså€¼ï¼›
 
  */
 void F2_GFrobenius(BNField2 *p, BNField2 b, unsigned int e)
@@ -209,7 +209,7 @@ void F2_GFrobenius(BNField2 *p, BNField2 b, unsigned int e)
 
 
 /*
-   (a+bu)(a'+b'u)  £»
+   (a+bu)(a'+b'u)  ï¼›
        =(aa'-2bb')+((a+b)(a'+b')-aa'-bb')u
  */
 void  F2_multiply(BNField2 *b3, BNField2 b1,BNField2 b2)
@@ -232,8 +232,8 @@ void  F2_multiply(BNField2 *b3, BNField2 b1,BNField2 b2)
 
 
 /* 
-   ³ËÒÔ´óÊı
-   (a+bu)k  £»
+   ä¹˜ä»¥å¤§æ•°
+   (a+bu)k  ï¼›
        =ka+kbu
  */
 void  F2_multiply_I(BNField2 *p,BNField2 b, CBigInt k)
@@ -245,8 +245,8 @@ void  F2_multiply_I(BNField2 *p,BNField2 b, CBigInt k)
 }
 
 /*
-   ³ËÒÔĞ¡Êı 
-   (a+bu)k  £»
+   ä¹˜ä»¥å°æ•° 
+   (a+bu)k  ï¼›
        =ka+kbu
  */
 void  F2_multiply_i( BNField2 *b2, BNField2 b, int k)
@@ -258,8 +258,8 @@ void  F2_multiply_i( BNField2 *b2, BNField2 b, int k)
 
 
 /*
-   ³ËÒÔu 
-   (a+bu)u  £»
+   ä¹˜ä»¥u 
+   (a+bu)u  ï¼›
        =-2b+au
  */
 void F2_multiply_u(BNField2 *p, BNField2 b)
@@ -274,7 +274,7 @@ void F2_multiply_u(BNField2 *p, BNField2 b)
 }
 
 /*
-   ¶ş´ÎÀ©ÓòÔªËØµÄÆ½·½ÔËËã
+   äºŒæ¬¡æ‰©åŸŸå…ƒç´ çš„å¹³æ–¹è¿ç®—
    (a+bu)^2=a^2+2abu+b^2 u^2 
                     =a^2-2b^2+2abu
 
@@ -296,7 +296,7 @@ void  F2_square(BNField2 *p, BNField2 b)
 }
 
 /*
-   ¶ş´ÎÀ©ÓòÔªËØµÄÄæÔËËã
+   äºŒæ¬¡æ‰©åŸŸå…ƒç´ çš„é€†è¿ç®—
  (a+bu)^(-1)=(a-bu)/(a^2-b^2 u^2 )=(a-bu)/(a^2+2b^2 )
 
  */
@@ -319,8 +319,8 @@ void  F2_inverse( BNField2 *p, BNField2 b)
 }
 
 /*
-  ÏÔÊ¾¶ş´ÎÀ©ÓòÔªËØ
-  °´10½øÖÆ»ò16½øÖÆ¸ñÊ½Êä³öµ½×Ö·û´®
+  æ˜¾ç¤ºäºŒæ¬¡æ‰©åŸŸå…ƒç´ 
+  æŒ‰10è¿›åˆ¶æˆ–16è¿›åˆ¶æ ¼å¼è¾“å‡ºåˆ°å­—ç¬¦ä¸²
  */
 void F2_toString(BNField2 b,unsigned int system)
 {  
@@ -331,7 +331,7 @@ void F2_toString(BNField2 b,unsigned int system)
 
 
 /*
-  ¹æÔ¼»¯´¦Àí 
+  è§„çº¦åŒ–å¤„ç† 
   */
  void F2_normorlize(BNField2 *b, BNField2 p)
 {	 

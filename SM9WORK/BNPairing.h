@@ -1,10 +1,10 @@
 #include "BNPoint2.h"
 
 
-void Line_Funtion(BNField12 *f, BNPoint2 T, BNPoint2 Q, BNPoint P); // Ïßº¯ÊýµÄ¼ÆËã 
+void Line_Funtion(BNField12 *f, BNPoint2 T, BNPoint2 Q, BNPoint P); // çº¿å‡½æ•°çš„è®¡ç®— 
 
-void Final_exp(BNField12 *f, BNField12 p); //×îÖÕÃÝµÄ¼ÆËã f = b^((b^12-1)/12)
+void Final_exp(BNField12 *f, BNField12 p); //æœ€ç»ˆå¹‚çš„è®¡ç®— f = b^((b^12-1)/12)
 
-void Pairing_opt(BNField12 *f,BNPoint2 Q, BNPoint P); //×îÓÅ¶ÔµÄ¼ÆËã
+void Pairing_opt(BNField12 *f,BNPoint2 Q, BNPoint P); //æœ€ä¼˜å¯¹çš„è®¡ç®—
 
-void Pairing_Rate(BNField12 *f, BNPoint2 Q, BNPoint P); // Rate ¶ÔµÄ¼ÆËã
+void Pairing_Rate(BNField12 *f, BNPoint2 Q, BNPoint P); // Rate å¯¹çš„è®¡ç®—

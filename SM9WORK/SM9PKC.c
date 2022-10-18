@@ -27,7 +27,7 @@ void KEM_demo()
 	F2_construct(&b2,f,e);    
     P2_construct_xy(&P2,b1,b2);
 
-	//ÃÜÔ¿Éú³É½×¶Î
+	//å¯†é’¥ç”Ÿæˆé˜¶æ®µ
 	Get(&ke,"01EDEE3778F441F8DEA3D9FA0ACC4E07EE36C93F9A08618AF4AD85CEDE1C22",HEX);
 	P_multiply(&P_pub_e,P1,ke);
 	P_normorlize(&P_pub_e,P_pub_e);
@@ -48,44 +48,44 @@ void KEM_demo()
 	finish = clock();
 	time3 = (double)(finish-start);
 	printf("\n********************************************\n");
-	printf("*********SM9 ÃÜÔ¿·â×°»úÖÆÊµÀıÑİÊ¾*********** \n");
+	printf("*********SM9 å¯†é’¥å°è£…æœºåˆ¶å®ä¾‹æ¼”ç¤º*********** \n");
 	printf("********************************************\n");
 	printf("***************************************\n");
-	printf("****1¡¢ÏµÍ³Ö÷ÃÜÔ¿ºÍÓÃ»§ÃÜÔ¿Éú³É½×¶Î****\n");
+	printf("****1ã€ç³»ç»Ÿä¸»å¯†é’¥å’Œç”¨æˆ·å¯†é’¥ç”Ÿæˆé˜¶æ®µ****\n");
 	printf("***************************************\n");
-	printf("G1Éú³ÉÔªP1 = \n");
+	printf("G1ç”Ÿæˆå…ƒP1 = \n");
 	P_toString(P1,HEX);
-	printf("G2Éú³ÉÔªP2 = \n");
+	printf("G2ç”Ÿæˆå…ƒP2 = \n");
 	P2_toString(P2,HEX);
-	printf("KGCÖ÷Ë½Ô¿ke = %s\n",Put(ke,HEX));
-	printf("KGCÖ÷¹«Ô¿ P_pub_e = [ke]P1 = \n");
+	printf("KGCä¸»ç§é’¥ke = %s\n",Put(ke,HEX));
+	printf("KGCä¸»å…¬é’¥ P_pub_e = [ke]P1 = \n");
 	P_toString(P_pub_e,HEX);
-	printf("ÊµÌåBµÄ±êÊ¶IDA: %s\n",id);
-	printf("ÊµÌåBË½Ô¿deB = \n");
+	printf("å®ä½“Bçš„æ ‡è¯†IDA: %s\n",id);
+	printf("å®ä½“Bç§é’¥deB = \n");
 	P2_toString(deB,HEX);
-	printf("·â×°ÃÜÔ¿µÄ³¤¶È: %x\n",klen);
+	printf("å°è£…å¯†é’¥çš„é•¿åº¦: %x\n",klen);
 	printf("\n************************************\n");
-	printf("**************2¡¢ÃÜÔ¿·â×°½×¶Î*******\n");
+	printf("**************2ã€å¯†é’¥å°è£…é˜¶æ®µ*******\n");
 	printf("************************************\n");
-	printf("·â×°ÃÜÎÄC = \n");
+	printf("å°è£…å¯†æ–‡C = \n");
 	P_toString(C,HEX);
-	printf("±»·â×°ÃÜÔ¿K = \n");
+	printf("è¢«å°è£…å¯†é’¥K = \n");
 	printByte(K,klen/8);
 	printf("\n************************************\n");
-	printf("**************3¡¢ÃÜÔ¿½â·â×°½×¶Î*****\n");
+	printf("**************3ã€å¯†é’¥è§£å°è£…é˜¶æ®µ*****\n");
 	printf("************************************\n");
-	printf("±»·â×°ÃÜÔ¿K_ = \n");
+	printf("è¢«å°è£…å¯†é’¥K_ = \n");
 	printByte(K_,klen/8);
 
-	printf("\nSM9 ÏµÍ³Ö÷ÃÜÔ¿ºÍÓÃ»§ÃÜÔ¿Éú³ÉÊ±¼ä£º%f ms\n",time1);
-	printf("SM9 ÃÜÔ¿·â×°Ê±¼ä£º%f ms\n",time2);
-	printf("SM9 ÃÜÔ¿½â·âÊ±¼ä£º%f ms\n",time3);
+	printf("\nSM9 ç³»ç»Ÿä¸»å¯†é’¥å’Œç”¨æˆ·å¯†é’¥ç”Ÿæˆæ—¶é—´ï¼š%f ms\n",time1);
+	printf("SM9 å¯†é’¥å°è£…æ—¶é—´ï¼š%f ms\n",time2);
+	printf("SM9 å¯†é’¥è§£å°æ—¶é—´ï¼š%f ms\n",time3);
 	free(K);
 	free(K_);
 }
 
 /*
-  mode: 0,²ÉÓÃĞòÁĞÃÜÂë·½Ê½¼ÓÃÜ£» 1£¬²ÉÓÃ·Ö×éÃÜÂë·½Ê½¼ÓÃÜ
+  mode: 0,é‡‡ç”¨åºåˆ—å¯†ç æ–¹å¼åŠ å¯†ï¼› 1ï¼Œé‡‡ç”¨åˆ†ç»„å¯†ç æ–¹å¼åŠ å¯†
 */
 void PKC_demo(int mode)
 {
@@ -118,7 +118,7 @@ void PKC_demo(int mode)
 	F2_construct(&b2,f,e);    
     P2_construct_xy(&P2,b1,b2);
 
-	//ÃÜÔ¿Éú³É½×¶Î
+	//å¯†é’¥ç”Ÿæˆé˜¶æ®µ
 	Get(&ke,"01EDEE3778F441F8DEA3D9FA0ACC4E07EE36C93F9A08618AF4AD85CEDE1C22",HEX);
 	P_multiply(&P_pub_e,P1,ke);
 	P_normorlize(&P_pub_e,P_pub_e);
@@ -130,11 +130,11 @@ void PKC_demo(int mode)
 	K2_len = 0x0100;
 	idLen = strlen((const char*)id);
 	mlen = strlen((const char*)M);
-    //¹«Ô¿¼ÓÃÜ½×¶Î
+    //å…¬é’¥åŠ å¯†é˜¶æ®µ
 	start = clock();
-	if(mode==0)          //ĞòÁĞ·½Ê½¼ÓÃÜ
+	if(mode==0)          //åºåˆ—æ–¹å¼åŠ å¯†
 	{
-		K2_len = K2_len/8;            //¼ÆËã×Ö½ÚÊı
+		K2_len = K2_len/8;            //è®¡ç®—å­—èŠ‚æ•°
 	    klen = (mlen+K2_len)*8;
         K = (BYTE *)malloc(klen/8);
 	    PKC_kem(K,&C1,id,P1,P2,P_pub_e,klen);
@@ -148,7 +148,7 @@ void PKC_demo(int mode)
 		C3 = (BYTE *)malloc(32);
 		MAC(C3, C2,mlen,K2,K2_len);
 
-	}else                    //·Ö×é·½Ê½¼ÓÃÜ
+	}else                    //åˆ†ç»„æ–¹å¼åŠ å¯†
 	{
 		K1_len = 0x80;
 		klen = K1_len + K2_len;
@@ -172,9 +172,9 @@ void PKC_demo(int mode)
 	finish = clock();
 	time2 = (double)(finish-start);
 
- 	//¹«Ô¿½âÃÜ½×¶Î 
+ 	//å…¬é’¥è§£å¯†é˜¶æ®µ 
 	start = clock();
-	if(mode==0)                 //ĞòÁĞ·½Ê½½âÃÜ
+	if(mode==0)                 //åºåˆ—æ–¹å¼è§£å¯†
 	{
 		Pairing_opt(&w,deB,C1);		
         len = 64 + 384 + idLen;
@@ -183,7 +183,7 @@ void PKC_demo(int mode)
 	    F12toByte(&msg[64],w);
 	    memcpy(&msg[448],id,idLen);
 		K_ = (BYTE *)malloc(klen/8);
-	    KDF(K_, msg, len, klen);  //×¢Òâ´Ë²½Öè»¹ĞèÒªÅĞ¶ÏKÊÇ·ñÎªÈ«Áã£¬·ñÔòÖØĞÂÉú³É
+	    KDF(K_, msg, len, klen);  //æ³¨æ„æ­¤æ­¥éª¤è¿˜éœ€è¦åˆ¤æ–­Kæ˜¯å¦ä¸ºå…¨é›¶ï¼Œå¦åˆ™é‡æ–°ç”Ÿæˆ
 	    K1_ = (BYTE *)malloc(mlen);
 		memcpy(K1_,K_,mlen);
 	    K2_ = (BYTE *)malloc(K2_len);
@@ -195,7 +195,7 @@ void PKC_demo(int mode)
 		MAC(u, C2,mlen,K2_,K2_len);
 	
 
-	}else                    //·Ö×é·½Ê½½âÃÜ
+	}else                    //åˆ†ç»„æ–¹å¼è§£å¯†
 	{
 		Pairing_opt(&w,deB,C1);		
         len = 64 + 384 + idLen;
@@ -204,49 +204,49 @@ void PKC_demo(int mode)
 	    F12toByte(&msg[64],w);
 	    memcpy(&msg[448],id,idLen);
 		K_ = (BYTE *)malloc(klen/8);
-	    KDF(K_, msg, len, klen);  //×¢Òâ´Ë²½Öè»¹ĞèÒªÅĞ¶ÏKÊÇ·ñÎªÈ«Áã£¬·ñÔòÖØĞÂÉú³É
+	    KDF(K_, msg, len, klen);  //æ³¨æ„æ­¤æ­¥éª¤è¿˜éœ€è¦åˆ¤æ–­Kæ˜¯å¦ä¸ºå…¨é›¶ï¼Œå¦åˆ™é‡æ–°ç”Ÿæˆ
 	    K1_ = (BYTE *)malloc(K1_len);
 		memcpy(K1_,K_,K1_len);
 	    K2_ = (BYTE *)malloc(K2_len);
 		memcpy(K2_,&K_[K1_len],K2_len);
 		M_ = (BYTE *)malloc(32);
-		//sm4½âÃÜ
+		//sm4è§£å¯†
 	    sm4_setkey_dec(&ctx,K1_);
 	    sm4_crypt_ecb(&ctx,0,32,C2,M_);
 		u = (BYTE *)malloc(32);
 		MAC(u, C2,32,K2_,K2_len);
 		m = (BYTE *)malloc(mlen);
-		memcpy(m,M_,mlen);         //È¥µôÌî³ä£¬µÃµ½Êµ¼ÊÃ÷ÎÄ
+		memcpy(m,M_,mlen);         //å»æ‰å¡«å……ï¼Œå¾—åˆ°å®é™…æ˜æ–‡
 	}
 	finish = clock();
 	time3 = (double)(finish-start);
 
 
 	printf("\n********************************************\n");
-	printf("*********SM9 ¹«Ô¿¼ÓÃÜÊµÀıÑİÊ¾*********** \n");
+	printf("*********SM9 å…¬é’¥åŠ å¯†å®ä¾‹æ¼”ç¤º*********** \n");
 	printf("********************************************\n");
 	printf("***************************************\n");
-	printf("****1¡¢ÏµÍ³Ö÷ÃÜÔ¿ºÍÓÃ»§ÃÜÔ¿Éú³É½×¶Î****\n");
+	printf("****1ã€ç³»ç»Ÿä¸»å¯†é’¥å’Œç”¨æˆ·å¯†é’¥ç”Ÿæˆé˜¶æ®µ****\n");
 	printf("***************************************\n");
-	printf("G1Éú³ÉÔªP1 = \n");
+	printf("G1ç”Ÿæˆå…ƒP1 = \n");
 	P_toString(P1,HEX);
-	printf("G2Éú³ÉÔªP2 = \n");
+	printf("G2ç”Ÿæˆå…ƒP2 = \n");
 	P2_toString(P2,HEX);
-	printf("KGCÖ÷Ë½Ô¿ke = %s\n",Put(ke,HEX));
-	printf("KGCÖ÷¹«Ô¿ P_pub_s = [ke]P1 = \n");
+	printf("KGCä¸»ç§é’¥ke = %s\n",Put(ke,HEX));
+	printf("KGCä¸»å…¬é’¥ P_pub_s = [ke]P1 = \n");
 	P_toString(P_pub_e,HEX);
-	printf("ÊµÌåBµÄ±êÊ¶IDA: %s\n",id);
-	printf("ÊµÌåBË½Ô¿deB = \n");
+	printf("å®ä½“Bçš„æ ‡è¯†IDA: %s\n",id);
+	printf("å®ä½“Bç§é’¥deB = \n");
 	P2_toString(deB,HEX);
-	printf("´ı¼ÓÃÜµÄÏûÏ¢Îª: %s",M);
+	printf("å¾…åŠ å¯†çš„æ¶ˆæ¯ä¸º: %s",M);
 	//printByte(M,mlen);
 	
 	printf("\n************************************\n");
-	printf("**************2¡¢¹«Ô¿¼ÓÃÜ½×¶Î*******\n");
+	printf("**************2ã€å…¬é’¥åŠ å¯†é˜¶æ®µ*******\n");
 	printf("************************************\n");
 	if(mode==0)
 	{
-		printf("********²ÉÓÃĞòÁĞ¼ÓÃÜ·½Ê½*******\n");
+		printf("********é‡‡ç”¨åºåˆ—åŠ å¯†æ–¹å¼*******\n");
 		printf("K = \n");
 	    printByte(K,klen/8);
 		printf("\nK1 = \n");
@@ -263,7 +263,7 @@ void PKC_demo(int mode)
 
 	}else
 	{
-		printf("********²ÉÓÃ·Ö×é¼ÓÃÜ·½Ê½*******\n");
+		printf("********é‡‡ç”¨åˆ†ç»„åŠ å¯†æ–¹å¼*******\n");
 		printf("K = \n");
 	    printByte(K,klen/8);
 		printf("\nK1 = \n");
@@ -273,7 +273,7 @@ void PKC_demo(int mode)
 		printf("\nC = C1||C2||C3:\n");
 		printf("C1 = [r]QB: \n");
 		P_toString(C1,HEX);
-		printf("MÌî³äÎª£º");
+		printf("Må¡«å……ä¸ºï¼š");
 	    printByte(input,32);
 		printf("\nC2 = Enc(K1,M):\n");
 	    printByte(C2,32);
@@ -283,11 +283,11 @@ void PKC_demo(int mode)
 	}
 
 	printf("\n************************************\n");
-	printf("**************3¡¢¹«Ô¿½âÃÜ½×¶Î*****\n");
+	printf("**************3ã€å…¬é’¥è§£å¯†é˜¶æ®µ*****\n");
 	printf("************************************\n");
 	if(mode==0)
 	{
-		printf("********²ÉÓÃĞòÁĞ½âÃÜ·½Ê½*******\n");
+		printf("********é‡‡ç”¨åºåˆ—è§£å¯†æ–¹å¼*******\n");
 		printf("w_ = e(C1,deB): \n");
 	    F12_toString(w,HEX);
 		printf("K_ = KDF(C1||w_||IDB,klen): \n");
@@ -297,21 +297,21 @@ void PKC_demo(int mode)
 		printf("\nK2_ = \n");
 	    printByte(K2_,K2_len);
 		
-		printf("\n½âÃÜÃ÷ÎÄ M_ = C2 XOR K1_ :\n");
+		printf("\nè§£å¯†æ˜æ–‡ M_ = C2 XOR K1_ :\n");
 	    printByte(M_,mlen);
 		printf("\nu = MAC(K2_,C2):\n");
 	    printByte(u,32);
 		if(Bytes_Equal(u,C3,32))
-		   printf("\nu = C3,½âÃÜÑéÖ¤³É¹¦£¡");
+		   printf("\nu = C3,è§£å¯†éªŒè¯æˆåŠŸï¼");
 		else
 		{
-		   printf("\nu != C3,½âÃÜÑéÖ¤Ê§°Ü£¡");
+		   printf("\nu != C3,è§£å¯†éªŒè¯å¤±è´¥ï¼");
 		   exit(0);
 		}
-		printf("\n½âÃÜÃ÷ÎÄ¼´ÎªM_:%s\n",M_);
+		printf("\nè§£å¯†æ˜æ–‡å³ä¸ºM_:%s\n",M_);
 	}else
 	{
-		printf("********²ÉÓÃ·Ö×é½âÃÜ·½Ê½*******\n");
+		printf("********é‡‡ç”¨åˆ†ç»„è§£å¯†æ–¹å¼*******\n");
 		printf("w_ = e(C1,deB): \n");
 	    F12_toString(w,HEX);
 		printf("K_ = KDF(C1||w_||IDB,klen): \n");
@@ -321,25 +321,25 @@ void PKC_demo(int mode)
 		printf("\nK2_ = \n");
 	    printByte(K2_,K2_len);
 
-	     printf("\n½âÃÜÃ÷ÎÄ M_ = Dec(K1_,C2):\n");
+	     printf("\nè§£å¯†æ˜æ–‡ M_ = Dec(K1_,C2):\n");
 	    printByte(M_,32);
 		printf("\nu = MAC(K2_,C2):\n");
 	    printByte(u,32);
 		if(Bytes_Equal(u,C3,32))
-		   printf("\nu = C3,½âÃÜÑéÖ¤³É¹¦£¡");
+		   printf("\nu = C3,è§£å¯†éªŒè¯æˆåŠŸï¼");
 		else
 		{
-		   printf("\nu != C3,½âÃÜÑéÖ¤Ê§°Ü£¡");
+		   printf("\nu != C3,è§£å¯†éªŒè¯å¤±è´¥ï¼");
 		   exit(0);
 		}
-		printf("\n½âÃÜÃ÷ÎÄ¼´ÎªM_:%s\n",m);
+		printf("\nè§£å¯†æ˜æ–‡å³ä¸ºM_:%s\n",m);
 
 		free(m);
 	}
 
-	printf("\nSM9 ÏµÍ³Ö÷ÃÜÔ¿ºÍÓÃ»§ÃÜÔ¿Éú³ÉÊ±¼ä£º%f ms\n",time1);
-	printf("SM9 ¼ÓÃÜÊ±¼ä£º%f ms\n",time2);
-	printf("SM9 ½âÃÜÊ±¼ä£º%f ms\n",time3);
+	printf("\nSM9 ç³»ç»Ÿä¸»å¯†é’¥å’Œç”¨æˆ·å¯†é’¥ç”Ÿæˆæ—¶é—´ï¼š%f ms\n",time1);
+	printf("SM9 åŠ å¯†æ—¶é—´ï¼š%f ms\n",time2);
+	printf("SM9 è§£å¯†æ—¶é—´ï¼š%f ms\n",time3);
 
 	free(K);
 	free(K1);
@@ -357,9 +357,9 @@ void PKC_demo(int mode)
 
 
 /*
-ÃÜÔ¿½â·â×°Ëã·¨£º
-K:±»½â·âµÄÃÜÔ¿
-klen£ºKµÄ×Ö½Ú³¤¶È
+å¯†é’¥è§£å°è£…ç®—æ³•ï¼š
+K:è¢«è§£å°çš„å¯†é’¥
+klenï¼šKçš„å­—èŠ‚é•¿åº¦
 */
 void PKC_kom(BYTE *K, BNPoint C,BNPoint2 deB,BYTE *ID,unsigned int klen)
 {
@@ -368,7 +368,7 @@ void PKC_kom(BYTE *K, BNPoint C,BNPoint2 deB,BYTE *ID,unsigned int klen)
 	unsigned int len1,len2;
 	if(!P_isOnBNCurve(C))
 	{
-		printf("ÃÜÔ¿½â·â×°£ºC²»ÊôÓÚG1");
+		printf("å¯†é’¥è§£å°è£…ï¼šCä¸å±äºG1");
 		exit(0);
 	}
 	Pairing_opt(&w,deB,C);
@@ -379,15 +379,15 @@ void PKC_kom(BYTE *K, BNPoint C,BNPoint2 deB,BYTE *ID,unsigned int klen)
 	PtoByte(msg,C);
 	F12toByte(&msg[64],w);
 	memcpy(&msg[448],ID,len1);
-    KDF(K, msg, len2, klen);  //×¢Òâ´Ë²½Öè»¹ĞèÒªÅĞ¶ÏKÊÇ·ñÎªÈ«Áã£¬·ñÔòÖØĞÂÉú³É
+    KDF(K, msg, len2, klen);  //æ³¨æ„æ­¤æ­¥éª¤è¿˜éœ€è¦åˆ¤æ–­Kæ˜¯å¦ä¸ºå…¨é›¶ï¼Œå¦åˆ™é‡æ–°ç”Ÿæˆ
 	free(msg);
 }
 
 
 /*
-ÃÜÔ¿·â×°Ëã·¨£º
-K£º±»·â×°µÄÃÜÔ¿
-C£º·â×°µÄÃÜÎÄ
+å¯†é’¥å°è£…ç®—æ³•ï¼š
+Kï¼šè¢«å°è£…çš„å¯†é’¥
+Cï¼šå°è£…çš„å¯†æ–‡
 */
 void PKC_kem(BYTE *K,BNPoint *C,BYTE *ID,BNPoint P1,BNPoint2 P2,BNPoint P_pub_e,unsigned int klen)
 {
@@ -416,17 +416,17 @@ void PKC_kem(BYTE *K,BNPoint *C,BYTE *ID,BNPoint P1,BNPoint2 P2,BNPoint P_pub_e,
 	PtoByte(msg2,*C);
 	F12toByte(&msg2[64],w);
 	memcpy(&msg2[448],ID,len-1);
-	KDF(K, msg2, len2, klen);  //×¢Òâ´Ë²½Öè»¹ĞèÒªÅĞ¶ÏKÊÇ·ñÎªÈ«Áã£¬·ñÔòÖØĞÂÉú³É
+	KDF(K, msg2, len2, klen);  //æ³¨æ„æ­¤æ­¥éª¤è¿˜éœ€è¦åˆ¤æ–­Kæ˜¯å¦ä¸ºå…¨é›¶ï¼Œå¦åˆ™é‡æ–°ç”Ÿæˆ
 	free(msg);
 	free(msg2);
 }
 
 
 /*
-   deB:Éú³ÉµÄË½Ô¿
-   ke:Ö÷Ë½Ô¿
-   ID:Éí·İID×Ö·û´®
-   P2£ºÈºG2µÄÉú³ÉÔª
+   deB:ç”Ÿæˆçš„ç§é’¥
+   ke:ä¸»ç§é’¥
+   ID:èº«ä»½IDå­—ç¬¦ä¸²
+   P2ï¼šç¾¤G2çš„ç”Ÿæˆå…ƒ
 
 */
 void PKC_Keygen(BNPoint2 *deB,CBigInt ke, BYTE *ID,BNPoint2 P2)

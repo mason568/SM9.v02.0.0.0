@@ -1,7 +1,7 @@
 #include "utility.h"
 
 
-//¶ÔÁ½¸ö×Ö½ÚÊı×é½øĞĞÒì»òÔËËã
+//å¯¹ä¸¤ä¸ªå­—èŠ‚æ•°ç»„è¿›è¡Œå¼‚æˆ–è¿ç®—
 void Bytes_XOR(BYTE *b, BYTE *b1, BYTE *b2,unsigned int len)
 {
 	int i;
@@ -11,9 +11,9 @@ void Bytes_XOR(BYTE *b, BYTE *b1, BYTE *b2,unsigned int len)
 
 
 /*
-  K:256Î»µÄMACÖµ
-  len1: ZµÄ×Ö½ÚÊı
-  len2: K2µÄ×Ö½ÚÊı
+  K:256ä½çš„MACå€¼
+  len1: Zçš„å­—èŠ‚æ•°
+  len2: K2çš„å­—èŠ‚æ•°
 */
 void MAC(BYTE *K,BYTE *Z, unsigned len1,BYTE *K2, int len2)
 {
@@ -30,7 +30,7 @@ void MAC(BYTE *K,BYTE *Z, unsigned len1,BYTE *K2, int len2)
 }
 
 
-//ÅĞ¶ÏÁ½¸ö×Ö½ÚÊı×éÊÇ·ñÏàµÈ
+//åˆ¤æ–­ä¸¤ä¸ªå­—èŠ‚æ•°ç»„æ˜¯å¦ç›¸ç­‰
 int Bytes_Equal(BYTE *b1, BYTE *b2,int len)
 {
 	int i=0;
@@ -51,7 +51,7 @@ void printByte(BYTE* b,int len)
 		printf("%02X",b[i]);
 }
 
-//½«µãP×ª»»Îª64¸ö×Ö½Ú´®£¬×¢ÒâPĞèÎª¹æ·¶ĞÍ
+//å°†ç‚¹Pè½¬æ¢ä¸º64ä¸ªå­—èŠ‚ä¸²ï¼Œæ³¨æ„Péœ€ä¸ºè§„èŒƒå‹
 void PtoByte(BYTE *b,BNPoint P)
 {
    unsigned char *str;
@@ -63,10 +63,10 @@ void PtoByte(BYTE *b,BNPoint P)
 
 
 /*
-  k£ºÉú³ÉµÄ¹²ÏíÃÜÔ¿
-  msg:ÊäÈëÏûÏ¢µÄ×Ö½ÚÖ¸Õë
-  msglen:ÊäÈëÏûÏ¢µÄ×Ö½Ú³¤¶È
-  klen : ĞèÒª»ñÈ¡µÄ¹²ÏíÃÜÔ¿µÄ±ÈÌØ³¤¶È
+  kï¼šç”Ÿæˆçš„å…±äº«å¯†é’¥
+  msg:è¾“å…¥æ¶ˆæ¯çš„å­—èŠ‚æŒ‡é’ˆ
+  msglen:è¾“å…¥æ¶ˆæ¯çš„å­—èŠ‚é•¿åº¦
+  klen : éœ€è¦è·å–çš„å…±äº«å¯†é’¥çš„æ¯”ç‰¹é•¿åº¦
 */
 void KDF(BYTE *k, BYTE *msg, unsigned int msgLength, unsigned int klen)
 {
@@ -74,8 +74,8 @@ void KDF(BYTE *k, BYTE *msg, unsigned int msgLength, unsigned int klen)
 	BYTE *Msg2,hash_byte[32]; 
 	DWORD hash[8];
 	unsigned int i,n,m,cur;
-	ct = 1;              //³õÊ¼»¯¼ÆËãÆ÷Îª1
-	v = 256;             //SM3Êä³ö³¤¶ÈÎª256Î»
+	ct = 1;              //åˆå§‹åŒ–è®¡ç®—å™¨ä¸º1
+	v = 256;             //SM3è¾“å‡ºé•¿åº¦ä¸º256ä½
 	len2 = msgLength + 4;   //  H = Hv(Z||ct)
 	Msg2 = (BYTE*)malloc(len2);
 	memset(Msg2,0,len2);
@@ -119,10 +119,10 @@ void KDF(BYTE *k, BYTE *msg, unsigned int msgLength, unsigned int klen)
 
 
 /*
-  h1£ºº¯Êı·µ»ØÖµ
-  msg:ÊäÈëÏûÏ¢µÄ×Ö½ÚÖ¸Õë
-  len:ÊäÈëÏûÏ¢µÄ×Ö½Ú³¤¶È
-  n : Í¨³£Îª´óÕûÊıN
+  h1ï¼šå‡½æ•°è¿”å›å€¼
+  msg:è¾“å…¥æ¶ˆæ¯çš„å­—èŠ‚æŒ‡é’ˆ
+  len:è¾“å…¥æ¶ˆæ¯çš„å­—èŠ‚é•¿åº¦
+  n : é€šå¸¸ä¸ºå¤§æ•´æ•°N
 
 
 */
@@ -132,20 +132,20 @@ void Hash_1(CBigInt *h1, BYTE *msg, unsigned int len, CBigInt n)
 	BYTE *msg2; 
 	DWORD hash[8],Ha[10];
 	CBigInt HA,Mod;
-	ct = 1;              //³õÊ¼»¯¼ÆËãÆ÷Îª1
-	v = 256;             //SM3Êä³ö³¤¶ÈÎª256Î»
+	ct = 1;              //åˆå§‹åŒ–è®¡ç®—å™¨ä¸º1
+	v = 256;             //SM3è¾“å‡ºé•¿åº¦ä¸º256ä½
 	len2 = len + 1 + 4;   //  H = Hv(0x01||Z||ct)
 	msg2 = (BYTE*)malloc(len);
 	memset(msg2,0,len2);
 	msg2[0] = 0x01;
 	memcpy(&msg2[1],msg,len);
 	
-	if(Cmp(n,BN.n)== 0)  //Hash_1µÄÊäÈë²ÎÊınÍ¨³£ÎªN£¬¼´ÈºµÄ½×Êı 
+	if(Cmp(n,BN.n)== 0)  //Hash_1çš„è¾“å…¥å‚æ•°né€šå¸¸ä¸ºNï¼Œå³ç¾¤çš„é˜¶æ•° 
 	{
 		hlen = 320;      // heln = 8*ceil(5*(log_2 n)/32)
 		hlen_v = 2;     // hlen_v = floor(hlen/v);		
 
-		//memcpy(&msg2[len2-4],&ct,4);  //Á½´ÎÑ­»·Õ¹¿ª
+		//memcpy(&msg2[len2-4],&ct,4);  //ä¸¤æ¬¡å¾ªç¯å±•å¼€
 		msg2[len2-1] = 0x01;
 	//	printf("msg2 = %s\n",msg2);
 		SM3_hash(msg2, len2, hash);
@@ -158,7 +158,7 @@ void Hash_1(CBigInt *h1, BYTE *msg, unsigned int len, CBigInt n)
 		memcpy(&Ha[8],hash,8);               
 		
 		HA.m_nLength = 10;
-		for(i = 0; i<10; i++)          // ½«HaÊı¾İÀàĞÍ×ª»»ÎªÕûÊı
+		for(i = 0; i<10; i++)          // å°†Haæ•°æ®ç±»å‹è½¬æ¢ä¸ºæ•´æ•°
 			HA.m_ulValue[i] = Ha[9-i];
 		i = HA.m_nLength-1;
     	while(HA.m_ulValue[i]==0 && i>0)
@@ -171,9 +171,9 @@ void Hash_1(CBigInt *h1, BYTE *msg, unsigned int len, CBigInt n)
 		Add_Big_Long(h1,*h1,1);
 
 	}else
-		printf("Hash1ÖĞ´æÔÚÎ´´¦ÀíµÄÒì³££¡");	
+		printf("Hash1ä¸­å­˜åœ¨æœªå¤„ç†çš„å¼‚å¸¸ï¼");	
 
-	//free(msg2);     //´ËÓï¾äÒ×µ¼ÖÂ´íÎó
+	//free(msg2);     //æ­¤è¯­å¥æ˜“å¯¼è‡´é”™è¯¯
 }
 
 void Hash_2(CBigInt *h1, BYTE *msg, unsigned int len, CBigInt n)
@@ -182,20 +182,20 @@ void Hash_2(CBigInt *h1, BYTE *msg, unsigned int len, CBigInt n)
 	BYTE *msg2; 
 	DWORD hash[8],Ha[10];
 	CBigInt HA,Mod;
-	ct = 1;              //³õÊ¼»¯¼ÆËãÆ÷Îª1
-	v = 256;             //SM3Êä³ö³¤¶ÈÎª256Î»
+	ct = 1;              //åˆå§‹åŒ–è®¡ç®—å™¨ä¸º1
+	v = 256;             //SM3è¾“å‡ºé•¿åº¦ä¸º256ä½
 	len2 = len + 1 + 4;   //  H = Hv(0x01||Z||ct)
 	msg2 = (BYTE*)malloc(len);
 	memset(msg2,0,len2);
 	msg2[0] = 0x02;
 	memcpy(&msg2[1],msg,len);
 	
-	if(Cmp(n,BN.n)== 0)  //Hash_1µÄÊäÈë²ÎÊınÍ¨³£ÎªN£¬¼´ÈºµÄ½×Êı 
+	if(Cmp(n,BN.n)== 0)  //Hash_1çš„è¾“å…¥å‚æ•°né€šå¸¸ä¸ºNï¼Œå³ç¾¤çš„é˜¶æ•° 
 	{
 		hlen = 320;      // heln = 8*ceil(5*(log_2 n)/32)
 		hlen_v = 2;     // hlen_v = floor(hlen/v);		
 
-	  //Á½´ÎÑ­»·Õ¹¿ª
+	  //ä¸¤æ¬¡å¾ªç¯å±•å¼€
 		msg2[len2-1] = 0x01;
 		SM3_hash(msg2, len2, hash);
 		memcpy(Ha,hash,32);
@@ -206,7 +206,7 @@ void Hash_2(CBigInt *h1, BYTE *msg, unsigned int len, CBigInt n)
 		memcpy(&Ha[8],hash,8);               
 		
 		HA.m_nLength = 10;
-		for(i = 0; i<10; i++)          // ½«HaÊı¾İÀàĞÍ×ª»»ÎªÕûÊı
+		for(i = 0; i<10; i++)          // å°†Haæ•°æ®ç±»å‹è½¬æ¢ä¸ºæ•´æ•°
 			HA.m_ulValue[i] = Ha[9-i];
 		i = HA.m_nLength-1;
     	while(HA.m_ulValue[i]==0 && i>0)
@@ -219,13 +219,13 @@ void Hash_2(CBigInt *h1, BYTE *msg, unsigned int len, CBigInt n)
 		Add_Big_Long(h1,*h1,1);
 
 	}else
-		printf("Hash1ÖĞ´æÔÚÎ´´¦ÀíµÄÒì³££¡");	
+		printf("Hash1ä¸­å­˜åœ¨æœªå¤„ç†çš„å¼‚å¸¸ï¼");	
 
-//	free(msg2);              //´ËÓï¾äÒ×µ¼ÖÂ´íÎó
+//	free(msg2);              //æ­¤è¯­å¥æ˜“å¯¼è‡´é”™è¯¯
 }
 
 /*
-°Ñ12´ÎÀ©ÓòÔªËØ×ª»»ÎªBYTEÊı×é£¬µÃµ½´óĞ¡Îª384×Ö½Ú´óĞ¡µÄmsg
+æŠŠ12æ¬¡æ‰©åŸŸå…ƒç´ è½¬æ¢ä¸ºBYTEæ•°ç»„ï¼Œå¾—åˆ°å¤§å°ä¸º384å­—èŠ‚å¤§å°çš„msg
 
 void F12toByte(BYTE *msg,BNField12 b)
 {
@@ -287,7 +287,7 @@ void F12toByte(BYTE *msg,BNField12 b)
 
 
 
-//½«16½øÖÆ×Ö·û´®×ª»»ÎªBYTEÊı×é£¬×¢ÒâlengthĞèÒªÎªÅ¼Êı£¬×ª»»ºómsgµÄ³¤¶ÈÎªlenth/2
+//å°†16è¿›åˆ¶å­—ç¬¦ä¸²è½¬æ¢ä¸ºBYTEæ•°ç»„ï¼Œæ³¨æ„lengthéœ€è¦ä¸ºå¶æ•°ï¼Œè½¬æ¢åmsgçš„é•¿åº¦ä¸ºlenth/2
 void Hex2Byte(BYTE *msg, BYTE *hex, int length)
 {
 	int len,i,j,k;
@@ -347,20 +347,20 @@ void Hash_1(CBigInt *h1, BYTE *msg, unsigned int len, CBigInt n)
 	BYTE *msg2; 
 	DWORD hash[8],Ha[10];
 	CBigInt HA,Mod;
-	ct = 1;              //³õÊ¼»¯¼ÆËãÆ÷Îª1
-	v = 256;             //SM3Êä³ö³¤¶ÈÎª256Î»
+	ct = 1;              //åˆå§‹åŒ–è®¡ç®—å™¨ä¸º1
+	v = 256;             //SM3è¾“å‡ºé•¿åº¦ä¸º256ä½
 	len2 = len + 1 + 4;   //  H = Hv(0x01||Z||ct)
 	msg2 = (BYTE*)malloc(len);
 	memset(msg2,0,len2);
 	msg2[0] = 0x01;
 	memcpy(&msg2[1],msg,len);
 	
-	if(Cmp(n,BN.n)== 0)  //Hash_1µÄÊäÈë²ÎÊınÍ¨³£ÎªN£¬¼´ÈºµÄ½×Êı 
+	if(Cmp(n,BN.n)== 0)  //Hash_1çš„è¾“å…¥å‚æ•°né€šå¸¸ä¸ºNï¼Œå³ç¾¤çš„é˜¶æ•° 
 	{
 		hlen = 320;      // heln = 8*ceil(5*(log_2 n)/32)
 		hlen_v = 2;     // hlen_v = floor(hlen/v);		
 
-		//memcpy(&msg2[len2-4],&ct,4);  //Á½´ÎÑ­»·Õ¹¿ª
+		//memcpy(&msg2[len2-4],&ct,4);  //ä¸¤æ¬¡å¾ªç¯å±•å¼€
 		msg2[len2-1] = 0x01;
 		printf("msg2 = %s\n",msg2);
 		SM3_hash(msg2, len2, hash);
@@ -373,7 +373,7 @@ void Hash_1(CBigInt *h1, BYTE *msg, unsigned int len, CBigInt n)
 		memcpy(&Ha[8],hash,8);               
 		
 		HA.m_nLength = 10;
-		for(i = 0; i<10; i++)          // ½«HaÊı¾İÀàĞÍ×ª»»ÎªÕûÊı
+		for(i = 0; i<10; i++)          // å°†Haæ•°æ®ç±»å‹è½¬æ¢ä¸ºæ•´æ•°
 			HA.m_ulValue[i] = Ha[9-i];
 		i = HA.m_nLength-1;
     	while(HA.m_ulValue[i]==0 && i>0)
@@ -386,7 +386,7 @@ void Hash_1(CBigInt *h1, BYTE *msg, unsigned int len, CBigInt n)
 		Add_Big_Long(h1,*h1,1);
 
 	}else
-		printf("Hash1ÖĞ´æÔÚÎ´´¦ÀíµÄÒì³££¡");	
+		printf("Hash1ä¸­å­˜åœ¨æœªå¤„ç†çš„å¼‚å¸¸ï¼");	
 
 
 }

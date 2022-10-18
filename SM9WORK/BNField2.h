@@ -9,50 +9,50 @@ typedef struct
 }BNField2;
 
 
-void BNField2_init(BNField2 *p); //³õÊ¼»¯
+void BNField2_init(BNField2 *p); //åˆå§‹åŒ–
 
-void F2_construct(BNField2 *p, CBigInt re, CBigInt im);//¶ş´ÎÀ©ÓòµÄ¹¹Ôìº¯Êı 
+void F2_construct(BNField2 *p, CBigInt re, CBigInt im);//äºŒæ¬¡æ‰©åŸŸçš„æ„é€ å‡½æ•° 
 
-void  F2_construct_I(BNField2 *p, CBigInt re);//¶ş´ÎÀ©ÓòµÄ¹¹Ôìº¯Êı,Ğé²¿Îª0  
+void  F2_construct_I(BNField2 *p, CBigInt re);//äºŒæ¬¡æ‰©åŸŸçš„æ„é€ å‡½æ•°,è™šéƒ¨ä¸º0  
 
-void F2_assign(BNField2 *b, BNField2 p);//¸³Öµº¯Êıb=p 
+void F2_assign(BNField2 *b, BNField2 p);//èµ‹å€¼å‡½æ•°b=p 
 
-void F2_add(BNField2 *p, BNField2 b1, BNField2 b2);//ºÍ¶ş´ÎÀ©ÓòÔªËØÏà¼Ó
+void F2_add(BNField2 *p, BNField2 b1, BNField2 b2);//å’ŒäºŒæ¬¡æ‰©åŸŸå…ƒç´ ç›¸åŠ 
 
-void  F2_add_I(BNField2 *p, BNField2 b, CBigInt k);//ºÍÕûÊıÏà¼Ó 
+void  F2_add_I(BNField2 *p, BNField2 b, CBigInt k);//å’Œæ•´æ•°ç›¸åŠ  
 
-void CBigInt_substract(CBigInt *x, CBigInt a, CBigInt b);//·µ»Ø£¨a-b£©mod p
+void CBigInt_substract(CBigInt *x, CBigInt a, CBigInt b);//è¿”å›ï¼ˆa-bï¼‰mod p
 
-void  F2_substract(BNField2 *p, BNField2 b1, BNField2 b2);//¶ş´ÎÀ©ÓòÔªËØÏà¼õ
+void  F2_substract(BNField2 *p, BNField2 b1, BNField2 b2);//äºŒæ¬¡æ‰©åŸŸå…ƒç´ ç›¸å‡
 
-void  F2_substract_I(BNField2 *p, BNField2 b, CBigInt k);//¶ş´ÎÀ©ÓòÔªËØ¼õÈ¥Ò»¸öÕıÕûÊı 
+void  F2_substract_I(BNField2 *p, BNField2 b, CBigInt k);//äºŒæ¬¡æ‰©åŸŸå…ƒç´ å‡å»ä¸€ä¸ªæ­£æ•´æ•° 
 
-int F2_isZero(BNField2 b);//ÈôÓòÔªËØÎª0,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+int F2_isZero(BNField2 b);//è‹¥åŸŸå…ƒç´ ä¸º0,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
 
-int F2_isOne(BNField2 b);//ÈôÓòÔªËØÎª1,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+int F2_isOne(BNField2 b);//è‹¥åŸŸå…ƒç´ ä¸º1,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
 
-int F2_equal(BNField2 b1, BNField2 b2);//ÈôÁ½¸öÓòÔªËØÏàµÈ,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+int F2_equal(BNField2 b1, BNField2 b2);//è‹¥ä¸¤ä¸ªåŸŸå…ƒç´ ç›¸ç­‰,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
 
-void CBigInt_neg(CBigInt *p, CBigInt a);//¼ÆËãCBigIntµÄ¸ºÖµ£¬¼´£¨-a£©mod p
+void CBigInt_neg(CBigInt *p, CBigInt a);//è®¡ç®—CBigIntçš„è´Ÿå€¼ï¼Œå³ï¼ˆ-aï¼‰mod p
 
-void F2_negate(BNField2 *p, BNField2 b);//ÓòÔªËØµÄ¸ºÖµ£»
+void F2_negate(BNField2 *p, BNField2 b);//åŸŸå…ƒç´ çš„è´Ÿå€¼ï¼›
 
-void  F2_frobenius(BNField2 *p, BNField2 b);//ÓòÔªËØµÄFrobeniusÖµ£»
+void  F2_frobenius(BNField2 *p, BNField2 b);//åŸŸå…ƒç´ çš„Frobeniuså€¼ï¼›
 
-void  F2_GFrobenius(BNField2 *p, BNField2 b, unsigned int e); //ÓòÔªËØµÄ¹ãÒåFrobeniusÖµ£»
+void  F2_GFrobenius(BNField2 *p, BNField2 b, unsigned int e); //åŸŸå…ƒç´ çš„å¹¿ä¹‰Frobeniuså€¼ï¼›
 
 void  F2_multiply(BNField2 *p, BNField2 b1,BNField2 b2); //(a+bu)(a'+b'u)  =  (aa'-2bb')+((a+b)(a'+b')-aa'-bb')u
 
-void  F2_multiply_I(BNField2 *p, BNField2 b, CBigInt k);//³ËÒÔ´óÊı (a+bu)k  = ka+kbu
+void  F2_multiply_I(BNField2 *p, BNField2 b, CBigInt k);//ä¹˜ä»¥å¤§æ•° (a+bu)k  = ka+kbu
 
-void  F2_multiply_i(BNField2 *p, BNField2 b, int k);//³ËÒÔĞ¡Êı  (a+bu)k = ka+kbu
+void  F2_multiply_i(BNField2 *p, BNField2 b, int k);//ä¹˜ä»¥å°æ•°  (a+bu)k = ka+kbu
 
-void  F2_multiply_u(BNField2 *p, BNField2 b);//³ËÒÔu (a+bu)u = -2b+au
+void  F2_multiply_u(BNField2 *p, BNField2 b);//ä¹˜ä»¥u (a+bu)u = -2b+au
 
-void  F2_square(BNField2 *p, BNField2 b);//¶ş´ÎÀ©ÓòÔªËØµÄÆ½·½ÔËËã   (a+bu)^2=a^2+2abu+b^2 u^2 = a^2-2b^2+2abu
+void  F2_square(BNField2 *p, BNField2 b);//äºŒæ¬¡æ‰©åŸŸå…ƒç´ çš„å¹³æ–¹è¿ç®—   (a+bu)^2=a^2+2abu+b^2 u^2 = a^2-2b^2+2abu
 
-void  F2_inverse(BNField2 *p, BNField2 b);//¶ş´ÎÀ©ÓòÔªËØµÄÄæÔËËã (a+bu)^(-1)=(a-bu)/(a^2-b^2 u^2 )=(a-bu)/(a^2+2b^2 )
+void  F2_inverse(BNField2 *p, BNField2 b);//äºŒæ¬¡æ‰©åŸŸå…ƒç´ çš„é€†è¿ç®— (a+bu)^(-1)=(a-bu)/(a^2-b^2 u^2 )=(a-bu)/(a^2+2b^2 )
 
-void F2_toString(BNField2 b,unsigned int system);//ÏÔÊ¾¶ş´ÎÀ©ÓòÔªËØ:  °´10½øÖÆ»ò16½øÖÆ¸ñÊ½Êä³öµ½×Ö·û´®
+void F2_toString(BNField2 b,unsigned int system);//æ˜¾ç¤ºäºŒæ¬¡æ‰©åŸŸå…ƒç´ :  æŒ‰10è¿›åˆ¶æˆ–16è¿›åˆ¶æ ¼å¼è¾“å‡ºåˆ°å­—ç¬¦ä¸²
 
-void F2_normorlize(BNField2 *b, BNField2 p); // ¹æÔ¼»¯´¦Àí
+void F2_normorlize(BNField2 *b, BNField2 p); // è§„çº¦åŒ–å¤„ç†

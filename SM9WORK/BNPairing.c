@@ -2,7 +2,7 @@
 
 
 /*
-    Ïßº¯ÊıµÄ¼ÆËã 
+    çº¿å‡½æ•°çš„è®¡ç®— 
 */
 void Line_Funtion(BNField12 *f, BNPoint2 T, BNPoint2 Q, BNPoint P)
 {
@@ -67,7 +67,7 @@ void Line_Funtion(BNField12 *f, BNPoint2 T, BNPoint2 Q, BNPoint P)
 }
 
 /*
-    ×îÖÕÃİµÄ¼ÆËã f = b^((b^12-1)/12)
+    æœ€ç»ˆå¹‚çš„è®¡ç®— f = b^((b^12-1)/12)
 */
 void Final_exp(BNField12 *f, BNField12 p)
 {
@@ -115,8 +115,8 @@ void Final_exp(BNField12 *f, BNField12 p)
 }
 
 /*
-  ×îÓÅ¶ÔµÄ¼ÆËã
-  ×¢Òâ£ºPĞèÎª¹æ·¶»¯ĞÎÊ½
+  æœ€ä¼˜å¯¹çš„è®¡ç®—
+  æ³¨æ„ï¼šPéœ€ä¸ºè§„èŒƒåŒ–å½¢å¼
  */
 void Pairing_opt(BNField12 *f,BNPoint2 Q, BNPoint P)
 {   
@@ -165,7 +165,7 @@ void Pairing_opt(BNField12 *f,BNPoint2 Q, BNPoint P)
 
 
 /*
-  Rate ¶ÔµÄ¼ÆËã
+  Rate å¯¹çš„è®¡ç®—
 
  */
 void Pairing_Rate(BNField12 *f, BNPoint2 Q, BNPoint P)

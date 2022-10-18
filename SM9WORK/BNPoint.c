@@ -2,7 +2,7 @@
 
  
 /*
-    BNPoint ³õÊ¼»¯  
+    BNPoint åˆå§‹åŒ–  
  */
 void BNPoint_init(BNPoint *p)
 {    
@@ -13,7 +13,7 @@ void BNPoint_init(BNPoint *p)
 
 
 /*
-    BNPoint ¹¹Ôìº¯Êı  
+    BNPoint æ„é€ å‡½æ•°  
 */
  void P_construct(BNPoint *p, CBigInt x, CBigInt y, CBigInt z)
  {	 
@@ -32,7 +32,7 @@ void BNPoint_init(BNPoint *p)
  }
 
 /*
-    BNPoint ¹¹Ôìº¯Êı  
+    BNPoint æ„é€ å‡½æ•°  
 */
  void P_construct_xy(BNPoint *p, CBigInt x, CBigInt y)
  {     
@@ -49,7 +49,7 @@ void BNPoint_init(BNPoint *p)
  }
 
  /*
-   ¸³Öµº¯Êı *p = b
+   èµ‹å€¼å‡½æ•° *p = b
  */
 void P_assign(BNPoint *p, BNPoint b)
 {
@@ -60,7 +60,7 @@ void P_assign(BNPoint *p, BNPoint b)
 }
 
 /*
-   ÈôBNPointÎª0,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+   è‹¥BNPointä¸º0,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
 
  */
 int P_isZero(BNPoint p)
@@ -70,7 +70,7 @@ int P_isZero(BNPoint p)
 
 
 /*
-  Jacobian×ø±êÏµÏÂµÄ¹æÔ¼´¦Àí
+  Jacobianåæ ‡ç³»ä¸‹çš„è§„çº¦å¤„ç†
   x = X/Z^2, y = Y/Z^3
  */
 void P_normorlize(BNPoint *p,BNPoint b)
@@ -98,7 +98,7 @@ void P_normorlize(BNPoint *p,BNPoint b)
 }
 
 /*
-   ÅĞ¶ÏBNPointÊÇ·ñÎª¹æ·¶ÀàĞÍ£¬ÈôÊÇ·µ¼Ó1£¬·ñÔò·µ»Ø0£»
+   åˆ¤æ–­BNPointæ˜¯å¦ä¸ºè§„èŒƒç±»å‹ï¼Œè‹¥æ˜¯è¿”åŠ 1ï¼Œå¦åˆ™è¿”å›0ï¼›
 
  */
 int P_isNormal(BNPoint p)
@@ -108,7 +108,7 @@ int P_isNormal(BNPoint p)
 
 
 /*
-   ÈôÁ½¸öÓòÔªËØÏàµÈ,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+   è‹¥ä¸¤ä¸ªåŸŸå…ƒç´ ç›¸ç­‰,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
 
  */
 int P_equal(BNPoint p1, BNPoint p2)
@@ -142,7 +142,7 @@ int P_equal(BNPoint p1, BNPoint p2)
 }
 
 /*
-   BNPointµÄ¸ºÖµ£»
+   BNPointçš„è´Ÿå€¼ï¼›
    P = (x,y,z)
    -P = (x,-y,z)
 
@@ -155,7 +155,7 @@ void P_negate(BNPoint *p, BNPoint b)
 }
 
 /*
-   BNPoint: *p = p1 + p2£»
+   BNPoint: *p = p1 + p2ï¼›
 
  */
 
@@ -176,9 +176,9 @@ void P_add(BNPoint *p, BNPoint p1, BNPoint p2)
 	   Mul_Big_Big(&t1,p1.z,p1.z);
 	   Mul_Big_Big(&t2,p2.z,p2.z);
 	   Mul_Big_Big(&t3,t1,p1.z);
-	   Mod_Big_Big(&t3,t3,BN.q); //modÔ¼¼õ£¬·ÀÖ¹Ô½½ç
+	   Mod_Big_Big(&t3,t3,BN.q); //modçº¦å‡ï¼Œé˜²æ­¢è¶Šç•Œ
 	   Mul_Big_Big(&t4,t2,p2.z);
-	   Mod_Big_Big(&t4,t4,BN.q); //modÔ¼¼õ£¬·ÀÖ¹Ô½½ç
+	   Mod_Big_Big(&t4,t4,BN.q); //modçº¦å‡ï¼Œé˜²æ­¢è¶Šç•Œ
 	   Mul_Big_Big(&t3,p2.y,t3);
 	   Mul_Big_Big(&A,p1.y,t4);
 	   CBigInt_substract(&A,t3,A);
@@ -190,22 +190,22 @@ void P_add(BNPoint *p, BNPoint p1, BNPoint p2)
   
 	   Mul_Big_Big(&C,p1.z,p2.z);
 	   Add_Big_Big(&D,t3,t5);
-	   Mod_Big_Big(&D,D,BN.q); //modÔ¼¼õ£¬·ÀÖ¹Ô½½ç
+	   Mod_Big_Big(&D,D,BN.q); //modçº¦å‡ï¼Œé˜²æ­¢è¶Šç•Œ
 
 	   Mul_Big_Big(&t3,B,B);
 	   Mul_Big_Big(&t5,t3,D);
 	   Mul_Big_Big(&x,A,A);
 	   CBigInt_substract(&x,x,t5);
   
-	   Mod_Big_Big(&t2,t2,BN.q);  //modÔ¼¼õ£¬·ÀÖ¹Ô½½ç
-	   Mod_Big_Big(&t3,t3,BN.q);  //modÔ¼¼õ£¬·ÀÖ¹Ô½½ç
+	   Mod_Big_Big(&t2,t2,BN.q);  //modçº¦å‡ï¼Œé˜²æ­¢è¶Šç•Œ
+	   Mod_Big_Big(&t3,t3,BN.q);  //modçº¦å‡ï¼Œé˜²æ­¢è¶Šç•Œ
 	   Mul_Big_Big(&t5,t3,t2);
 	   Mul_Big_Big(&t5,p1.x,t5);
 	   CBigInt_substract(&t5,t5,x);
 	   Mul_Big_Big(&t5,A,t5);
 	   Mul_Big_Big(&t3,t3,B);
 	   Mul_Big_Big(&t3,t3,t4);
-	   Mod_Big_Big(&t3,t3,BN.q);  //modÔ¼¼õ£¬·ÀÖ¹Ô½½ç
+	   Mod_Big_Big(&t3,t3,BN.q);  //modçº¦å‡ï¼Œé˜²æ­¢è¶Šç•Œ
 	   Mul_Big_Big(&t3,p1.y,t3);
 	   CBigInt_substract(&y,t5,t3);
 
@@ -217,7 +217,7 @@ void P_add(BNPoint *p, BNPoint p1, BNPoint p2)
 
 
 /*
-   BNPoint: *p = 2*q£»
+   BNPoint: *p = 2*qï¼›
 
  */
 
@@ -232,23 +232,23 @@ void P_twice(BNPoint *p, BNPoint q)
 	else
 	{
 		Mul_Big_Big(&t1,q.x,q.x);
-		Mod_Big_Big(&t1,t1,BN.q);   //modÔ¼¼õ£¬·ÀÖ¹Ô½½ç
+		Mod_Big_Big(&t1,t1,BN.q);   //modçº¦å‡ï¼Œé˜²æ­¢è¶Šç•Œ
 		Mul_Big_Big(&t2,t1,t1);
-		Mod_Big_Big(&t2,t2,BN.q);   //modÔ¼¼õ£¬·ÀÖ¹Ô½½ç
+		Mod_Big_Big(&t2,t2,BN.q);   //modçº¦å‡ï¼Œé˜²æ­¢è¶Šç•Œ
 		Mul_Big_Long(&t2,t2,9);
 		Mul_Big_Big(&t3,q.y,q.y);
 		Mul_Big_Big(&t4,t3,q.x);
-		Mod_Big_Big(&t4,t4,BN.q);   //modÔ¼¼õ£¬·ÀÖ¹Ô½½ç
+		Mod_Big_Big(&t4,t4,BN.q);   //modçº¦å‡ï¼Œé˜²æ­¢è¶Šç•Œ
 		Mul_Big_Long(&t5,t4,8);
 	
 		CBigInt_substract(&x,t2,t5);
 		Mul_Big_Long(&t5,t4,4);
 		CBigInt_substract(&t5,t5,x);
-		Mod_Big_Big(&t1,t1,BN.q);   //modÔ¼¼õ£¬·ÀÖ¹Ô½½ç
+		Mod_Big_Big(&t1,t1,BN.q);   //modçº¦å‡ï¼Œé˜²æ­¢è¶Šç•Œ
 		Mul_Big_Big(&t5,t5,t1);
 		Mul_Big_Long(&t5,t5,3);
-        Mod_Big_Big(&t5,t5,BN.q);  //modÔ¼¼õ£¬·ÀÖ¹Ô½½ç
-		Mod_Big_Big(&t3,t3,BN.q);  //modÔ¼¼õ£¬·ÀÖ¹Ô½½ç
+        Mod_Big_Big(&t5,t5,BN.q);  //modçº¦å‡ï¼Œé˜²æ­¢è¶Šç•Œ
+		Mod_Big_Big(&t3,t3,BN.q);  //modçº¦å‡ï¼Œé˜²æ­¢è¶Šç•Œ
 		Mul_Big_Big(&t4,t3,t3);
 		Mul_Big_Long(&t4,t4,8);
 		CBigInt_substract(&y,t5,t4);
@@ -260,8 +260,8 @@ void P_twice(BNPoint *p, BNPoint q)
 }
 
 /*
-  ¼ÆËã BNPoint: *p = k*q£»
-   kÎª´óÓÚµÈÓÚ0µÄÕıÕûÊı
+  è®¡ç®— BNPoint: *p = k*qï¼›
+   kä¸ºå¤§äºç­‰äº0çš„æ­£æ•´æ•°
 
  */
 
@@ -295,7 +295,7 @@ void P_multiply(BNPoint *p, BNPoint q, CBigInt k)
 }
 
 /*
-ÅĞ¶ÏµãÊÇ·ñÔÚBNÇúÏßy^2 = x^3 + 5 z^6
+åˆ¤æ–­ç‚¹æ˜¯å¦åœ¨BNæ›²çº¿y^2 = x^3 + 5 z^6
 
 */
 
@@ -307,7 +307,7 @@ int P_isOnBNCurve(BNPoint p)
 	Mul_Big_Big(&b,b,p.x);
 	Mul_Big_Big(&c,p.z,p.z);
 	Mul_Big_Big(&c,c,p.z);
-	Mod_Big_Big(&c,c,BN.q); //modÔ¼¼õ£¬·ÀÖ¹Ô½½ç
+	Mod_Big_Big(&c,c,BN.q); //modçº¦å‡ï¼Œé˜²æ­¢è¶Šç•Œ
 	Mul_Big_Big(&d,c,c);
 	Mul_Big_Long(&d,d,5);
 	Add_Big_Big(&d,d,b);
@@ -320,7 +320,7 @@ int P_isOnBNCurve(BNPoint p)
 
 
 /*
-   ´òÓ¡ÏÔÊ¾BNPoint£»
+   æ‰“å°æ˜¾ç¤ºBNPointï¼›
 
  */
 

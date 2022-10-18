@@ -9,35 +9,35 @@ typedef struct
 }BNPoint;
 
 
-void BNPoint_init(BNPoint *p); //BNPoint ³õÊ¼»¯ 
+void BNPoint_init(BNPoint *p); //BNPoint åˆå§‹åŒ– 
 
-void P_construct(BNPoint *p, CBigInt x, CBigInt y, CBigInt z); //BNPoint ¹¹Ôìº¯Êı
+void P_construct(BNPoint *p, CBigInt x, CBigInt y, CBigInt z); //BNPoint æ„é€ å‡½æ•°
 
-void P_construct_xy(BNPoint *p, CBigInt x, CBigInt y); //BNPoint ¹¹Ôìº¯Êı 
+void P_construct_xy(BNPoint *p, CBigInt x, CBigInt y); //BNPoint æ„é€ å‡½æ•° 
 
-void P_assign(BNPoint *p, BNPoint b); //¸³Öµº¯Êı p = b
+void P_assign(BNPoint *p, BNPoint b); //èµ‹å€¼å‡½æ•° p = b
 
-int P_isZero(BNPoint p); //ÈôBNPointÎª0,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+int P_isZero(BNPoint p); //è‹¥BNPointä¸º0,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
 
 /*
-  Jacobian×ø±êÏµÏÂµÄ¹æÔ¼´¦Àí
+  Jacobianåæ ‡ç³»ä¸‹çš„è§„çº¦å¤„ç†
   x = X/Z^2, y = Y/Z^3
  */
 void  P_normorlize(BNPoint *p, BNPoint b);
 
-int P_isNormal(BNPoint p);  //ÅĞ¶ÏBNPointÊÇ·ñÎª¹æ·¶ÀàĞÍ£¬ÈôÊÇ·µ¼Ó1£¬·ñÔò·µ»Ø0£»
+int P_isNormal(BNPoint p);  //åˆ¤æ–­BNPointæ˜¯å¦ä¸ºè§„èŒƒç±»å‹ï¼Œè‹¥æ˜¯è¿”åŠ 1ï¼Œå¦åˆ™è¿”å›0ï¼›
 
-int P_equal(BNPoint p1, BNPoint p2);   // ÈôÁ½¸öÓòÔªËØÏàµÈ,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+int P_equal(BNPoint p1, BNPoint p2);   // è‹¥ä¸¤ä¸ªåŸŸå…ƒç´ ç›¸ç­‰,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
 
-void P_negate(BNPoint *p, BNPoint b);  // BNPointµÄ¸ºÖµ: P = (x,y,z),   -P = (x,-y,z)
+void P_negate(BNPoint *p, BNPoint b);  // BNPointçš„è´Ÿå€¼: P = (x,y,z),   -P = (x,-y,z)
 
-void P_add(BNPoint *p, BNPoint p1, BNPoint p2); //  BNPoint: *p = p1 + p2£»
+void P_add(BNPoint *p, BNPoint p1, BNPoint p2); //  BNPoint: *p = p1 + p2ï¼›
 
-void P_twice(BNPoint *p, BNPoint q);   //BNPoint: *p = 2*q£»
+void P_twice(BNPoint *p, BNPoint q);   //BNPoint: *p = 2*qï¼›
 
-void P_multiply(BNPoint *p, BNPoint q, CBigInt k); //¼ÆËã BNPoint: *p = k*q, kÎª´óÓÚµÈÓÚ0µÄÕıÕûÊı
+void P_multiply(BNPoint *p, BNPoint q, CBigInt k); //è®¡ç®— BNPoint: *p = k*q, kä¸ºå¤§äºç­‰äº0çš„æ­£æ•´æ•°
 
-int P_isOnBNCurve(BNPoint p); // ÅĞ¶ÏµãÊÇ·ñÔÚBNÇúÏßy^2 = x^3 + 5 z^6
+int P_isOnBNCurve(BNPoint p); // åˆ¤æ–­ç‚¹æ˜¯å¦åœ¨BNæ›²çº¿y^2 = x^3 + 5 z^6
 
-void P_toString(BNPoint p,unsigned int system);  //´òÓ¡ÏÔÊ¾BNPoint£»
+void P_toString(BNPoint p,unsigned int system);  //æ‰“å°æ˜¾ç¤ºBNPointï¼›
 

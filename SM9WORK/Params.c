@@ -1,7 +1,7 @@
 #include "Params.h"
 
 /*
-    BN 曲线相关参数的初始化
+    BN 鏇茬嚎鐩稿叧鍙傛暟鐨勫垵濮嬪寲
    
  */
  void SM9Params_init(struct SM9Params *bn)

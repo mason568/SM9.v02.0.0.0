@@ -1,7 +1,7 @@
 
 #include "BigInt.h"
 
-//¹¹Ôì´óÊı¶ÔÏó²¢³õÊ¼»¯ÎªÁã
+//æ„é€ å¤§æ•°å¯¹è±¡å¹¶åˆå§‹åŒ–ä¸ºé›¶
 void CBigIntInit(CBigInt *A)
 {
 	int i;
@@ -11,9 +11,9 @@ void CBigIntInit(CBigInt *A)
 }
 
 /****************************************************************************************
-´óÊı±È½Ï
-µ÷ÓÃ·½Ê½£ºCmp(N,A)
-·µ»ØÖµ£ºÈôN<A·µ»Ø-1£»ÈôN=A·µ»Ø0£»ÈôN>A·µ»Ø1
+å¤§æ•°æ¯”è¾ƒ
+è°ƒç”¨æ–¹å¼ï¼šCmp(N,A)
+è¿”å›å€¼ï¼šè‹¥N<Aè¿”å›-1ï¼›è‹¥N=Aè¿”å›0ï¼›è‹¥N>Aè¿”å›1
 ****************************************************************************************/
 int Cmp(CBigInt N,CBigInt A)
 {
@@ -33,9 +33,9 @@ int Cmp(CBigInt N,CBigInt A)
 }
 
 /****************************************************************************************
-´óÊı¸³Öµ
-µ÷ÓÃ·½Ê½£ºMov_Big_Big(N,A)
-·µ»ØÖµ£ºN,±»¸³ÖµÎªA
+å¤§æ•°èµ‹å€¼
+è°ƒç”¨æ–¹å¼ï¼šMov_Big_Big(N,A)
+è¿”å›å€¼ï¼šN,è¢«èµ‹å€¼ä¸ºA
 ****************************************************************************************/
 void Mov_Big_Big(CBigInt *N, CBigInt A)
 {
@@ -74,9 +74,9 @@ void Mov_Big_Long(CBigInt * N, unsigned long A)
 
 
 /****************************************************************************************
-´óÊıÏà¼Ó
-µ÷ÓÃĞÎÊ½£ºAdd_Big_Big(Y,N,A)
-·µ»ØÖµ£ºY=N+A
+å¤§æ•°ç›¸åŠ 
+è°ƒç”¨å½¢å¼ï¼šAdd_Big_Big(Y,N,A)
+è¿”å›å€¼ï¼šY=N+A
 ****************************************************************************************/
 void Add_Big_Big(CBigInt *Y, CBigInt N, CBigInt A)
 {
@@ -103,12 +103,12 @@ void Add_Big_Big(CBigInt *Y, CBigInt N, CBigInt A)
 	Mov_Big_Big(Y,X);
 }
 
-void Add_Big_Long(CBigInt *Y, CBigInt N, unsigned long A)
+void Add_Big_Long(CBigInt *Y, CBigInt N, unsigned long A)//
 {
 	CBigInt X;
 	unsigned long long sum;
 	CBigIntInit(&X);
-	Mov_Big_Big(&X,N);
+	Mov_Big_Big(&X,N);// X=N
 
 	sum=X.m_ulValue[0];
 	sum+=A;     
@@ -129,9 +129,9 @@ void Add_Big_Long(CBigInt *Y, CBigInt N, unsigned long A)
 }
 
 /****************************************************************************************
-´óÊıÏà¼õ
-µ÷ÓÃĞÎÊ½£ºSub_Big_Big(Y,N,A)
-·µ»ØÖµ£ºY=N-A
+å¤§æ•°ç›¸å‡
+è°ƒç”¨å½¢å¼ï¼šSub_Big_Big(Y,N,A)
+è¿”å›å€¼ï¼šY=N-A
 ****************************************************************************************/
 /*
 void Sub_Big_Big(CBigInt *Y,CBigInt N, CBigInt A)
@@ -242,9 +242,9 @@ void Sub_Big_Long(CBigInt *Y, CBigInt N, unsigned long A)
 }
 
 /****************************************************************************************
-´óÊıÏà³Ë
-µ÷ÓÃĞÎÊ½£ºMul_Big_Big(Y,N,A)
-·µ»ØÖµ£ºX=N*A
+å¤§æ•°ç›¸ä¹˜
+è°ƒç”¨å½¢å¼ï¼šMul_Big_Big(Y,N,A)
+è¿”å›å€¼ï¼šX=N*A
 	A	a 0
 	N	c d
 		0					d*0
@@ -309,8 +309,8 @@ void Mul_Big_Long(CBigInt *Y, CBigInt N, unsigned long A)
 	{
 		mul=N.m_ulValue[i];
 		mul=mul*A+carry;
-		X.m_ulValue[i]=(unsigned long)mul;
-		carry=(unsigned long)(mul>>32);
+		X.m_ulValue[i]=(unsigned int)mul;
+		carry=(unsigned int)(mul>>32);
 	}
 	if(carry)
 	{
@@ -327,9 +327,9 @@ void Mul_Big_Long(CBigInt *Y, CBigInt N, unsigned long A)
 }
 
 /****************************************************************************************
-´óÊıÏà³ı
-µ÷ÓÃĞÎÊ½£ºDiv_Big_Big(P,N,A)
-·µ»ØÖµ£ºP=N/A
+å¤§æ•°ç›¸é™¤
+è°ƒç”¨å½¢å¼ï¼šDiv_Big_Big(P,N,A)
+è¿”å›å€¼ï¼šP=N/A
 ****************************************************************************************/
 void Div_Big_Big(CBigInt *M,CBigInt N, CBigInt A)
 {
@@ -460,9 +460,9 @@ void Div_Big_Long(CBigInt *Y, CBigInt N, unsigned long A)
 }
 
 /****************************************************************************************
-´óÊıÇóÄ£
-µ÷ÓÃĞÎÊ½£ºMod_Big_Big(Z,N,A)
-·µ»ØÖµ£ºZ=N%A
+å¤§æ•°æ±‚æ¨¡
+è°ƒç”¨å½¢å¼ï¼šMod_Big_Big(Z,N,A)
+è¿”å›å€¼ï¼šZ=N%A
 ****************************************************************************************/
 void Mod_Big_Big(CBigInt *Z,CBigInt N, CBigInt A)
 {
@@ -527,10 +527,10 @@ unsigned long Mod_Big_Long(CBigInt N, unsigned long A)
 
 
 /****************************************************************************************
-´Ó×Ö·û´®°´10½øÖÆ»ò16½øÖÆ¸ñÊ½ÊäÈëµ½´óÊı
-µ÷ÓÃ¸ñÊ½£ºGet(N,str,sys)
-·µ»ØÖµ£ºN±»¸³ÖµÎªÏàÓ¦´óÊı
-sysÔİÊ±Ö»ÄÜÎª10»ò16
+ä»å­—ç¬¦ä¸²æŒ‰10è¿›åˆ¶æˆ–16è¿›åˆ¶æ ¼å¼è¾“å…¥åˆ°å¤§æ•°
+è°ƒç”¨æ ¼å¼ï¼šGet(N,str,sys)
+è¿”å›å€¼ï¼šNè¢«èµ‹å€¼ä¸ºç›¸åº”å¤§æ•°
+sysæš‚æ—¶åªèƒ½ä¸º10æˆ–16
 ****************************************************************************************/
 void Get(CBigInt *N, char* str, unsigned int system)
 {
@@ -540,10 +540,14 @@ void Get(CBigInt *N, char* str, unsigned int system)
 	//CBigInt N;
 	CBigIntInit(N);
 	memset(s, 0x00, sizeof(s));
+	//printf("this is a test for string: %s \n",str);
 	strcpy(s, str);
+	//printf("this is a test for string: %s \n",s);
+	//getchar();
 	len = strlen(str);
 	Mov_Big_Long(N,0);
 	//for(i = len -1;i >= 0;i --)
+	//printf("hhh \n");
 	for(i = 0; i < len; i++)
 	{
 		Mul_Big_Long(N,*N,system);
@@ -558,16 +562,30 @@ void Get(CBigInt *N, char* str, unsigned int system)
 				k=s[i]-87;
 		else k=0;
 		//Mov_Big_Big(N,Add_Big_Long(N,k));
+
+			/*for(int i=N->m_nLength-1;i>=0;i--)
+			{
+				printf(" %lx ",N->m_ulValue[i]);
+			}
+			printf(" + %d ===> ",k);*/
+
 		Add_Big_Long(N,*N,k);
+
+			/*for(int i=N->m_nLength-1;i>=0;i--)
+			{
+				printf("%lx ",N->m_ulValue[i]);
+			}
+			printf("# \n");
+			*/
 	}
 	//return N;
 }
 
 /****************************************************************************************
-½«´óÊı°´10½øÖÆ»ò16½øÖÆ¸ñÊ½Êä³öÎª×Ö·û´®
-µ÷ÓÃ¸ñÊ½£ºPut(N,str,sys)
-·µ»ØÖµ£ºÎŞ£¬²ÎÊıstr±»¸³ÖµÎªNµÄsys½øÖÆ×Ö·û´®
-sysÔİÊ±Ö»ÄÜÎª10»ò16
+å°†å¤§æ•°æŒ‰10è¿›åˆ¶æˆ–16è¿›åˆ¶æ ¼å¼è¾“å‡ºä¸ºå­—ç¬¦ä¸²
+è°ƒç”¨æ ¼å¼ï¼šPut(N,str,sys)
+è¿”å›å€¼ï¼šæ— ï¼Œå‚æ•°strè¢«èµ‹å€¼ä¸ºNçš„sysè¿›åˆ¶å­—ç¬¦ä¸²
+sysæš‚æ—¶åªèƒ½ä¸º10æˆ–16
 ****************************************************************************************/
 char* Put(CBigInt N, unsigned int system)
 {
@@ -599,7 +617,7 @@ char* Put(CBigInt N, unsigned int system)
 	str = s1;
 	return str;
 }
-//Ö÷ÒªÏÔÊ¾»ùÓòÔªËØ£¬½«×îµÍÎ»Îª0µÄÓòÔªËØ²¹0ÏÔÊ¾
+//ä¸»è¦æ˜¾ç¤ºåŸºåŸŸå…ƒç´ ï¼Œå°†æœ€ä½ä½ä¸º0çš„åŸŸå…ƒç´ è¡¥0æ˜¾ç¤º
 unsigned char* PutFieldElement(CBigInt N, unsigned int system)
 {
 	unsigned char *str;	
@@ -625,7 +643,7 @@ unsigned char* PutFieldElement(CBigInt N, unsigned int system)
 		Div_Big_Long(&X,X,system);
 	}
 	len = i-1;
-	offset = 63-len;   //Ö÷ÒªÊÇÎªÁË½«×îµÍÎ»Îª0µÄÓòÔªËØ²¹0
+	offset = 63-len;   //ä¸»è¦æ˜¯ä¸ºäº†å°†æœ€ä½ä½ä¸º0çš„åŸŸå…ƒç´ è¡¥0
 	for( i= 0; i<= len; i++)
 		s1[i+offset] = s[len-i];
 	str = s1;
@@ -633,9 +651,9 @@ unsigned char* PutFieldElement(CBigInt N, unsigned int system)
 }
 
 /****************************************************************************************
-Çó²»¶¨·½³Ìax-by=1µÄ×îĞ¡ÕûÊı½â
-µ÷ÓÃ·½Ê½£ºEuc(N,A)
-·µ»ØÖµ£ºZ,Âú×ã£ºNZ mod A=1
+æ±‚ä¸å®šæ–¹ç¨‹ax-by=1çš„æœ€å°æ•´æ•°è§£
+è°ƒç”¨æ–¹å¼ï¼šEuc(N,A)
+è¿”å›å€¼ï¼šZ,æ»¡è¶³ï¼šNZ mod A=1
 ****************************************************************************************/
 void Inv(CBigInt *Z, CBigInt N, CBigInt A)
 {
@@ -693,9 +711,9 @@ void Inv(CBigInt *Z, CBigInt N, CBigInt A)
 }
 
 /****************************************************************************************
-Çó³Ë·½µÄÄ£
-µ÷ÓÃ·½Ê½£ºExp(N,A,B)
-·µ»ØÖµ£ºZ=N^A MOD B
+æ±‚ä¹˜æ–¹çš„æ¨¡
+è°ƒç”¨æ–¹å¼ï¼šExp(N,A,B)
+è¿”å›å€¼ï¼šZ=N^A MOD B
 ****************************************************************************************/
 void Exp(CBigInt *Z, CBigInt N, CBigInt A, CBigInt B)
 {

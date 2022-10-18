@@ -1,7 +1,7 @@
 #include "BNPoint2.h"
  
 /*
-    BNPoint2 ³õÊ¼»¯  
+    BNPoint2 åˆå§‹åŒ–  
 
  */
 void BNPoint2_init(BNPoint2 *p)
@@ -17,7 +17,7 @@ void BNPoint2_init(BNPoint2 *p)
 
 
 /*
-    BNPoint2 ¹¹Ôìº¯Êı  
+    BNPoint2 æ„é€ å‡½æ•°  
 */
  void P2_construct(BNPoint2 *p, BNField2 x, BNField2 y, BNField2 z)
  {     
@@ -27,7 +27,7 @@ void BNPoint2_init(BNPoint2 *p)
  }
 
 /*
-    BNPoint2 ¹¹Ôìº¯Êı  
+    BNPoint2 æ„é€ å‡½æ•°  
 */
  void P2_construct_xy(BNPoint2 *p, BNField2 x, BNField2 y)
  {
@@ -38,7 +38,7 @@ void BNPoint2_init(BNPoint2 *p)
  }
 
  /*
-   ¸³Öµº¯Êı *p = b
+   èµ‹å€¼å‡½æ•° *p = b
  */
 void P2_assign(BNPoint2 *p, BNPoint2 b)
 {	 
@@ -48,7 +48,7 @@ void P2_assign(BNPoint2 *p, BNPoint2 b)
 }
 
 /*
-   ÈôBNPoint2Îª0,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+   è‹¥BNPoint2ä¸º0,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
  */
 int P2_isZero(BNPoint2 p)
 {
@@ -57,7 +57,7 @@ int P2_isZero(BNPoint2 p)
 
 
 /*
-  Jacobian×ø±êÏµÏÂµÄ¹æÔ¼´¦Àí
+  Jacobianåæ ‡ç³»ä¸‹çš„è§„çº¦å¤„ç†
   x = X/Z^2, y = Y/Z^3
  */
 void P2_normorlize(BNPoint2 *p, BNPoint2 b)
@@ -79,7 +79,7 @@ void P2_normorlize(BNPoint2 *p, BNPoint2 b)
 }
 
 /*
-   ÅĞ¶ÏBNPointÊÇ·ñÎª¹æ·¶ÀàĞÍ£¬ÈôÊÇ·µ¼Ó1£¬·ñÔò·µ»Ø0£»
+   åˆ¤æ–­BNPointæ˜¯å¦ä¸ºè§„èŒƒç±»å‹ï¼Œè‹¥æ˜¯è¿”åŠ 1ï¼Œå¦åˆ™è¿”å›0ï¼›
 
  */
 int P2_isNormal(BNPoint2 p)
@@ -89,7 +89,7 @@ int P2_isNormal(BNPoint2 p)
 
 
 /*
-   ÈôÁ½¸öÓòÔªËØÏàµÈ,Ôò·µ»Ø1£¬·ñÔò·µ¼Ó0£»
+   è‹¥ä¸¤ä¸ªåŸŸå…ƒç´ ç›¸ç­‰,åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”åŠ 0ï¼›
 
  */
 int P2_equal(BNPoint2 p1, BNPoint2 p2)
@@ -120,7 +120,7 @@ int P2_equal(BNPoint2 p1, BNPoint2 p2)
 }
 
 /*
-   BNPoint2µÄ¸ºÖµ£»
+   BNPoint2çš„è´Ÿå€¼ï¼›
 
  */
 void  P2_negate(BNPoint2 *p, BNPoint2 b)
@@ -132,7 +132,7 @@ void  P2_negate(BNPoint2 *p, BNPoint2 b)
 }
 
 /*
-   BNPoint2: *p = p1 + p2£»
+   BNPoint2: *p = p1 + p2ï¼›
 
  */
 
@@ -189,7 +189,7 @@ void P2_add(BNPoint2 *p, BNPoint2 p1, BNPoint2 p2)
 
 
 /*
-   BNPoint: *p = 2*q£»
+   BNPoint: *p = 2*qï¼›
 
  */
 
@@ -215,7 +215,7 @@ void P2_twice(BNPoint2 *p, BNPoint2 q)
 		F2_substract(&t5,t5,x);
 		F2_multiply(&t5,t5,t1);
 		F2_multiply_i(&t5,t5,3);
-		F2_square(&t4,t3);       //ÓĞ¸Ä¶¯
+		F2_square(&t4,t3);       //æœ‰æ”¹åŠ¨
 		F2_multiply_i(&t4,t4,8);
 		F2_substract(&y,t5,t4);
 		F2_multiply(&z,q.y,q.z);
@@ -226,7 +226,7 @@ void P2_twice(BNPoint2 *p, BNPoint2 q)
 }
 
 /*
-  ¼ÆËã BNPoint: *p = k*q£»
+  è®¡ç®— BNPoint: *p = k*qï¼›
 
  */
 
@@ -256,7 +256,7 @@ void P2_multiply(BNPoint2 *p, BNPoint2 q, CBigInt k)
 }
 
 /*
-ÅĞ¶ÏµãÊÇ·ñÔÚBNÅ¤ÇúÏßy^2 = x^3 + 5u z^6
+åˆ¤æ–­ç‚¹æ˜¯å¦åœ¨BNæ‰­æ›²çº¿y^2 = x^3 + 5u z^6
 
 */
 
@@ -279,7 +279,7 @@ int P2_isOnBNTCurve(BNPoint2 p)
 
 
 /*
- BNPoint2: Frobeniuse ¼ÆËã
+ BNPoint2: Frobeniuse è®¡ç®—
  */
 void P2_frobenius(BNPoint2 *p, BNPoint2 q)
 {
@@ -300,7 +300,7 @@ void P2_frobenius(BNPoint2 *p, BNPoint2 q)
 
 
 /*
-   ´òÓ¡ÏÔÊ¾BNPoint£»
+   æ‰“å°æ˜¾ç¤ºBNPointï¼›
  */
 
 void P2_toString_d(BNPoint2 p,unsigned int system)
@@ -320,7 +320,7 @@ void P2_toString_d(BNPoint2 p,unsigned int system)
 }
 
 /*
-   Ê®Áù½øÖÆ»òÊ®½øÖÆ´òÓ¡ÏÔÊ¾BNPoint2£»
+   åå…­è¿›åˆ¶æˆ–åè¿›åˆ¶æ‰“å°æ˜¾ç¤ºBNPoint2ï¼›
  */
 
 void P2_toString(BNPoint2 p,unsigned int system)

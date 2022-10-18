@@ -1,6 +1,6 @@
 #include "utility.h"
 #include <time.h>
-
+#include <sys/time.h>
 void DSA_Demo();
 
 void DSA_Keygen(BNPoint *dsA,CBigInt ks, BYTE *ID,BNPoint P1);

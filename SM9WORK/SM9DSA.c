@@ -14,6 +14,10 @@ void DSA_Demo()
 	clock_t start,finish;
 	double time1,time2,time3;
 
+    //printf("begin!!! \n");
+    //char *str1 = "93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD";
+    //printf("this is a test for string ggg: %s \n",str1);
+
 	Get(&a,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD",HEX);
 	Get(&b,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
 	Get(&c,"85AEF3D078640C98597B6027B441A01FF1DD2C190F5E93C454806C11D8806141",HEX);
@@ -21,13 +25,15 @@ void DSA_Demo()
 	Get(&e,"17509B092E845C1266BA0D262CBEE6ED0736A96FA347C8BD856DC76B84EBEB96",HEX);
 	Get(&f,"A7CF28D519BE3DA65F3170153D278FF247EFBA98A71A08116215BBA5C999A7C7",HEX);
 
+    //printf("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee = %s\n",Put(a,HEX));
+     //getchar();
     P_construct_xy(&P1,a,b);
 	F2_construct(&b1,d,c);
 	F2_construct(&b2,f,e);    
     P2_construct_xy(&P2,b1,b2);
     
 	
-	//ÃÜÔ¿Éú³É½×¶Î
+	//å¯†é’¥ç”Ÿæˆé˜¶æ®µ
 	Get(&ks,"0130E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2DC5F4",HEX);
 	P2_multiply(&P_pub_s,P2,ks);
 	P2_normorlize(&P_pub_s,P_pub_s);
@@ -36,58 +42,71 @@ void DSA_Demo()
 	finish = clock();
 	time1 = (double)(finish-start);
 	P_normorlize(&dsA,dsA);
-    //Êı×ÖÇ©Ãû½×¶Î
+    //æ•°å­—ç­¾åé˜¶æ®µ
 	start = clock();
+
+    struct timeval tv;
+	long time_begin,time_end;
+    gettimeofday(&tv,NULL);
+    time_begin=tv.tv_sec*1000 + tv.tv_usec/1000;
+
 	DSA_Sign(&h, &S, M, P1, P_pub_s, dsA);
+
+
+	gettimeofday(&tv,NULL);
+    time_end=tv.tv_sec*1000 + tv.tv_usec/1000;
+    printf("sign time is: %ld   millisecond \n", time_end-time_begin);  //æ¯«ç§’
+
+
 	finish = clock();
 	time2 = (double)(finish-start);
-	//Êı×ÖÇ©ÃûÑéÖ¤½×¶Î
+	//æ•°å­—ç­¾åéªŒè¯é˜¶æ®µ
 	start = clock();
 	sign = DSA_Verify(&h2, h, S, M, id, P1, P2, P_pub_s);
 	finish = clock();	
 	time3 = (double)(finish-start);
 	printf("\n********************************************\n");
-	printf("*********SM9 Êı×ÖÇ©ÃûËã·¨ÊµÀıÑİÊ¾*********** \n");
+	printf("*********SM9 æ•°å­—ç­¾åç®—æ³•å®ä¾‹æ¼”ç¤º*********** \n");
 	printf("********************************************\n");
 	printf("***********************\n");
-	printf("****1¡¢ÃÜÔ¿Éú³É½×¶Î****\n");
+	printf("****1ã€å¯†é’¥ç”Ÿæˆé˜¶æ®µ****\n");
 	printf("***********************\n");
-	printf("G1Éú³ÉÔªP1 = \n");
+	printf("G1ç”Ÿæˆå…ƒP1 = \n");
 	P_toString(P1,HEX);
-	printf("G2Éú³ÉÔªP2 = \n");
+	printf("G2ç”Ÿæˆå…ƒP2 = \n");
 	P2_toString(P2,HEX);
-	printf("Ç©ÃûÖ÷Ë½Ô¿ks = %s\n",Put(ks,HEX));
-	printf("Ç©ÃûÖ÷¹«Ô¿ P_pub_s = [ks]P2 = \n");
+	printf("ç­¾åä¸»ç§é’¥ks = %s\n",Put(ks,HEX));
+	printf("ç­¾åä¸»å…¬é’¥ P_pub_s = [ks]P2 = \n");
 	P2_toString(P_pub_s,HEX);
-	printf("ÊµÌåAµÄ±êÊ¶IDA: %s\n",id);
-	printf("Ç©ÃûË½Ô¿dsA = \n");
+	printf("å®ä½“Açš„æ ‡è¯†IDA: %s\n",id);
+	printf("ç­¾åç§é’¥dsA = \n");
 	P_toString(dsA,HEX);
 	printf("\n***********************\n");
-	printf("****2¡¢Êı×ÖÇ©Ãû½×¶Î****\n");
+	printf("****2ã€æ•°å­—ç­¾åé˜¶æ®µ****\n");
 	printf("***********************\n");
-	printf("´ıÇ©ÃûµÄÏûÏ¢M: %s\n",M);
-	printf("ÏûÏ¢MµÄÇ©ÃûÎª£¨h,S£©: \n");
+	printf("å¾…ç­¾åçš„æ¶ˆæ¯M: %s\n",M);
+	printf("æ¶ˆæ¯Mçš„ç­¾åä¸ºï¼ˆh,Sï¼‰: \n");
 	printf("h = %s\n",Put(h,HEX));
 	printf("S = \n");
 	P_toString(S,HEX);
 	printf("\n***************************\n");
-	printf("****3¡¢Êı×ÖÇ©ÃûÑéÖ¤½×¶Î****\n");
+	printf("****3ã€æ•°å­—ç­¾åéªŒè¯é˜¶æ®µ****\n");
 	printf("***************************\n");
 	printf("h2 = %s\n",Put(h2,HEX));
 	if(sign)
-		printf("h2 = h, Ç©ÃûÑéÖ¤ÄÜ¹ı£¡\n");
+		printf("h2 = h, ç­¾åéªŒè¯èƒ½è¿‡ï¼\n");
 	else
-		printf("h2 != h, Ç©ÃûÑéÖ¤Ê§°Ü£¡\n");
+		printf("h2 != h, ç­¾åéªŒè¯å¤±è´¥ï¼\n");
 
-	printf("\nSM9 Êı×ÖÇ©ÃûÃÜÔ¿Éú³ÉÊ±¼ä£º%f ms\n",time1);
-	printf("SM9 Êı×ÖÇ©ÃûÊ±¼ä£º%f ms\n",time2);
-	printf("SM9 Êı×ÖÇ©ÃûÑéÖ¤Ê±¼ä£º%f ms\n",time3);
+	printf("\nSM9 æ•°å­—ç­¾åå¯†é’¥ç”Ÿæˆæ—¶é—´ï¼š%f ms\n",time1);
+	printf("SM9 æ•°å­—ç­¾åæ—¶é—´ï¼š%f ms\n",time2);
+	printf("SM9 æ•°å­—ç­¾åéªŒè¯æ—¶é—´ï¼š%f ms\n",time3);
 }
 /*
-   dsA:Éú³ÉµÄÃ´Ô¿
-   ks:Ö÷Ë½Ô¿
-   ID:Éí·İID×Ö·û´®
-   P1£ºÈºG1µÄÉú³ÉÔª
+   dsA:ç”Ÿæˆçš„ä¹ˆé’¥
+   ks:ä¸»ç§é’¥
+   ID:èº«ä»½IDå­—ç¬¦ä¸²
+   P1ï¼šç¾¤G1çš„ç”Ÿæˆå…ƒ
 
 */
 void DSA_Keygen(BNPoint *dsA,CBigInt ks, BYTE *ID,BNPoint P1)
@@ -117,11 +136,11 @@ void DSA_Keygen(BNPoint *dsA,CBigInt ks, BYTE *ID,BNPoint P1)
 	free(msg);
 }
 /*
- h,S:Éú³ÉµÄÊı×ÖÇ©Ãû
- M£º´ıÇ©ÃûµÄÃ÷ÎÄĞÅÏ¢
- P1£º¹«¹²²ÎÊı
- P_pub:¹«Ô¿
- dsA:Ç©ÃûË½Ô¿
+ h,S:ç”Ÿæˆçš„æ•°å­—ç­¾å
+ Mï¼šå¾…ç­¾åçš„æ˜æ–‡ä¿¡æ¯
+ P1ï¼šå…¬å…±å‚æ•°
+ P_pub:å…¬é’¥
+ dsA:ç­¾åç§é’¥
 */
 void DSA_Sign(CBigInt *h, BNPoint *S, BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoint dsA)
 {
@@ -136,7 +155,7 @@ void DSA_Sign(CBigInt *h, BNPoint *S, BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoi
 	//F12_toString(g,HEX);
 	//F12_toString(w,HEX);
 	len1 = strlen((const char*)M);
-	len2 = len1 + 384;  // Ò»¸ö12´ÎÀ©ÓòÔªËØĞèÒª 32*12 = 384 ¸ö×Ö½Ú
+	len2 = len1 + 384;  // ä¸€ä¸ª12æ¬¡æ‰©åŸŸå…ƒç´ éœ€è¦ 32*12 = 384 ä¸ªå­—èŠ‚
 	msg = (BYTE*)malloc(len2);
 	memcpy(msg,M,len1);
 	F12toByte(&msg[len1],w);
@@ -172,7 +191,7 @@ int DSA_Verify(CBigInt *h2, CBigInt h, BNPoint S, BYTE *M, BYTE *ID,BNPoint P1, 
 	F12_multiply(&w,u,t);
 
 	len1 = strlen((const char*)M);
-	len2 = len1 + 384;  // Ò»¸ö12´ÎÀ©ÓòÔªËØĞèÒª 32*12 = 384 ¸ö×Ö½Ú
+	len2 = len1 + 384;  // ä¸€ä¸ª12æ¬¡æ‰©åŸŸå…ƒç´ éœ€è¦ 32*12 = 384 ä¸ªå­—èŠ‚
 	msg2 = (BYTE*)malloc(len2);
 	memcpy(msg2,M,len1);
 	F12toByte(&msg2[len1],w);

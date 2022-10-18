@@ -30,10 +30,10 @@ void KA_Demo()
 	F2_construct(&b2,f,e);    
     P2_construct_xy(&P2,b1,b2);
 
-	//ÏµÍ³Ö÷ÃÜÔ¿¼°¼ÓÃÜÃÜÔ¿Éú³É
+	//ç³»ç»Ÿä¸»å¯†é’¥åŠåŠ å¯†å¯†é’¥ç”Ÿæˆ
 	start = clock();
-	Get(&ke,"02E65B0762D042F51F0D23542B13ED8CFA2E9A0E7206361E013A283905E31F",HEX);  //¼ÓÃÜÖ÷Ë½Ô¿
-	P_multiply(&P_pub_e,P1,ke);                                //¼ÓÃÜÖ÷¹«Ô¿
+	Get(&ke,"02E65B0762D042F51F0D23542B13ED8CFA2E9A0E7206361E013A283905E31F",HEX);  //åŠ å¯†ä¸»ç§é’¥
+	P_multiply(&P_pub_e,P1,ke);                                //åŠ å¯†ä¸»å…¬é’¥
 	P_normorlize(&P_pub_e,P_pub_e);
 	len1 = strlen((const char*)IDA);
 	len1 +=1;
@@ -41,10 +41,10 @@ void KA_Demo()
 	memcpy(msg1,IDA,len1-1);
 	msg1[len1-1] = hid;
 	Hash_1(&t1, msg1, len1, BN.n);
-	Add_Big_Big(&t1,t1,ke);            //t1ÔÚÓĞÏŞÓòFNÖĞ£¬Èô´óÓÚNĞèÒªÔ¼»¯
+	Add_Big_Big(&t1,t1,ke);            //t1åœ¨æœ‰é™åŸŸFNä¸­ï¼Œè‹¥å¤§äºNéœ€è¦çº¦åŒ–
 	while(Cmp(t1,BN.ZERO)==0)
 	{
-		//ĞèÒªµ÷ÓÃËæ»úÊıÖØĞÂÉú³ÉÖ÷Ë½Ô¿ºÍ¹«Ô¿
+		//éœ€è¦è°ƒç”¨éšæœºæ•°é‡æ–°ç”Ÿæˆä¸»ç§é’¥å’Œå…¬é’¥
 	}
 	Inv(&t1_inv,t1,BN.n);
 	Mul_Big_Big(&t2,t1_inv,ke);
@@ -58,10 +58,10 @@ void KA_Demo()
 	memcpy(msg2,IDB,len2-1);
 	msg2[len2-1] = hid;
 	Hash_1(&t3, msg2, len2, BN.n);
-	Add_Big_Big(&t3,t3,ke);          //t3ÔÚÓĞÏŞÓòFNÖĞ£¬Èô´óÓÚNĞèÒªÔ¼»¯
+	Add_Big_Big(&t3,t3,ke);          //t3åœ¨æœ‰é™åŸŸFNä¸­ï¼Œè‹¥å¤§äºNéœ€è¦çº¦åŒ–
 	while(Cmp(t1,BN.ZERO)==0)
 	{
-		//ĞèÒªµ÷ÓÃËæ»úÊıÖØĞÂÉú³ÉÖ÷Ë½Ô¿ºÍ¹«Ô¿
+		//éœ€è¦è°ƒç”¨éšæœºæ•°é‡æ–°ç”Ÿæˆä¸»ç§é’¥å’Œå…¬é’¥
 	}
 	Inv(&t3_inv,t3,BN.n);
 	Mul_Big_Big(&t4,t3_inv,ke);
@@ -74,35 +74,35 @@ void KA_Demo()
 	finish = clock();
 	time1 = (double)(finish-start);
 
-	//ÃÜÔ¿½»»»Ğ­Òé½×¶Î");
-	// A1-A4²½Öè
+	//å¯†é’¥äº¤æ¢åè®®é˜¶æ®µ");
+	// A1-A4æ­¥éª¤
 	start = clock();
 	Hash_1(&t3, msg2, len2, BN.n);
 	P_multiply(&QB,P1,t3);
 	P_add(&QB,QB,P_pub_e);
-	Get(&rA,"5879DD1D51E175946F23B1B41E93BA31C584AE59A426EC1046A4D03B06C8",HEX);  //Ëæ»úÊırA
+	Get(&rA,"5879DD1D51E175946F23B1B41E93BA31C584AE59A426EC1046A4D03B06C8",HEX);  //éšæœºæ•°rA
 	P_multiply(&RA,QB,rA);
 	P_normorlize(&RA,RA);
 
-	// B1-B7²½Öè
+	// B1-B7æ­¥éª¤
 	Hash_1(&t1, msg1, len1, BN.n);
 	P_multiply(&QA,P1,t1);
 	P_add(&QA,QA,P_pub_e);
-	Get(&rB,"018B98C44BEF9F8537FB7D071B2C928B3BC65BD3D69E1EEE213564905634FE",HEX);  //Ëæ»úÊırA
+	Get(&rB,"018B98C44BEF9F8537FB7D071B2C928B3BC65BD3D69E1EEE213564905634FE",HEX);  //éšæœºæ•°rA
 	P_multiply(&RB,QA,rB);
 	P_normorlize(&RB,RB);
 	if(!P_isOnBNCurve(RA))
 	{
-	    printf("*********ÃÜÔ¿½»»»Ğ­Òé B4 ²½ÖèÑéÖ¤Ê§°Ü***********\n");
+	    printf("*********å¯†é’¥äº¤æ¢åè®® B4 æ­¥éª¤éªŒè¯å¤±è´¥***********\n");
 		exit(0);
 	}
 	Pairing_opt(&g1,deB,RA);
 	Pairing_opt(&g2,P2,P_pub_e);
 	F12_exp(&g2,g2,rB);
 	F12_exp(&g3,g1,rB);
-	length = len1 + len2 - 2; //IDAºÍIDBµÄ×Ö½Ú³¤¶È
-	length += 64*2;        //¼ÓÉÏRAºÍRBµÄ×Ö½Ú³¤¶È
-	length += 384*3;    // ¼ÓÉÏg1,g2,g3µÄ×Ö½Ú³¤¶È£¬Ã¿¸ö12À©ÓòÔªËØĞèÒª12*32 = 284¸ö×Ö½Ú
+	length = len1 + len2 - 2; //IDAå’ŒIDBçš„å­—èŠ‚é•¿åº¦
+	length += 64*2;        //åŠ ä¸ŠRAå’ŒRBçš„å­—èŠ‚é•¿åº¦
+	length += 384*3;    // åŠ ä¸Šg1,g2,g3çš„å­—èŠ‚é•¿åº¦ï¼Œæ¯ä¸ª12æ‰©åŸŸå…ƒç´ éœ€è¦12*32 = 284ä¸ªå­—èŠ‚
     msg3 = (BYTE*)malloc(length);
 	cur = 0;
 	memcpy(msg3,IDA,len1-1);
@@ -119,7 +119,7 @@ void KA_Demo()
 	cur +=384;
 	F12toByte(&msg3[cur],g3);
 	KDF(SKB, msg3, length, klen);
-	//Ñ¡Ïî£¬¼ÆËãHash(g2||g3||IDA||IDB||RA||RB),×¢Òâ¸ÃHash²ÉÓÃSM3Ëã·¨
+	//é€‰é¡¹ï¼Œè®¡ç®—Hash(g2||g3||IDA||IDB||RA||RB),æ³¨æ„è¯¥Hashé‡‡ç”¨SM3ç®—æ³•
 	len4 = length - 384;
 	msg4 = (BYTE*)malloc(len4);
 	cur = 0;
@@ -136,7 +136,7 @@ void KA_Demo()
 	PtoByte(&msg4[cur],RB);
 	SM3_hash(msg4, len4, hash);
 	SM3_Dword2byte(hash_byte,hash);
-	//Ñ¡Ïî¼ÆËã£¬¼ÆËãSB = Hash(0x82||g1||Hash(g2||g3||IDA||IDB||RA||RB))
+	//é€‰é¡¹è®¡ç®—ï¼Œè®¡ç®—SB = Hash(0x82||g1||Hash(g2||g3||IDA||IDB||RA||RB))
 	SB_len = 1 + 384 + 32;
 	msg_SB = (BYTE*)malloc(SB_len);
 	msg_SB[0] = 0x82;
@@ -144,17 +144,17 @@ void KA_Demo()
     memcpy(&msg_SB[385],hash_byte,32);
 	SM3_hash(msg_SB, SB_len, hash);
 	SM3_Dword2byte(SB,hash);
-	// A5-A8²½Öè
+	// A5-A8æ­¥éª¤
 	if(!P_isOnBNCurve(RB))
 	{
-	    printf("*********ÃÜÔ¿½»»»Ğ­Òé A5 ²½ÖèÑéÖ¤Ê§°Ü***********\n");
+	    printf("*********å¯†é’¥äº¤æ¢åè®® A5 æ­¥éª¤éªŒè¯å¤±è´¥***********\n");
 		exit(0);
 	}
 	Pairing_opt(&g1_,P2,P_pub_e);
 	F12_exp(&g1_,g1_,rA);
 	Pairing_opt(&g2_,deA,RB);
 	F12_exp(&g3_,g2_,rA);
-	//Ñ¡Ïî£¬¼ÆËãHash(g2_||g3_||IDA||IDB||RA||RB),×¢Òâ¸ÃHash²ÉÓÃSM3Ëã·¨
+	//é€‰é¡¹ï¼Œè®¡ç®—Hash(g2_||g3_||IDA||IDB||RA||RB),æ³¨æ„è¯¥Hashé‡‡ç”¨SM3ç®—æ³•
 	cur = 0;
 	F12toByte(&msg4[cur],g2_);
 	cur += 384;
@@ -169,13 +169,13 @@ void KA_Demo()
 	PtoByte(&msg4[cur],RB);
 	SM3_hash(msg4, len4, hash);
 	SM3_Dword2byte(hash_byte1,hash);
-   //Ñ¡Ïî¼ÆËã£¬¼ÆËãS1 = Hash(0x82||g1_||Hash(g2_||g3_||IDA||IDB||RA||RB))
+   //é€‰é¡¹è®¡ç®—ï¼Œè®¡ç®—S1 = Hash(0x82||g1_||Hash(g2_||g3_||IDA||IDB||RA||RB))
 	msg_SB[0] = 0x82;
 	F12toByte(&msg_SB[1],g1_);
     memcpy(&msg_SB[385],hash_byte1,32);
 	SM3_hash(msg_SB, SB_len, hash);
 	SM3_Dword2byte(S1,hash);
-	//¼ÆËãSKA
+	//è®¡ç®—SKA
 	SKA = (BYTE*)malloc(klen);
 	cur = 0;
 	memcpy(msg3,IDA,len1-1);
@@ -192,11 +192,11 @@ void KA_Demo()
 	cur +=384;
 	F12toByte(&msg3[cur],g3_);
 	KDF(SKA, msg3, length, klen);
-	//¼ÆËãSA
+	//è®¡ç®—SA
 	msg_SB[0] = 0x83;
 	SM3_hash(msg_SB, SB_len, hash);
 	SM3_Dword2byte(SA,hash);
-	//B8²½Öè£¬¼ÆËãS2	
+	//B8æ­¥éª¤ï¼Œè®¡ç®—S2	
 	F12toByte(&msg_SB[1],g1);
     memcpy(&msg_SB[385],hash_byte,32);
 	SM3_hash(msg_SB, SB_len, hash);
@@ -205,42 +205,42 @@ void KA_Demo()
 	time2 = (double)(finish - start);
 
 	printf("\n********************************************\n");
-	printf("*********SM9 ÃÜÔ¿½»»»Ğ­ÒéÊµÀıÑİÊ¾***********\n");
+	printf("*********SM9 å¯†é’¥äº¤æ¢åè®®å®ä¾‹æ¼”ç¤º***********\n");
 	printf("********************************************\n");
 	printf("***********************************\n");
-	printf("****1¡¢ÏµÍ³Ö÷ÃÜÔ¿¼°¼ÓÃÜÃÜÔ¿Éú³É****\n");
+	printf("****1ã€ç³»ç»Ÿä¸»å¯†é’¥åŠåŠ å¯†å¯†é’¥ç”Ÿæˆ****\n");
 	printf("***********************************\n");
-	printf("G1Éú³ÉÔªP1 = \n");
+	printf("G1ç”Ÿæˆå…ƒP1 = \n");
 	P_toString(P1,HEX);
-	printf("G2Éú³ÉÔªP2 = \n");
+	printf("G2ç”Ÿæˆå…ƒP2 = \n");
 	P2_toString(P2,HEX);
-	printf("KGCÖ÷Ë½Ô¿ke = %s\n",Put(ke,HEX));
-	printf("KGCÖ÷¹«Ô¿ P_pub_e = [ke]P1 = \n");
+	printf("KGCä¸»ç§é’¥ke = %s\n",Put(ke,HEX));
+	printf("KGCä¸»å…¬é’¥ P_pub_e = [ke]P1 = \n");
 	P_toString(P_pub_e,HEX);
 
-	printf("ÊµÌåAµÄ±êÊ¶: %s\n",IDA);
+	printf("å®ä½“Açš„æ ‡è¯†: %s\n",IDA);
 	printf("t1 = H1(IDA||hid,N) + ke:\n %s\n",Put(t1,HEX));
 	printf("t2 = ke * t1^(-1):\n %s\n",Put(t2,HEX));
 	printf("deA = [t2]P2\n");
 	P2_toString(deA,HEX);
 
-	printf("ÊµÌåBµÄ±êÊ¶: %s\n",IDB);
+	printf("å®ä½“Bçš„æ ‡è¯†: %s\n",IDB);
 	printf("t3 = H1(IDB||hid,N) + ke:\n %s\n",Put(t3,HEX));
 	printf("t4 = ke * t3^(-1):\n %s\n",Put(t4,HEX));
 	printf("deB = [t4]P2\n");
 	P2_toString(deB,HEX);
 
 	printf("***********************************\n");
-	printf("**********2¡¢ÃÜÔ¿½»»»Ğ­Òé**********\n");
+	printf("**********2ã€å¯†é’¥äº¤æ¢åè®®**********\n");
 	printf("***********************************\n");
-	printf("*****A1-A4²½Öè*****\n");
+	printf("*****A1-A4æ­¥éª¤*****\n");
 	printf("QB = [H1(IDB||hid,N)]P1 + P_pub_e:\n");
 	P_toString(QB,HEX);
 	printf("rA = %s\n",Put(rA,HEX));
 	printf("RA = [rA]QB = \n");
 	P_toString(RA,HEX);
 
-	printf("*****B1-B7²½Öè*****\n");
+	printf("*****B1-B7æ­¥éª¤*****\n");
 	printf("QA = [H1(IDA||hid,N)]P1 + P_pub_e:\n");
 	P_toString(QA,HEX);
 	printf("rB = %s\n",Put(rB,HEX));
@@ -258,7 +258,7 @@ void KA_Demo()
     printByte(hash_byte,256/8);
 	printf("\nSB = Hash(0x82||g1||Hash(g2||g3||IDA||IDB||RA||RB)):\n");
     printByte(SB,32);
-	printf("\n*****A5-A8²½Öè*****\n");
+	printf("\n*****A5-A8æ­¥éª¤*****\n");
 	printf("g1_ = e(P_pub_e,P2)^rA\n");
 	F12_toString(g1_,HEX);
 	printf("g2_ = e(RB,deA)^rB\n");
@@ -270,29 +270,29 @@ void KA_Demo()
 	printf("\nS1 = Hash(0x82||g1_||Hash(g2_||g3_||IDA||IDB||RA||RB)):\n");
     printByte(S1,32);
 	if(Bytes_Equal(SB,S1,32))
-		printf("\nS1=SB, A6²½ÖèÑéÖ¤Í¨¹ı£¡\n");
+		printf("\nS1=SB, A6æ­¥éª¤éªŒè¯é€šè¿‡ï¼\n");
 	else
 	{
-		printf("\nS1!=SB, A6²½ÖèÑéÖ¤Ê§°Ü£¡\n");
+		printf("\nS1!=SB, A6æ­¥éª¤éªŒè¯å¤±è´¥ï¼\n");
 		exit(0);
 	}
 	printf("SKA = KDF(IDA||IDB||RA||RB||g1_||g2_||g3_,klen):\n");
 	printByte(SKA,klen/8);
 	printf("\nSA = Hash(0x83||g1_||Hash(g2_||g3_||IDA||IDB||RA||RB)):\n");
     printByte(SA,32);
-    printf("\n*****B8²½Öè*****\n");
+    printf("\n*****B8æ­¥éª¤*****\n");
 	printf("S2 = Hash(0x83||g1||Hash(g2||g3||IDA||IDB||RA||RB)):\n");
     printByte(S2,32);
 	if(Bytes_Equal(S2,SA,32))
-		printf("\nS2=SA, B8²½ÖèÑéÖ¤Í¨¹ı£¡\n");
+		printf("\nS2=SA, B8æ­¥éª¤éªŒè¯é€šè¿‡ï¼\n");
 	else
 	{
-		printf("\nS2!=SA, B8²½ÖèÑéÖ¤Ê§°Ü£¡\n");
+		printf("\nS2!=SA, B8æ­¥éª¤éªŒè¯å¤±è´¥ï¼\n");
 		exit(0);
 	}
 	
-	printf("SM9 ÃÜÔ¿½»»»Ğ­ÒéÏµÍ³Ö÷ÃÜÔ¿¼°¼ÓÃÜÃÜÔ¿Éú³ÉÊ±¼ä£º%f ms\n",time1);
-	printf("SM9 ÃÜÔ¿½»»»Ğ­ÒéÊ±¼ä£º%f ms\n",time2);
+	printf("SM9 å¯†é’¥äº¤æ¢åè®®ç³»ç»Ÿä¸»å¯†é’¥åŠåŠ å¯†å¯†é’¥ç”Ÿæˆæ—¶é—´ï¼š%f ms\n",time1);
+	printf("SM9 å¯†é’¥äº¤æ¢åè®®æ—¶é—´ï¼š%f ms\n",time2);
 
 	free(msg1);
 	free(msg2);
