@@ -1,3 +1,5 @@
+#ifndef _BIGINT_H_
+#define _BIGINT_H_
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -61,4 +63,5 @@ Exp，反复平方算法进行幂模运算
 *****************************************************************/
 void Inv(CBigInt *Z, CBigInt N, CBigInt A);
 void Exp(CBigInt *Z, CBigInt N, CBigInt A, CBigInt B);
+#endif
 #endif

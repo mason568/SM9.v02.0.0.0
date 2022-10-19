@@ -1,3 +1,6 @@
+#ifndef _BNFIELD4_H_
+#define _BNFIELD4_H_
+
 #include "BNField2.h"
 
 
@@ -53,6 +56,8 @@ void  F4_square(BNField4 *p, BNField4 b); //四次扩域元素的平方运算  (
 void  F4_inverse(BNField4 *p, BNField4 b); // 四次扩域元素的逆运算  (a+bv)^(-1)=(a-bv)/(a^2-b^2 ^2 )=(a-bv)/(a^2-b^2u)
 
 void F4_toString(BNField4 b,unsigned int system);//显示四次扩域元素
+
+#endif
 
 
 

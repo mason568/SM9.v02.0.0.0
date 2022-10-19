@@ -1,3 +1,5 @@
+#ifndef _UTILITY_H
+#define _UTILITY_H
 #include "SM3.h"
 #include "BNPairing.h"
 
@@ -48,3 +50,4 @@ void F12toByte(BYTE *msg,BNField12 b);
 
 //计算（a-b）mod N
 void CBigInt_substract_modN(CBigInt *X, CBigInt a, CBigInt b);
+#endif

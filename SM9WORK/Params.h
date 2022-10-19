@@ -1,3 +1,5 @@
+#ifndef _PARAMS_H_
+#define _PARAMS_H_
 #include "BigInt.h"
 
 struct SM9Params
@@ -24,3 +26,5 @@ struct SM9Params
 
 
  void SM9Params_init(struct SM9Params *bn);
+
+ #endif

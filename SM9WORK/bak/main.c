@@ -8,7 +8,8 @@
 //#include "SM9KA.h"
 #include "SM9PKC.h"
 
-//#include <time.h>
+#include <time.h>
+#include <sys/time.h>
 
 void test_BNField2();
 void test_BNField4();
@@ -25,7 +26,7 @@ void main()
 	//unsigned int aa= 0x12345678123456780;
 	//printf(" %x \n",aa);
 	//getchar();
- /*
+ 
 	CBigInt a;
     Get(&a,"1234567890abceeeeeeee",HEX);
 	//Get(&a,"0000101010101010",DEC);
@@ -37,10 +38,10 @@ void main()
 
 	printf("a = %s\n",Put(a,HEX));
     getchar();
-*/
+    /*
 	printf("注：从左到右分别为从高位到低位！\n");
 	SM9Params_init(&BN);
-/*	printf("BN.t = %s\n",Put(BN.t,DEC));
+	printf("BN.t = %s\n",Put(BN.t,DEC));
 	printf("BN.q = %s\n",Put(BN.q,DEC));
 	printf("BN.trace = %s\n",Put(BN.tr,DEC));
 	printf("BN.n = %s\n",Put(BN.n,DEC));

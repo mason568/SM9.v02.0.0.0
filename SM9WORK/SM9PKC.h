@@ -1,3 +1,5 @@
+#ifndef _SM9PKC_H_
+#define _SM9PKC_H_
 #include "SM9KA.h"
 #include "sm4.h"
 
@@ -32,3 +34,4 @@ K:被解封的密钥
 klen：K的字节长度
 */
 void PKC_kom(BYTE *K, BNPoint C,BNPoint2 deB,BYTE *ID,unsigned int klen);
+#endif

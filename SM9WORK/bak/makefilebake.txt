@@ -1,0 +1,35 @@
+CC=gcc
+NVCC = nvcc
+CFLAG = -fPIC -Wall -Wfatal-errors -Ofast -DOPENCV -DGPU -DCUDNN -c
+INCLUDE_PATH = -I.
+LDFLAGS1+=-lm
+LDFLAGS2 =-lcurand 
+AR = ar
+ARCHFLAG = -gencode arch=compute_80,code=sm_80 -Wno-deprecated-gpu-targets
+
+LIB_TARGET = ./libsm9.a
+BIN = ./test
+TARGET1 = ./sm9cudatest
+
+SRC = $(wildcard *.c)
+SOURCES=$(notdir $(SRC))
+OBJS =$(patsubst %.c,%.o,$(SOURCES) )
+
+
+
+
+all: 
+	$(CC) $(CFLAG) $(INCLUDE_PATH) -c $(SRC)
+	$(NVCC) $(LDFLAGS2) $(ARCHFLAG)  square063.cu -o square063.o
+	gcc -shared -o libtest.so *.o -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lcurand -lcudnn -nostartfiles
+	gcc -c sm9cudatest.c
+	gcc -o sm9cudatest sm9cudatest.o libtest.so -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lcurand -lcudnn
+
+	
+
+
+clean:
+	rm -rf *.o
+	rm -rf $(BIN)
+	rm -rf $(TARGET1)
+	rm -rf $(LIB_TARGET)

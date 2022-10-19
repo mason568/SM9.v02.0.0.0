@@ -38,24 +38,35 @@ void DSA_Demo()
 	P2_multiply(&P_pub_s,P2,ks);
 	P2_normorlize(&P_pub_s,P_pub_s);
 	start = clock();
+	
 	DSA_Keygen(&dsA,ks,id,P1);
 	finish = clock();
+	
 	time1 = (double)(finish-start);
 	P_normorlize(&dsA,dsA);
     //数字签名阶段
 	start = clock();
-
-    struct timeval tv;
+	int count = 100;
+    struct timeval tv1,tv2;
 	long time_begin,time_end;
-    gettimeofday(&tv,NULL);
-    time_begin=tv.tv_sec*1000 + tv.tv_usec/1000;
+    gettimeofday(&tv1,NULL);//获取开始时间
+    printf("sign 100 time:\n");
+    printf("second: %d\n", tv1.tv_sec);  //秒
+    printf("millisecond: %d\n", tv1.tv_sec*1000 + tv1.tv_usec/1000);  //毫秒
+    printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
 
-	DSA_Sign(&h, &S, M, P1, P_pub_s, dsA);
+	
+    while(count){
 
+        DSA_Sign(&h, &S, M, P1, P_pub_s, dsA);
+        //res = SM9_Verify(msg, 20, &sign, &pk, NULL);
+        count--;
+    }
 
-	gettimeofday(&tv,NULL);
-    time_end=tv.tv_sec*1000 + tv.tv_usec/1000;
-    printf("sign time is: %ld   millisecond \n", time_end-time_begin);  //毫秒
+	gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
+    printf("second: %d s\n",tv2.tv_sec - tv1.tv_sec);  //秒
+    printf("millisecond: %d ms\n", tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
+    printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
 
 
 	finish = clock();

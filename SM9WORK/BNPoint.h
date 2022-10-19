@@ -1,3 +1,5 @@
+#ifndef _BNPOINT_H_
+#define _BNPOINT_H_
 #include <stdio.h>
 #include "BNField12.h"
 
@@ -40,4 +42,5 @@ void P_multiply(BNPoint *p, BNPoint q, CBigInt k); //计算 BNPoint: *p = k*q, k
 int P_isOnBNCurve(BNPoint p); // 判断点是否在BN曲线y^2 = x^3 + 5 z^6
 
 void P_toString(BNPoint p,unsigned int system);  //打印显示BNPoint；
+#endif
 

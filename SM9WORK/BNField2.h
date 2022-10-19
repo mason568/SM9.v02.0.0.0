@@ -1,3 +1,6 @@
+#ifndef _BNFIELD2_H_
+#define _BNFIELD2_H_
+
 #include "Params.h"
 
 
@@ -56,3 +59,5 @@ void  F2_inverse(BNField2 *p, BNField2 b);//二次扩域元素的逆运算 (a+bu
 void F2_toString(BNField2 b,unsigned int system);//显示二次扩域元素:  按10进制或16进制格式输出到字符串
 
 void F2_normorlize(BNField2 *b, BNField2 p); // 规约化处理
+
+#endif

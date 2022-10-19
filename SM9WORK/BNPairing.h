@@ -1,3 +1,5 @@
+#ifndef _BNPAIRING_H_
+#define _BNPAIRING_H_
 #include "BNPoint2.h"
 
 
@@ -8,3 +10,4 @@ void Final_exp(BNField12 *f, BNField12 p); //最终幂的计算 f = b^((b^12-1)/
 void Pairing_opt(BNField12 *f,BNPoint2 Q, BNPoint P); //最优对的计算
 
 void Pairing_Rate(BNField12 *f, BNPoint2 Q, BNPoint P); // Rate 对的计算
+#endif

@@ -1,3 +1,5 @@
+#ifndef _BNPOINT2_H_
+#define _BNPOINT2_H_
 #include <stdio.h>
 #include "BNPoint.h"
 
@@ -40,3 +42,4 @@ void P2_frobenius(BNPoint2 *p, BNPoint2 q); //  BNPoint2: Frobeniuse 计算
 void P2_toString_d(BNPoint2 p,unsigned int system); // 打印显示BNPoint；
 
 void P2_toString(BNPoint2 p,unsigned int system); // 十六进制或十进制打印显示BNPoint2；
+#endif
