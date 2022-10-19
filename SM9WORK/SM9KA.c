@@ -1,5 +1,5 @@
 #include "SM9KA.h"
-
+#include <time.h>
 void KA_Demo()
 {
 	CBigInt a,b,c,d,e,f;
@@ -72,7 +72,7 @@ void KA_Demo()
 	klen = 0x80;
 	SKB = (BYTE*)malloc(klen);
 	finish = clock();
-	time1 = (double)(finish-start);
+	time1 = (double)((finish-start)/1000);
 
 	//密钥交换协议阶段");
 	// A1-A4步骤
@@ -202,7 +202,7 @@ void KA_Demo()
 	SM3_hash(msg_SB, SB_len, hash);
 	SM3_Dword2byte(S2,hash);
 	finish = clock();
-	time2 = (double)(finish - start);
+	time2 = (double)((finish - start)/1000);
 
 	printf("\n********************************************\n");
 	printf("*********SM9 密钥交换协议实例演示***********\n");

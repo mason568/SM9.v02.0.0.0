@@ -35,18 +35,18 @@ void KEM_demo()
 	PKC_Keygen(&deB,ke,id,P2);
 	P2_normorlize(&deB,deB);
 	finish = clock();
-	time1 = (double)(finish-start);
+	time1 = (double)((finish-start)/clock_per_ms);
 	klen = 0x0100;
 	K = (BYTE *)malloc(klen/8);
     K_ = (BYTE *)malloc(klen/8);
 	start = clock();
 	PKC_kem(K,&C,id,P1,P2,P_pub_e,klen);
 	finish = clock();
-	time2 = (double)(finish-start);
+	time2 = (double)((finish-start))/clock_per_ms;
 	start = clock();
 	PKC_kom(K_, C, deB, id, klen);
 	finish = clock();
-	time3 = (double)(finish-start);
+	time3 = (double)((finish-start))/clock_per_ms;
 	printf("\n********************************************\n");
 	printf("*********SM9 密钥封装机制实例演示*********** \n");
 	printf("********************************************\n");
@@ -126,7 +126,7 @@ void PKC_demo(int mode)
 	PKC_Keygen(&deB,ke,id,P2);
 	P2_normorlize(&deB,deB);
 	finish = clock();
-	time1 = (double)(finish-start);
+	time1 = (double)((finish-start)/clock_per_ms);
 	K2_len = 0x0100;
 	idLen = strlen((const char*)id);
 	mlen = strlen((const char*)M);
@@ -170,7 +170,7 @@ void PKC_demo(int mode)
 		MAC(C3, C2,32,K2,K2_len);
 	}
 	finish = clock();
-	time2 = (double)(finish-start);
+	time2 = (double)((finish-start)/clock_per_ms);
 
  	//公钥解密阶段 
 	start = clock();
@@ -219,7 +219,7 @@ void PKC_demo(int mode)
 		memcpy(m,M_,mlen);         //去掉填充，得到实际明文
 	}
 	finish = clock();
-	time3 = (double)(finish-start);
+	time3 = (double)((finish-start)/clock_per_ms);
 
 
 	printf("\n********************************************\n");

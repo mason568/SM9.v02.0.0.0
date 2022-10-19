@@ -2,7 +2,7 @@
 #define _SM9PKC_H_
 #include "SM9KA.h"
 #include "sm4.h"
-
+#define clock_per_ms 1000
 void KEM_demo();
 
 /*

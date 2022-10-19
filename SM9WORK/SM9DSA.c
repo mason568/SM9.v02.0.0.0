@@ -46,7 +46,7 @@ void DSA_Demo()
 	P_normorlize(&dsA,dsA);
     //数字签名阶段
 	start = clock();
-	int count = 100;
+	int count = 10;
     struct timeval tv1,tv2;
 	long time_begin,time_end;
     gettimeofday(&tv1,NULL);//获取开始时间

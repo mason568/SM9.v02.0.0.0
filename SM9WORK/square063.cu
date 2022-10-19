@@ -31,7 +31,7 @@ __global__ void square(float *d_out, float *d_in){
 // kernel to be run on the GTX 3090
 
 // main is here. this is the CPU code. 
-// main is here. this is the CPU code. 
+
 void squaretest(){
 
   // the size of the array, which is really the thread count per block
