@@ -17,8 +17,10 @@ extern "C" {          //告诉编译器，这部分代码按C语言的格式进�
     #include "common.h"
     /**** some declaration or so *****/  
     void CBigIntInit_para(CBigInt *A,int parasize);
-    char* Put(CBigInt N, unsigned int system);
-    void Mov_Big_Big(CBigInt *N, CBigInt A);
+    int Cmp_para(CBigInt N,CBigInt A, int parasize);
+    void Mov_Big_Big_para(CBigInt *N, CBigInt A, int parasize);
+    void Mov_Big_Big_para(CBigInt *N, CBigInt A, int parasize);
+    void assignn_Big_to_Big_para(CBigInt *N, CBigInt A, int parasize);
 
 
 #ifdef __cplusplus

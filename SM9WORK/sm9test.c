@@ -1402,3 +1402,37 @@ void test_BNField2()
 	printf("BNField2 test: over! \n");
 
 }
+
+
+void test_CBigIntInit_para(){
+    printf("CBigIntInit_para test: Begin! \n");
+    
+    CBigInt X;
+    CBigIntInit(&X);
+    CBigIntInit_para(&X,32);
+    printf("init X = %s\n",Put(X,HEX));
+    printf("CBigIntInit_para test: over! \n");
+}
+void test_Cmp_para(){
+    printf("Cmp_para test: Begin! \n");
+    
+    CBigInt N,A;
+    Get(&N,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD",HEX);
+	Get(&A,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
+    printf("cmp N,A = %d \n", Cmp_para(N,A,32));
+    printf("cmp A,N = %d \n", Cmp_para(A,N,32));
+    printf("cmp A,A = %d \n", Cmp_para(A,A,32));
+    printf("Cmp_para test: over! \n");
+}
+
+void test_Mov_Big_Big_para(){
+    printf("Mov_Big_Big_para test: Begin! \n");
+    CBigInt N,A;
+    Get(&A,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD",HEX);
+    
+    //Mov_Big_Big_para(&N,A,32);
+    assignn_Big_to_Big_para(&N,A,32);
+    printf("move A=%s to N =%s\n",Put(A,HEX),Put(N,HEX));
+    printf("Mov_Big_Big_para test: over! \n");
+
+}

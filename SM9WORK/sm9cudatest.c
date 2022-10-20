@@ -8,11 +8,12 @@
 #include "SM9PKC.h"
 
 int main(){
-	printf("this is test!\n");
-    CBigInt X;
-    CBigIntInit(&X);
-    CBigIntInit_para(&X,32);
-    printf("init X = %s\n",Put(X,HEX));
+	//printf("this is test!\n");
+
+    //CBigInt X;
+    //CBigIntInit(&X);
+    //CBigIntInit_para(&X,32);
+    //printf("init X = %s\n",Put(X,HEX));
 
     /*
     //SM9基础测试
@@ -56,6 +57,10 @@ int main(){
     */
     //SM9Params_init(&BN);//一定要有，否则会出现总线错误
     //DSA_Demo();  //签名demo
+
+    test_CBigIntInit_para();
+    test_Cmp_para();
+    test_Mov_Big_Big_para();
     return 0;
 } 
 
