@@ -1,7 +1,8 @@
 
 #include "BigInt.h"
+//后期看看是否要选择特定的函数在GPU上，先全给写一边
+//构造大数对象并初始化为零  
 
-//构造大数对象并初始化为零
 void CBigIntInit(CBigInt *A)
 {
 	int i;
@@ -14,6 +15,7 @@ void CBigIntInit(CBigInt *A)
 大数比较
 调用方式：Cmp(N,A)
 返回值：若N<A返回-1；若N=A返回0；若N>A返回1
+
 ****************************************************************************************/
 int Cmp(CBigInt N,CBigInt A)
 {

@@ -3,11 +3,17 @@
 #include <time.h>
 #include <sys/time.h>
 #include "square063.cuh"
+#include "Bigintcuda.cuh"
 #include "sm9test.h"
 #include "SM9PKC.h"
 
 int main(){
 	printf("this is test!\n");
+    CBigInt X;
+    CBigIntInit(&X);
+    CBigIntInit_para(&X,32);
+    printf("init X = %s\n",Put(X,HEX));
+
     /*
     //SM9基础测试
     unsigned int aa= 0x12345678123456780;
@@ -48,8 +54,8 @@ int main(){
     squaretest();
     printf("GPU test over!\r");
     */
-    SM9Params_init(&BN);//一定要有，否则会出现总线错误
-    DSA_Demo();  //签名demo
+    //SM9Params_init(&BN);//一定要有，否则会出现总线错误
+    //DSA_Demo();  //签名demo
     return 0;
 } 
 
