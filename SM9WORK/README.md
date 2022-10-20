@@ -13,6 +13,11 @@ make
 ```
 
 ## 初始（优化前）测试数据
+- 测试环境:
+    + cpu：Intel(R) Xeon(R) Gold 5220R CPU @ 2.20GHz
+    + 内存：131 GB
+    + 显卡：NVIDIA Corporation Device 2204
+
 1. 使用标准的BN曲线和参数，参考SM9第五部分
 
 2. 一次pairing时间：412.7 ms
@@ -33,6 +38,11 @@ make
 
 10. SM9 密钥解封时间：411.7 ms
 
+# 优化一
+每次sign都有pairing计算，把计算g = e(P_1,P_pusbs)先计算然后存起来，每次签名只需要从内存中取出来
+
+# 优化二 
+底层运算并行
 
 
 

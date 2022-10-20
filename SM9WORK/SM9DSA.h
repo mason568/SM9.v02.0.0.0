@@ -3,6 +3,18 @@
 #include "utility.h"
 #include <time.h>
 #include <sys/time.h>
+
+struct SM9DSAParams
+{
+    //一次签名可能要用到的参数
+
+    //预计算结果
+    BNField12 geP1Ppubs; // g = e(P_1,P_pusbs)
+
+}SIGNPRE;
+
+void geP1Ppubs_assign(struct SM9DSAParams *bn, BNPoint P1, BNPoint2 P_pub);
+
 void DSA_Demo();
 
 void DSA_Keygen(BNPoint *dsA,CBigInt ks, BYTE *ID,BNPoint P1);

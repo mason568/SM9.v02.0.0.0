@@ -1,5 +1,12 @@
 #include "SM9DSA.h"
 
+//为g=e(P1,P_pubs)赋值
+void geP1Ppubs_assign(struct SM9DSAParams *signpre, BNPoint P1, BNPoint2 P_pub){
+    BNField12 g;
+    Pairing_opt(&g,P_pub,P1);
+    F12_construct(&signpre->geP1Ppubs,g.im,g.re,g.sq);
+}
+
 
 void DSA_Demo()
 {
@@ -7,7 +14,6 @@ void DSA_Demo()
 	BNField2 b1,b2;
 	BNPoint2 P2,P_pub_s;
 	BNPoint P1,dsA,S;
-
 	BYTE id[]="Alice";
 	BYTE M[] = "Chinese IBS standard";
 	int sign;
@@ -44,13 +50,18 @@ void DSA_Demo()
 	
 	time1 = (double)(finish-start);
 	P_normorlize(&dsA,dsA);
+
+    //g预计算阶段
+    geP1Ppubs_assign(&SIGNPRE,P1,P_pub_s);
+
+
     //数字签名阶段
 	start = clock();
 	int count = 10;
     struct timeval tv1,tv2;
 	long time_begin,time_end;
     gettimeofday(&tv1,NULL);//获取开始时间
-    printf("sign 100 time:\n");
+    printf("sign 10 time:\n");
     printf("second: %d\n", tv1.tv_sec);  //秒
     printf("millisecond: %d\n", tv1.tv_sec*1000 + tv1.tv_usec/1000);  //毫秒
     printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
@@ -159,10 +170,11 @@ void DSA_Sign(CBigInt *h, BNPoint *S, BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoi
 	CBigInt r,l;
 	unsigned int len1,len2;
 	BYTE *msg;
-	Pairing_opt(&g,P_pub,P1);
-	Get(&r,"033C8616B06704813203DFD00965022ED15975C662337AED648835DC4B1CBE",HEX);  //r=rand();
+	//Pairing_opt(&g,P_pub,P1);
+    F12_assign(&g,SIGNPRE.geP1Ppubs);//可以并行
+	Get(&r,"033C8616B06704813203DFD00965022ED15975C662337AED648835DC4B1CBE",HEX);  //r=rand();可以并行
 	//printf("r = %s\n",Put(r,HEX));
-	F12_exp(&w,g,r);
+	F12_exp(&w,g,r);//可以并行
 	//F12_toString(g,HEX);
 	//F12_toString(w,HEX);
 	len1 = strlen((const char*)M);
@@ -170,10 +182,10 @@ void DSA_Sign(CBigInt *h, BNPoint *S, BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoi
 	msg = (BYTE*)malloc(len2);
 	memcpy(msg,M,len1);
 	F12toByte(&msg[len1],w);
-	Hash_2(h, msg, len2, BN.n);
-	CBigInt_substract_modN(&l,r,*h);
-	P_multiply(S,dsA,l);
-	P_normorlize(S,*S);
+	Hash_2(h, msg, len2, BN.n);//可以并行
+	CBigInt_substract_modN(&l,r,*h);//可以并行
+	P_multiply(S,dsA,l);//可以
+	P_normorlize(S,*S);//可以
 	free(msg);
 }
 

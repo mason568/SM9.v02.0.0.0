@@ -21,6 +21,7 @@ struct SM9Params
 	CBigInt ZERO;
 	CBigInt ONE;
 
+
 }BN;
 
 
