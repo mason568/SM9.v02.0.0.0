@@ -19,6 +19,7 @@ void test_Hash2();
 void test_SM4();
 
 int main(){
+	printf("this is test!\n");
     /*
     unsigned int aa= 0x12345678123456780;
     printf(" %x \n",aa);
