@@ -1436,3 +1436,70 @@ void test_Mov_Big_Big_para(){
     printf("Mov_Big_Big_para test: over! \n");
 
 }
+
+void test_Mov_Long_Big_para(){
+    printf("Mov_Long_Big_para test: Begin! \n");
+    unsigned long a = 1234568;
+    CBigInt N,M;
+    
+    //Mov_Big_Big_para(&N,A,32);
+    assignn_Long_to_Big_para(&N,a,32);
+    Mov_Big_Long(&M,a);
+    printf("move A=%ld to N =%s\n",a,Put(N,HEX));
+    printf("original move A=%ld to N =%s\n",a,Put(M,HEX));
+    printf("Mov_Long_Big_para test: over! \n");
+}
+
+
+void test_Add_Big_Big_para(){
+
+    printf("Add_Big_Big_para test: Begin! \n");
+    
+    CBigInt Y,N,A,PY;
+    Get(&N,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD",HEX);
+	Get(&A,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
+    printf("ok1\n");
+    Add_Big_Big_para(&Y,N,A,32);
+    printf("h_N = %s\n",Put(N,HEX));
+    printf("h_A = %s\n",Put(A,HEX));
+    printf("h_Y = %s\n",Put(Y,HEX));
+    Add_Big_Big(&PY,N,A);
+    printf("original add answer = %s\n", Put(PY,HEX));
+    printf("Add_Big_Big_para test: over! \n");
+}
+
+
+void test_Add_Big_Long_para(){
+
+    printf("Add_Big_Long_para test: Begin! \n");
+    
+    CBigInt Y,N,A,PY;
+    unsigned long a = 1;
+    Get(&N,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD",HEX);
+	//Get(&A,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
+    printf("ok1\n");
+    Add_Big_Long_para(&Y,N,a,32);
+    printf("h_N = %s\n",Put(N,HEX));
+    printf("h_a = %ld\n",a);
+    printf("h_Y = %s\n",Put(Y,HEX));
+    Add_Big_Long(&PY,N,a);
+    printf("original add answer = %s\n", Put(PY,HEX));
+    printf("Add_Big_Long_para test: over! \n");
+}
+
+void test_Sub_Big_Big_para(){
+
+    printf("Sub_Big_Big_para test: Begin! \n");
+    
+    CBigInt Y,N,A,PY;
+    Get(&N,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD6",HEX);
+	Get(&A,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
+    Sub_Big_Big_para(&Y,N,A,32);
+    printf("h_N = %s\n",Put(N,HEX));
+    printf("h_A = %s\n",Put(A,HEX));
+    printf("h_Y = %s\n",Put(Y,HEX));
+    Sub_Big_Big(&PY,N,A);
+    printf("original sub answer = %s\n", Put(PY,HEX));
+    printf("Sub_Big_Big_para test: over! \n");
+
+}

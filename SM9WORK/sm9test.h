@@ -17,5 +17,9 @@ void test_SM4();
 void test_CBigIntInit_para();
 void test_Cmp_para();
 void test_Mov_Big_Big_para();
+void test_Mov_Long_Big_para();
+void test_Add_Big_Big_para();
+void test_Add_Big_Long_para();
+void test_Sub_Big_Big_para();
 
 #endif
