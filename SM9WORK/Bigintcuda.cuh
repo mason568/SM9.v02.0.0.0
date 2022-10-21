@@ -24,6 +24,7 @@ extern "C" {          //告诉编译器，这部分代码按C语言的格式进�
     void Add_Big_Big_para(CBigInt *Y, CBigInt N, CBigInt A, int parasize);
     void Add_Big_Long_para(CBigInt *Y, CBigInt N, unsigned long A, int parasize);
     void Sub_Big_Big_para(CBigInt *Y, CBigInt N, CBigInt A, int parasize);
+    void Sub_Big_Long_para(CBigInt *Y, CBigInt N, unsigned long A, int parasize);
 
 
 #ifdef __cplusplus

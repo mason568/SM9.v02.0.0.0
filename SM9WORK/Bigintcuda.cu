@@ -1,5 +1,6 @@
 #include "Bigintcuda.cuh"
 
+
 __device__ int dev_cmp(CBigInt *d_N,CBigInt *d_A)
 {
 	int i;
@@ -36,8 +37,29 @@ __device__ void dev_mov_big_long(CBigInt *d_N,unsigned long d_A){
 	}
 }
 
-//构造大数对象并初始化为零 + 其对应的kernal函数
+__device__ void dev_mov_big_big(CBigInt *d_N, CBigInt d_A)
+{
+	//CBigInt N;
+	int i;
+	d_N->m_nLength=d_A.m_nLength;
+	for(i=0;i<BI_MAXLEN;i++)
+	{
+		d_N->m_ulValue[i]=d_A.m_ulValue[i];
+	}
+	
+}
 
+__device__ void dev_cbigintinit(CBigInt *d_A)
+{
+	int i;
+	d_A->m_nLength=1;
+	for(i=0;i<BI_MAXLEN;i++)
+		d_A->m_ulValue[i]=0;
+}
+/****************************************************************************************
+//构造大数对象并初始化为零 + 其对应的kernal函数
+若想返回parasize的数据量请启用 free the device yo 之前的memcpy 并注释替代函数
+****************************************************************************************/
 __global__ void cbiginiinit_thread(CBigInt *d_out){
     int idx = threadIdx.x; // this is how you get the thread index
 	d_out[idx].m_nLength=1;
@@ -73,7 +95,7 @@ void CBigIntInit_para(CBigInt *A,int parasize)
     }
 
     Mov_Big_Big(A,h_A[0]);
-
+    //memcpy(A,h_A,parasize*(sizeof(CBigInt)));
     // free the device yo
     cudaFree(h_A);
     cudaFree(dev_A);
@@ -84,7 +106,7 @@ void CBigIntInit_para(CBigInt *A,int parasize)
 大数比较
 调用方式：Cmp_para(N,A,num)
 返回值：若N<A返回-1；若N=A返回0；若N>A返回1
-
+这个函数目前没有返回一个链表，还是返回一个数
 ****************************************************************************************/
 __global__ void cmp_thread(CBigInt *dev_N,CBigInt *dev_A, int *d_cmp_res){
     int idx = threadIdx.x; // this is how you get the thread index
@@ -117,9 +139,10 @@ __global__ void cmp_thread(CBigInt *dev_N,CBigInt *dev_A, int *d_cmp_res){
 
 int Cmp_para(CBigInt N,CBigInt A, int parasize)
 {
-
+    
     CBigInt *h_N, *h_A, *dev_N,*dev_A;
     int *h_cmp_ret, *d_cmp_ret;
+    int ret;
     // host alloc and cuda malloc in one time
 	CHECK(cudaHostAlloc((void**) &h_N,parasize*(sizeof(CBigInt)),cudaHostAllocDefault));
     CHECK(cudaHostAlloc((void**) &h_A,parasize*(sizeof(CBigInt)),cudaHostAllocDefault));
@@ -143,15 +166,24 @@ int Cmp_para(CBigInt N,CBigInt A, int parasize)
     for(int i=0;i<parasize;i++){
         printf("para %d cmp_ret = %d\n",i, h_cmp_ret[i]);
     }
-    return h_cmp_ret[0];
+    //memcpy(N,h_N,parasize*(sizeof(CBigInt)));  
+    ret = h_cmp_ret[0];
+        // free the device yo
+    cudaFree(h_N);
+    cudaFree(dev_N);
+    cudaFree(h_A);
+    cudaFree(dev_A);
+    cudaFree(h_cmp_ret);
+    cudaFree(d_cmp_ret);
+    return ret;
 }
 
 /****************************************************************************************
 大数赋值
 调用方式：assignn_Big_to_Big_para(&N,A,32)  
 assign_Long_to_Big_para(&N,A,32)
-返回值：多个N,被赋值为同一个A
-但是嘛，由于cpu和gpu之间数据交换也需要时间，开销不好说，暂时写了，但可以不用
+
+若想返回parasize的数据量请启用 free the device yo 之前的memcpy 并注释替代函数
 ****************************************************************************************/
 __global__ void mov_big_big_thread(CBigInt *dev_N, CBigInt *dev_A){
     int idx = threadIdx.x; // this is how you get the thread index
@@ -304,7 +336,7 @@ void Mov_Big_Big_para(CBigInt *N, CBigInt A, int parasize)
     }
 
     Mov_Big_Big(N,h_N[0]);
-    
+    //memcpy(N,h_N,parasize*(sizeof(CBigInt)));
     // free the device yo
     cudaFree(h_N);
     cudaFree(dev_N);
@@ -318,6 +350,7 @@ void Mov_Big_Big_para(CBigInt *N, CBigInt A, int parasize)
 大数相加
 调用形式：Add_Big_Big_para(Y,N,A,num)  Add_Big_Long_para(Y,N,A,num)
 返回值：Y=N+A
+若想返回parasize的数据量请启用 free the device yo 之前的memcpy 并注释替代函数
 ****************************************************************************************/
 __global__ void add_big_big_thread(CBigInt *dev_YY, CBigInt *dev_N,CBigInt *dev_A){
     int idx = threadIdx.x; // this is how you get the thread index
@@ -373,6 +406,7 @@ void Add_Big_Big_para(CBigInt *Y, CBigInt N, CBigInt A, int parasize)
     
 
     Mov_Big_Big(Y,h_YY[0]);
+    //memcpy(Y,h_YY,parasize*(sizeof(CBigInt)));
     // free the device yo
     cudaFree(h_N);
     cudaFree(h_A);
@@ -438,6 +472,7 @@ void Add_Big_Long_para(CBigInt *Y, CBigInt N, unsigned long A, int parasize)
         printf("h_YY[%d] = %s\n", i,Put(h_YY[i],HEX));
     }
     Mov_Big_Big(Y,h_YY[0]);
+    //memcpy(Y,h_YY,parasize*(sizeof(CBigInt)));
     // free the device yo
     cudaFree(h_N);
     cudaFree(h_A);
@@ -453,6 +488,7 @@ void Add_Big_Long_para(CBigInt *Y, CBigInt N, unsigned long A, int parasize)
 大数相减
 调用形式：Sub_Big_Big_para(Y,N,A,num) Sub_Big_Long_para(Y,N,A,num)
 返回值：Y=N-A
+若想返回parasize的数据量请启用 free the device yo 之前的memcpy 并注释替代函数
 ****************************************************************************************/
 __global__ void sub_big_big_thread(CBigInt *dev_YY, CBigInt *dev_N,CBigInt *dev_A){
     int idx = threadIdx.x; // this is how you get the thread index
@@ -519,8 +555,9 @@ void Sub_Big_Big_para(CBigInt *Y, CBigInt N, CBigInt A, int parasize)
     for(int i=0;i<parasize;i++){
         printf("h_YY[%d] = %s\n", i,Put(h_YY[i],HEX));
     }
-
+    
     Mov_Big_Big(Y,h_YY[0]);
+    //memcpy(Y,h_YY,parasize*(sizeof(CBigInt)));
     // free the device yo
     cudaFree(h_N);
     cudaFree(h_A);
@@ -528,4 +565,89 @@ void Sub_Big_Big_para(CBigInt *Y, CBigInt N, CBigInt A, int parasize)
     cudaFree(dev_N);
     cudaFree(dev_A);
     cudaFree(dev_YY);
+}
+
+
+__global__ void sub_big_long_thread(CBigInt *dev_YY, CBigInt *dev_N,unsigned long *dev_A){
+    int idx = threadIdx.x; // this is how you get the thread index
+	unsigned long long num;
+	int i=1;
+	num=0x100000000+dev_YY[idx].m_ulValue[0];
+
+	//Mov_Big_Big(&X,N);   因为N在之前就赋值给每条线程的dev_YY[idx]了，这里就不需要重复赋值了
+	if(dev_YY[idx].m_ulValue[0]>=(*dev_A))
+	{
+		dev_YY[idx].m_ulValue[0]-=(*dev_A);
+		
+	}
+	else if(dev_YY[idx].m_nLength==1)
+	{
+		//Mov_Big_Long(&dev_YY[idx],0);
+        dev_mov_big_long(&dev_YY[idx],0);
+		
+	}
+	else
+	{
+
+		dev_YY[idx].m_ulValue[0]=(unsigned long)(num-(*dev_A));    
+
+		while(dev_YY[idx].m_ulValue[i]==0)
+		{
+			dev_YY[idx].m_ulValue[i]=0xffffffff;
+			i++;
+		}
+		dev_YY[idx].m_ulValue[i]--;
+		if(dev_YY[idx].m_ulValue[i]==0)
+			dev_YY[idx].m_nLength--;
+		
+	}
+}
+
+void Sub_Big_Long_para(CBigInt *Y, CBigInt N, unsigned long A, int parasize)
+{
+    CBigInt *h_N, *h_YY, *dev_N,*dev_YY;
+    unsigned long *h_A,*dev_A;
+    // host alloc and cuda malloc in one time
+	CHECK(cudaHostAlloc((void**) &h_N,sizeof(CBigInt),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_A,sizeof(unsigned long),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_YY,parasize*(sizeof(CBigInt)),cudaHostAllocDefault));
+    //printf("ok2\n");
+    memcpy(h_N,&N,sizeof(CBigInt));
+    memcpy(h_A,&A,sizeof(unsigned long));
+    //printf("h_N = %s\n",Put(*h_N,HEX));
+    //printf("h_A = %s\n",Put(*h_A,HEX));
+    //printf("ok3\n");
+    CHECK(cudaMalloc((void **)&dev_N,sizeof(CBigInt)));
+    CHECK(cudaMalloc((void **)&dev_A,sizeof(unsigned long)));
+    CHECK(cudaMalloc((void **)&dev_YY,parasize*(sizeof(CBigInt))));
+    //printf("ok4\n");
+    assignn_Big_to_Big_para(h_YY,N,32);
+    //printf("ok5\n");
+    // transfer the array to the GPU my dude. Copy's contents of h_in to d_in
+    cudaMemcpy(dev_A, h_A, sizeof(unsigned long), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_N, h_N, sizeof(CBigInt), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_YY, h_YY, parasize*(sizeof(CBigInt)), cudaMemcpyHostToDevice);
+    //printf("ok6\n");
+    // launch the kernel
+    sub_big_long_thread<<<1,parasize>>>(dev_YY,dev_N,dev_A);
+
+    // copy the result back to the CPU mem
+    cudaMemcpy(h_YY, dev_YY, parasize*(sizeof(CBigInt)), cudaMemcpyDeviceToHost);
+
+    for(int i=0;i<parasize;i++){
+        printf("h_YY[%d] = %s\n", i,Put(h_YY[i],HEX));
+    }
+    
+    Mov_Big_Big(Y,h_YY[0]);
+    //memcpy(Y,h_YY,parasize*(sizeof(CBigInt)));
+    // free the device yo
+    cudaFree(h_N);
+    cudaFree(h_A);
+    cudaFree(h_YY);
+    cudaFree(dev_N);
+    cudaFree(dev_A);
+    cudaFree(dev_YY);	
+    
+    
+    
 }

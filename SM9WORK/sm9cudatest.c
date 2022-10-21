@@ -57,14 +57,18 @@ int main(){
     */
     //SM9Params_init(&BN);//一定要有，否则会出现总线错误
     //DSA_Demo();  //签名demo
-
+    
+    
+    
+    /*      重写函数的测试      */  
     //test_CBigIntInit_para();
     //test_Cmp_para();
     //test_Mov_Big_Big_para();
     //test_Mov_Long_Big_para();
     //test_Add_Big_Big_para();
     //test_Add_Big_Long_para();
-    test_Sub_Big_Big_para();
+    //test_Sub_Big_Big_para();
+    test_Sub_Big_Long_para();
     return 0;
 } 
 

@@ -1503,3 +1503,21 @@ void test_Sub_Big_Big_para(){
     printf("Sub_Big_Big_para test: over! \n");
 
 }
+
+void test_Sub_Big_Long_para(){
+
+    printf("Sub_Big_Long_para test: Begin! \n");
+    
+    CBigInt Y,N,A,PY;
+    unsigned long a = 1;
+    Get(&N,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD6",HEX);
+	//Get(&A,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
+    Sub_Big_Long_para(&Y,N,a,32);
+    printf("h_N = %s\n",Put(N,HEX));
+    printf("h_a = %ld\n",a);
+    printf("h_Y = %s\n",Put(Y,HEX));
+    Sub_Big_Long(&PY,N,a);
+    printf("original sub answer = %s\n", Put(PY,HEX));
+    printf("Sub_Big_Long_para test: over! \n");
+
+}

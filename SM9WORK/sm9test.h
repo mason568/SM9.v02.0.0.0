@@ -21,5 +21,6 @@ void test_Mov_Long_Big_para();
 void test_Add_Big_Big_para();
 void test_Add_Big_Long_para();
 void test_Sub_Big_Big_para();
+void test_Sub_Big_Long_para();
 
 #endif
