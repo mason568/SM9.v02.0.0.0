@@ -70,7 +70,12 @@ int main(){
     //test_Sub_Big_Big_para();
     //test_Sub_Big_Long_para();
     //test_Mul_Big_Long_para();
-    test_Mul_Big_Big_para();
+    //test_Mul_Big_Big_para();
+    //test_Div_Big_Long_para();
+    //test_Div_Big_Big_para();
+    //test_Mod_Big_Big_para();
+    test_Mod_Big_Long_para();
+
     return 0;
 } 
 

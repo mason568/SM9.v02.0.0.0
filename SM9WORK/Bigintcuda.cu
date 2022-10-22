@@ -56,6 +56,182 @@ __device__ void dev_cbigintinit(CBigInt *d_A)
 	for(i=0;i<BI_MAXLEN;i++)
 		d_A->m_ulValue[i]=0;
 }
+
+__device__ void dev_add_big_long(CBigInt *Y, CBigInt N, unsigned long A)//
+{
+	CBigInt X;
+	unsigned long long sum;
+	dev_cbigintinit(&X);
+	dev_mov_big_big(&X,N);// X=N
+
+	sum=X.m_ulValue[0];
+	sum+=A;     
+	X.m_ulValue[0]=(unsigned long)sum;
+	if(sum>0xffffffff)
+	{
+		unsigned int i=1;
+		while(X.m_ulValue[i]==0xffffffff)
+		{
+			X.m_ulValue[i]=0;
+			i++;
+		}
+		X.m_ulValue[i]++;
+		if(N.m_nLength==i)
+			N.m_nLength++;
+	}
+	dev_mov_big_big(Y,X);
+}
+
+__device__ void dev_add_big_big(CBigInt *Y, CBigInt N, CBigInt A)
+{
+	unsigned int i;
+	CBigInt X;
+	unsigned int carry=0;
+	unsigned long long sum=0;
+	dev_cbigintinit(&X);
+	dev_mov_big_big(&X, N);
+
+	if(X.m_nLength<A.m_nLength)
+	{
+		X.m_nLength=A.m_nLength;
+	}
+	for(i=0;i<X.m_nLength;i++)
+	{
+		sum=A.m_ulValue[i];
+		sum=sum+X.m_ulValue[i]+carry;
+		X.m_ulValue[i]=(unsigned long)sum;
+		carry=(unsigned int)(sum>>32);
+	}
+	X.m_ulValue[X.m_nLength]=carry;
+	X.m_nLength+=carry;	
+	dev_mov_big_big(Y,X);
+}
+
+__device__ void dev_mul_big_long(CBigInt *Y, CBigInt N, unsigned long A)
+{
+	CBigInt X;
+	unsigned long long mul;
+	unsigned long carry=0;
+	unsigned int i;
+	dev_cbigintinit(&X);
+	dev_mov_big_big(&X,N);;
+	for(i=0;i<N.m_nLength;i++)
+	{
+		mul=N.m_ulValue[i];
+		mul=mul*A+carry;
+		X.m_ulValue[i]=(unsigned int)mul;
+		carry=(unsigned int)(mul>>32);
+	}
+	if(carry)
+	{
+		X.m_nLength++;
+		X.m_ulValue[X.m_nLength-1]=carry;
+	}
+	i = X.m_nLength-1;
+	while(X.m_ulValue[i]==0 && i>0)
+	{
+		X.m_nLength--;
+		i--;
+	}
+	dev_mov_big_big(Y,X);
+}
+
+__device__ void dev_mul_big_big(CBigInt *Y, CBigInt N, CBigInt A)
+{
+	CBigInt X;
+	unsigned long long sum,mul=0,carry=0;
+	unsigned int i,j;
+	if(A.m_nLength==1)
+		dev_mul_big_long(Y,N,A.m_ulValue[0]);
+	else
+	{
+		dev_cbigintinit(&X);
+		X.m_nLength=N.m_nLength+A.m_nLength-1;
+		for(i=0;i<X.m_nLength;i++)
+		{
+			sum=carry;
+			carry=0;
+			for(j=0;j<A.m_nLength;j++)
+			{
+				if(((i-j)>=0)&&((i-j)<N.m_nLength))
+				{
+					mul=N.m_ulValue[i-j];
+					mul*=A.m_ulValue[j];
+					carry+=mul>>32;
+					mul=mul&0xffffffff;
+					sum+=mul;
+				}
+			}				
+			carry+=sum>>32;
+			X.m_ulValue[i]=(unsigned long)sum;
+		}
+		if(carry)
+		{
+			X.m_nLength++;
+			X.m_ulValue[X.m_nLength-1]=(unsigned long)carry;
+		}
+		i = X.m_nLength-1;
+		while(X.m_ulValue[i]==0 && i>0)
+		{
+			X.m_nLength--;
+			i--;
+		}
+		dev_mov_big_big(Y,X);
+	}
+}
+
+__device__ void dev_sub_big_big(CBigInt *Y, CBigInt N, CBigInt A)
+{
+	CBigInt X;
+	unsigned int carry=0;
+	unsigned long long num;
+	unsigned int i;
+	dev_cbigintinit(&X);
+	dev_mov_big_big(&X,N);
+	if(dev_cmp(&X,&A)<=0)
+		dev_mov_big_long(&X,0);
+    else
+	{
+
+		for(i=0;i<N.m_nLength;i++)
+		{
+			if((N.m_ulValue[i]>A.m_ulValue[i])||((N.m_ulValue[i]==A.m_ulValue[i])&&(carry==0)))
+			{
+				X.m_ulValue[i]=N.m_ulValue[i]-carry-A.m_ulValue[i];
+				carry=0;
+			}
+			else
+			{
+				num=0x100000000+X.m_ulValue[i];
+				X.m_ulValue[i]=(unsigned long)(num-carry-A.m_ulValue[i]);
+				carry=1;
+			}     
+		}
+		while(X.m_ulValue[X.m_nLength-1]==0)
+			X.m_nLength--;
+			
+	}
+	dev_mov_big_big(Y,X);
+}
+
+
+__device__ unsigned long dev_mod_big_long(CBigInt N, unsigned long A)
+{
+	unsigned long long div;
+	unsigned long carry=0;
+	int i;
+	if(N.m_nLength==1)
+		return(N.m_ulValue[0]%A);
+
+
+	for(i=N.m_nLength-1;i>=0;i--)
+	{
+		div=N.m_ulValue[i];
+		div+=carry*0x100000000;
+		carry=(unsigned long)(div%A);
+	}
+	return carry;
+}
 /****************************************************************************************
 //构造大数对象并初始化为零 + 其对应的kernal函数
 若想返回parasize的数据量请启用 free the device yo 之前的memcpy 并注释替代函数
@@ -835,35 +1011,332 @@ void Mul_Big_Big_para(CBigInt *YY, CBigInt N, CBigInt A, int parasize)
 
 /****************************************************************************************
 大数相除
-调用形式：Div_Big_Big(P,N,A)
+调用形式：Div_Big_Big_para(P,N,A)
 返回值：P=N/A
-void Div_Big_Long_para(CBigInt *Y, CBigInt N, unsigned long A)
-{
-	CBigInt X;
+****************************************************************************************/
+__global__ void div_big_long_thread(CBigInt *dev_YY, CBigInt *dev_N,unsigned long *dev_A){
+    int idx = threadIdx.x; 
+    //CBigInt X;
 	unsigned long long div,mul;
 	unsigned long carry=0;
 	int i;
 	//CBigIntInit(X);
-	Mov_Big_Big(&X,N);;
-	if(X.m_nLength==1)
+	//Mov_Big_Big(&X,N);;
+	if(dev_YY[idx].m_nLength==1)
 	{
-		X.m_ulValue[0]=X.m_ulValue[0]/A;
-		Mov_Big_Big(Y,X);
+		dev_YY[idx].m_ulValue[0]=dev_YY[idx].m_ulValue[0]/(*dev_A);
+		//Mov_Big_Big(Y,dev_YY[idx]);
 	}
 	else
 	{
-		for(i=X.m_nLength-1;i>=0;i--)
+		for(i=dev_YY[idx].m_nLength-1;i>=0;i--)
 		{
 			div=carry;
-			div=(div<<32)+X.m_ulValue[i];
-			X.m_ulValue[i]=(unsigned long)(div/A);
-			mul=(div/A)*A;
+			div=(div<<32)+dev_YY[idx].m_ulValue[i];
+			dev_YY[idx].m_ulValue[i]=(unsigned long)(div/(*dev_A));
+			mul=(div/(*dev_A))*(*dev_A);
 			carry=(unsigned long)(div-mul);
 		}
-		if(X.m_ulValue[X.m_nLength-1]==0)
-			X.m_nLength--;
-		Mov_Big_Big(Y,X);
+		if(dev_YY[idx].m_ulValue[dev_YY[idx].m_nLength-1]==0)
+			dev_YY[idx].m_nLength--;
+		//Mov_Big_Big(Y,X);
+	}
+
+}
+
+void Div_Big_Long_para(CBigInt *YY, CBigInt N, unsigned long A, int parasize)
+{
+	CBigInt *h_N, *h_YY, *dev_N,*dev_YY;
+    unsigned long *h_A,*dev_A;
+    // host alloc and cuda malloc in one time
+	CHECK(cudaHostAlloc((void**) &h_N,sizeof(CBigInt),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_A,sizeof(unsigned long),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_YY,parasize*(sizeof(CBigInt)),cudaHostAllocDefault));
+ 
+    memcpy(h_N,&N,sizeof(CBigInt));
+    memcpy(h_A,&A,sizeof(unsigned long));
+    //printf("h_N = %s\n",Put(*h_N,HEX));
+    //printf("h_A = %s\n",Put(*h_A,HEX));
+  
+    CHECK(cudaMalloc((void **)&dev_N,sizeof(CBigInt)));
+    CHECK(cudaMalloc((void **)&dev_A,sizeof(unsigned long)));
+    CHECK(cudaMalloc((void **)&dev_YY,parasize*(sizeof(CBigInt))));
+ 
+    assignn_Big_to_Big_para(h_YY,N,32);
+
+    // transfer the array to the GPU my dude. Copy's contents of h_in to d_in
+    cudaMemcpy(dev_A, h_A, sizeof(unsigned long), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_N, h_N, sizeof(CBigInt), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_YY, h_YY, parasize*(sizeof(CBigInt)), cudaMemcpyHostToDevice);
+
+    // launch the kernel
+    div_big_long_thread<<<1,parasize>>>(dev_YY,dev_N,dev_A);
+
+    // copy the result back to the CPU mem
+    cudaMemcpy(h_YY, dev_YY, parasize*(sizeof(CBigInt)), cudaMemcpyDeviceToHost);
+
+    //Mov_Big_Big(Y,h_YY[0]);
+    memcpy(YY,h_YY,parasize*(sizeof(CBigInt)));
+
+    
+    cudaFree(h_N);
+    cudaFree(h_A);
+    cudaFree(h_YY);
+    cudaFree(dev_N);
+    cudaFree(dev_A);
+    cudaFree(dev_YY);
+    
+
+}
+
+__global__ void div_big_big_thread(CBigInt *dev_YY, CBigInt *dev_N,CBigInt *dev_A){
+    int idx = threadIdx.x;        
+    CBigInt X,Y,Z,T;
+    unsigned int i,len;
+    unsigned long long num,div;
+    dev_cbigintinit(&X);
+    dev_cbigintinit(&Y);
+    dev_cbigintinit(&Z);
+    dev_cbigintinit(&T); //dev_cbigintinit
+    dev_mov_big_big(&Y,*dev_N); //dev_mov_big_big
+    while(dev_cmp(&Y,dev_A)>=0)
+    {        
+        div=Y.m_ulValue[Y.m_nLength-1];
+        num=dev_A->m_ulValue[dev_A->m_nLength-1];
+        len=Y.m_nLength-dev_A->m_nLength;
+        if((div==num)&&(len==0))
+        {
+            //Mov_Big_Big(&X,Add_Big_Long(X,1));
+            dev_add_big_long(&X,X,1); //dev_add_big_long
+            break;
+        }
+        if((div<=num)&&len)
+        {
+            len--;
+            div=(div<<32)+Y.m_ulValue[Y.m_nLength-2];
+        }
+        div=div/(num+1);
+        dev_mov_big_long(&Z,div); //dev_mov_big_long
+        if(len)
+        {
+            Z.m_nLength+=len;
+            for(i=Z.m_nLength-1;i>=len;i--)
+                Z.m_ulValue[i]=Z.m_ulValue[i-len];
+            for(i=0;i<len;i++)
+                Z.m_ulValue[i]=0;
+        }
+        //Mov_Big_Big(&X,Add_Big_Big(X,Z));
+        dev_add_big_big(&X,X,Z); //dev_add_big_big
+        //Mov_Big_Big(&Y,Sub_Big_Big(Y,Mul_Big_Big(A,Z)));
+        dev_mul_big_big(&T,*dev_A,Z);
+        dev_sub_big_big(&Y,Y,T);
+    }
+    dev_mov_big_big(&(dev_YY[idx]),X);
+
+}
+
+
+void Div_Big_Big_para(CBigInt *MM,CBigInt N, CBigInt A,int parasize)
+{
+	if(A.m_nLength==1)
+		Div_Big_Long_para(MM,N,A.m_ulValue[0],parasize);
+	else
+	{
+        //emmm 直接把下面的函数放入到kernal岂不是很蠢吗 不管了 先这样做着
+        CBigInt *h_N, *h_YY, *dev_N,*dev_YY;
+        CBigInt *h_A,*dev_A;
+        // host alloc and cuda malloc in one time
+        CHECK(cudaHostAlloc((void**) &h_N,sizeof(CBigInt),cudaHostAllocDefault));
+        CHECK(cudaHostAlloc((void**) &h_A,sizeof(CBigInt),cudaHostAllocDefault));
+        CHECK(cudaHostAlloc((void**) &h_YY,parasize*(sizeof(CBigInt)),cudaHostAllocDefault));
+    
+        memcpy(h_N,&N,sizeof(CBigInt));
+        memcpy(h_A,&A,sizeof(CBigInt));
+        //printf("h_N = %s\n",Put(*h_N,HEX));
+        //printf("h_A = %s\n",Put(*h_A,HEX));
+    
+        CHECK(cudaMalloc((void **)&dev_N,sizeof(CBigInt)));
+        CHECK(cudaMalloc((void **)&dev_A,sizeof(CBigInt)));
+        CHECK(cudaMalloc((void **)&dev_YY,parasize*(sizeof(CBigInt))));
+    
+        assignn_Big_to_Big_para(h_YY,N,32);
+
+        // transfer the array to the GPU my dude. Copy's contents of h_in to d_in
+        cudaMemcpy(dev_A, h_A, sizeof(CBigInt), cudaMemcpyHostToDevice);
+        cudaMemcpy(dev_N, h_N, sizeof(CBigInt), cudaMemcpyHostToDevice);
+        cudaMemcpy(dev_YY, h_YY, parasize*(sizeof(CBigInt)), cudaMemcpyHostToDevice);
+
+        // launch the kernel
+        div_big_big_thread<<<1,parasize>>>(dev_YY,dev_N,dev_A);
+
+        // copy the result back to the CPU mem
+        cudaMemcpy(h_YY, dev_YY, parasize*(sizeof(CBigInt)), cudaMemcpyDeviceToHost);
+
+        //Mov_Big_Big(Y,h_YY[0]);
+        memcpy(MM,h_YY,parasize*(sizeof(CBigInt)));
+
+        
+        cudaFree(h_N);
+        cudaFree(h_A);
+        cudaFree(h_YY);
+        cudaFree(dev_N);
+        cudaFree(dev_A);
+        cudaFree(dev_YY);
+
+        
 	}
 }
-****************************************************************************************/
 
+
+/****************************************************************************************
+大数求模
+调用形式：Mod_Big_Big_para(Z,N,A,num)
+返回值：Z=N%A
+****************************************************************************************/
+__global__ void mod_big_big_thread(CBigInt *dev_YY, CBigInt *dev_N,CBigInt *dev_A){
+    int idx = threadIdx.x;    
+    CBigInt X,Y;
+	unsigned long long div,num;
+	unsigned long carry=0;
+	unsigned int i,len;
+	dev_cbigintinit(&X);
+	dev_cbigintinit(&Y);
+	dev_mov_big_big(&X,*dev_N);
+	while(dev_cmp(&X,dev_A)>=0)
+	{
+		div=X.m_ulValue[X.m_nLength-1];
+		num=dev_A->m_ulValue[dev_A->m_nLength-1];
+		len=X.m_nLength-dev_A->m_nLength;
+		if((div==num)&&(len==0))
+		{
+			//Mov_Big_Big(&X,Sub_Big_Big(X,A));
+			dev_sub_big_big(&X,X,*dev_A);
+			break;
+		}
+		if((div<=num)&&len)
+		{
+			len--;div=(div<<32)+X.m_ulValue[X.m_nLength-2];
+		}
+		div=div/(num+1);
+		dev_mov_big_long(&Y,div);		
+		//Mov_Big_Big(&Y,Mul_Big_Big(A,Y));
+		dev_mul_big_big(&Y,*dev_A,Y);
+		if(len)
+		{
+			Y.m_nLength+=len;
+			for(i=Y.m_nLength-1;i>=len;i--)
+				Y.m_ulValue[i]=Y.m_ulValue[i-len];
+			for(i=0;i<len;i++)
+				Y.m_ulValue[i]=0;
+		}
+		//Mov_Big_Big(&X,Sub_Big_Big(X,Y));
+		dev_sub_big_big(&X,X,Y);
+	}
+	dev_mov_big_big(&(dev_YY[idx]),X);
+
+}
+
+void Mod_Big_Big_para(CBigInt *ZZ,CBigInt N, CBigInt A, int parasize)
+{
+    CBigInt *h_N, *h_YY, *dev_N,*dev_YY;
+    CBigInt *h_A,*dev_A;
+    // host alloc and cuda malloc in one time
+    CHECK(cudaHostAlloc((void**) &h_N,sizeof(CBigInt),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_A,sizeof(CBigInt),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_YY,parasize*(sizeof(CBigInt)),cudaHostAllocDefault));
+
+    memcpy(h_N,&N,sizeof(CBigInt));
+    memcpy(h_A,&A,sizeof(CBigInt));
+    //printf("h_N = %s\n",Put(*h_N,HEX));
+    //printf("h_A = %s\n",Put(*h_A,HEX));
+
+    CHECK(cudaMalloc((void **)&dev_N,sizeof(CBigInt)));
+    CHECK(cudaMalloc((void **)&dev_A,sizeof(CBigInt)));
+    CHECK(cudaMalloc((void **)&dev_YY,parasize*(sizeof(CBigInt))));
+
+    //assignn_Big_to_Big_para(h_YY,N,32);
+
+    // transfer the array to the GPU my dude. Copy's contents of h_in to d_in
+    cudaMemcpy(dev_A, h_A, sizeof(CBigInt), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_N, h_N, sizeof(CBigInt), cudaMemcpyHostToDevice);
+    //cudaMemcpy(dev_YY, h_YY, parasize*(sizeof(CBigInt)), cudaMemcpyHostToDevice);
+
+    // launch the kernel
+    mod_big_big_thread<<<1,parasize>>>(dev_YY,dev_N,dev_A);
+
+    // copy the result back to the CPU mem
+    cudaMemcpy(h_YY, dev_YY, parasize*(sizeof(CBigInt)), cudaMemcpyDeviceToHost);
+
+    //Mov_Big_Big(Y,h_YY[0]);
+    memcpy(ZZ,h_YY,parasize*(sizeof(CBigInt)));
+
+    
+    cudaFree(h_N);
+    cudaFree(h_A);
+    cudaFree(h_YY);
+    cudaFree(dev_N);
+    cudaFree(dev_A);
+    cudaFree(dev_YY);
+
+}
+__global__ void mod_big_big_thread(unsigned long *ZZ, CBigInt *N, unsigned long *A){
+    int idx = threadIdx.x;   
+	unsigned long long div;
+	unsigned long carry=0;
+	int i;
+	if(N->m_nLength==1){
+        ZZ[idx] = N->m_ulValue[0]%(*A);
+        return;
+    }
+		
+
+	for(i=N->m_nLength-1;i>=0;i--)
+	{
+		div=N->m_ulValue[i];
+		div+=carry*0x100000000;
+		carry=(unsigned long)(div%(*A));
+	}
+    ZZ[idx] = carry;
+	return;
+}
+
+void Mod_Big_Long_para(unsigned long *ZZ, CBigInt N, unsigned long A,int parasize)
+{
+	CBigInt *h_N, *dev_N;
+    unsigned long *h_A,*dev_A,*h_ZZ,*dev_ZZ;
+    // host alloc and cuda malloc in one time
+	CHECK(cudaHostAlloc((void**) &h_N,sizeof(CBigInt),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_A,sizeof(unsigned long),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_ZZ,parasize*(sizeof(unsigned long)),cudaHostAllocDefault));
+ 
+    memcpy(h_N,&N,sizeof(CBigInt));
+    memcpy(h_A,&A,sizeof(unsigned long));
+    //printf("h_N = %s\n",Put(*h_N,HEX));
+    //printf("h_A = %s\n",Put(*h_A,HEX));
+  
+    CHECK(cudaMalloc((void **)&dev_N,sizeof(CBigInt)));
+    CHECK(cudaMalloc((void **)&dev_A,sizeof(unsigned long)));
+    CHECK(cudaMalloc((void **)&dev_ZZ,parasize*(sizeof(unsigned long))));
+
+    // transfer the array to the GPU my dude. Copy's contents of h_in to d_in
+    cudaMemcpy(dev_A, h_A, sizeof(unsigned long), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_N, h_N, sizeof(CBigInt), cudaMemcpyHostToDevice);
+    //cudaMemcpy(dev_ZZ, h_ZZ, parasize*(sizeof(CBigInt)), cudaMemcpyHostToDevice);
+
+    // launch the kernel
+    mod_big_big_thread<<<1,parasize>>>(dev_ZZ,dev_N,dev_A);
+
+    // copy the result back to the CPU mem
+    cudaMemcpy(h_ZZ, dev_ZZ, parasize*(sizeof(unsigned long)), cudaMemcpyDeviceToHost);
+
+    //Mov_Big_Big(Y,h_YY[0]);
+    memcpy(ZZ,h_ZZ,parasize*(sizeof(unsigned long)));
+
+    
+    cudaFree(h_N);
+    cudaFree(h_A);
+    cudaFree(h_ZZ);
+    cudaFree(dev_N);
+    cudaFree(dev_A);
+    cudaFree(dev_ZZ);
+}

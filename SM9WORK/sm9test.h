@@ -25,5 +25,9 @@ void test_Sub_Big_Long_para();
 
 void test_Mul_Big_Long_para();
 void test_Mul_Big_Big_para();
+void test_Div_Big_Long_para();
+void test_Div_Big_Big_para();
+void test_Mod_Big_Big_para();
+void test_Mod_Big_Long_para();
 
 #endif
