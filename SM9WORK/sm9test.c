@@ -1521,3 +1521,46 @@ void test_Sub_Big_Long_para(){
     printf("Sub_Big_Long_para test: over! \n");
 
 }
+
+void test_Mul_Big_Long_para(){
+    printf("Mul_Big_Long_para test: Begin! \n");
+    
+    CBigInt Y,N,A,PY;
+    CBigInt *YY = (CBigInt *)malloc(32*sizeof(CBigInt));
+    //CBigInt *PYY= (CBigInt *)malloc(32*sizeof(CBigInt));
+    unsigned long a = 2;
+    Get(&N,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD3",HEX);
+	//Get(&A,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
+
+    Mul_Big_Long_para(YY,N,a,32); //淦 因为之前这里多了一个取地址符号，导致报错，找了几个小时bug
+    printf("h_N = %s\n",Put(N,HEX));
+    printf("h_a = %lu\n",a);
+    printf("h_Y = %s\n",Put(YY[0],HEX));
+    Mul_Big_Long(&PY,N,a);
+    printf("original Mul answer = %s\n", Put(PY,HEX));
+    printf("Mul_Big_Long_para test: over! \n");
+    //free(YY);
+    //free(PYY);
+
+
+}
+
+void test_Mul_Big_Big_para(){
+
+    printf("Mul_Big_Big_para test: Begin! \n");
+    
+    CBigInt Y,N,A,PY;
+    CBigInt *YY = (CBigInt *)malloc(32*sizeof(CBigInt));
+    //CBigInt *PYY= (CBigInt *)malloc(32*sizeof(CBigInt));
+    //unsigned long a = 2;
+    Get(&N,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD3",HEX);
+	Get(&A,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
+
+    Mul_Big_Big_para(YY,N,A,32); //淦 因为之前这里多了一个取地址符号，导致报错，找了几个小时bug
+    printf("h_N = %s\n",Put(N,HEX));
+    printf("h_A = %s\n",Put(A,HEX));
+    printf("h_Y = %s\n",Put(YY[0],HEX));
+    Mul_Big_Big(&PY,N,A);
+    printf("original Mul answer = %s\n", Put(PY,HEX));
+    printf("Mul_Big_Big_para test: over! \n");
+}

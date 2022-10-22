@@ -23,4 +23,7 @@ void test_Add_Big_Long_para();
 void test_Sub_Big_Big_para();
 void test_Sub_Big_Long_para();
 
+void test_Mul_Big_Long_para();
+void test_Mul_Big_Big_para();
+
 #endif

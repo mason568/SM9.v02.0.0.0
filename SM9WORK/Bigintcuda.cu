@@ -247,10 +247,11 @@ void assignn_Big_to_Big_para(CBigInt *N, CBigInt A, int parasize)
     cudaMemcpy(h_N, dev_N, parasize*(sizeof(CBigInt)), cudaMemcpyDeviceToHost);
    
     // print the result
-    
+    /*
     for (int i = 0; i < parasize; i++){
         printf("thread %d move A=%s to N=%s\n",i,Put(A,HEX),Put(h_N[i],HEX));
     }
+    */
     memcpy(N,h_N,parasize*(sizeof(CBigInt)));
     //Mov_Big_Big(N,h_N[0]);
    
@@ -288,10 +289,11 @@ void assignn_Long_to_Big_para(CBigInt *N, unsigned long A, int parasize)
     cudaMemcpy(h_N, dev_N, parasize*(sizeof(CBigInt)), cudaMemcpyDeviceToHost);
    
     // print the result
-    
+    /*
     for (int i = 0; i < parasize; i++){
         printf("thread %d move A=%ld to N=%s\n",i,A,Put(h_N[i],HEX));
     }
+    */
     memcpy(N,h_N,parasize*(sizeof(CBigInt)));
     //Mov_Big_Big(N,h_N[0]);
     // free the device yo
@@ -330,10 +332,11 @@ void Mov_Big_Big_para(CBigInt *N, CBigInt A, int parasize)
     cudaMemcpy(h_N, dev_AA, parasize*(sizeof(CBigInt)), cudaMemcpyDeviceToHost);
     
     // print the result
-    
+    /*
     for (int i = 0; i < parasize; i++){
         printf("thread %d move A=%s to N=%s\n",i,Put(A,HEX),Put(h_N[i],HEX));
     }
+    */
 
     Mov_Big_Big(N,h_N[0]);
     //memcpy(N,h_N,parasize*(sizeof(CBigInt)));
@@ -651,3 +654,216 @@ void Sub_Big_Long_para(CBigInt *Y, CBigInt N, unsigned long A, int parasize)
     
     
 }
+
+/****************************************************************************************
+大数相乘
+调用形式：Mul_Big_Big(Y,N,A)
+返回值：X=N*A
+	A	a 0
+	N	c d
+		0					d*0
+		1			c*0 
+					d*a
+		2	c*a
+只有CBigInt *Y 看成是parasize个输入而CBigInt N, unsigned long A看成是一个只是并行parasize次
+****************************************************************************************/
+__global__ void mul_big_long_thread(CBigInt *dev_YY, CBigInt *dev_N,unsigned long *dev_A){
+    int idx = threadIdx.x; // this is how you get the thread index
+	unsigned long long mul;
+	unsigned long carry=0;
+	unsigned int i;
+	//CBigIntInit(&X);
+	//Mov_Big_Big(&X,N);;
+	for(i=0;i<dev_N->m_nLength;i++)
+	{
+		mul=(unsigned long long)(dev_N->m_ulValue[i]);
+		mul=mul*(*dev_A)+carry;
+		dev_YY[idx].m_ulValue[i]=(unsigned int)mul;
+		carry=(unsigned int)(mul>>32);
+	}
+	if(carry)
+	{
+		dev_YY[idx].m_nLength++;
+		dev_YY[idx].m_ulValue[dev_YY[idx].m_nLength-1]=carry;
+	}
+	i = dev_YY[idx].m_nLength-1;
+	while(dev_YY[idx].m_ulValue[i]==0 && i>0)
+	{
+		dev_YY[idx].m_nLength--;
+		i--;
+	}
+	//Mov_Big_Big(Y,X);
+
+}
+void Mul_Big_Long_para(CBigInt *YY, CBigInt N, unsigned long A, int parasize)
+{
+    CBigInt *h_N, *h_YY, *dev_N,*dev_YY;
+    unsigned long *h_A,*dev_A;
+    // host alloc and cuda malloc in one time
+	CHECK(cudaHostAlloc((void**) &h_N,sizeof(CBigInt),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_A,sizeof(unsigned long),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_YY,parasize*(sizeof(CBigInt)),cudaHostAllocDefault));
+ 
+    memcpy(h_N,&N,sizeof(CBigInt));
+    memcpy(h_A,&A,sizeof(unsigned long));
+    //printf("h_N = %s\n",Put(*h_N,HEX));
+    //printf("h_A = %s\n",Put(*h_A,HEX));
+  
+    CHECK(cudaMalloc((void **)&dev_N,sizeof(CBigInt)));
+    CHECK(cudaMalloc((void **)&dev_A,sizeof(unsigned long)));
+    CHECK(cudaMalloc((void **)&dev_YY,parasize*(sizeof(CBigInt))));
+ 
+    assignn_Big_to_Big_para(h_YY,N,32);
+
+    // transfer the array to the GPU my dude. Copy's contents of h_in to d_in
+    cudaMemcpy(dev_A, h_A, sizeof(unsigned long), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_N, h_N, sizeof(CBigInt), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_YY, h_YY, parasize*(sizeof(CBigInt)), cudaMemcpyHostToDevice);
+
+    // launch the kernel
+    mul_big_long_thread<<<1,parasize>>>(dev_YY,dev_N,dev_A);
+
+    // copy the result back to the CPU mem
+    cudaMemcpy(h_YY, dev_YY, parasize*(sizeof(CBigInt)), cudaMemcpyDeviceToHost);
+
+    //Mov_Big_Big(Y,h_YY[0]);
+    memcpy(YY,h_YY,parasize*(sizeof(CBigInt)));
+
+    
+    cudaFree(h_N);
+    cudaFree(h_A);
+    cudaFree(h_YY);
+    cudaFree(dev_N);
+    cudaFree(dev_A);
+    cudaFree(dev_YY);	
+   
+	
+}
+
+__global__ void mul_big_big_thread(CBigInt *dev_YY, CBigInt *dev_N,CBigInt *dev_A){
+    int idx = threadIdx.x; // this is how you get the thread index
+	CBigInt X;
+	unsigned long long sum,mul=0,carry=0;
+	unsigned int i,j;
+	if(dev_A->m_nLength==1)
+		dev_mov_big_long(&X,dev_A->m_ulValue[0]);
+	else
+	{
+		dev_cbigintinit(&X);
+		X.m_nLength=dev_N->m_nLength+dev_A->m_nLength-1;
+		for(i=0;i<X.m_nLength;i++)
+		{
+			sum=carry;
+			carry=0;
+			for(j=0;j<dev_A->m_nLength;j++)
+			{
+				if(((i-j)>=0)&&((i-j)<dev_N->m_nLength))
+				{
+					mul=dev_N->m_ulValue[i-j];
+					mul*=dev_A->m_ulValue[j];
+					carry+=mul>>32;
+					mul=mul&0xffffffff;
+					sum+=mul;
+				}
+			}				
+			carry+=sum>>32;
+			X.m_ulValue[i]=(unsigned long)sum;
+		}
+		if(carry)
+		{
+			X.m_nLength++;
+			X.m_ulValue[X.m_nLength-1]=(unsigned long)carry;
+		}
+		i = X.m_nLength-1;
+		while(X.m_ulValue[i]==0 && i>0)
+		{
+			X.m_nLength--;
+			i--;
+		}
+		dev_mov_big_big(&dev_YY[idx],X);
+	}
+
+}
+
+void Mul_Big_Big_para(CBigInt *YY, CBigInt N, CBigInt A, int parasize)
+{
+    CBigInt *h_N, *h_A, *h_YY, *dev_N, *dev_A, *dev_YY;
+    // host alloc and cuda malloc in one time
+	CHECK(cudaHostAlloc((void**) &h_N,sizeof(CBigInt),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_A,sizeof(CBigInt),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_YY,parasize*(sizeof(CBigInt)),cudaHostAllocDefault));
+ 
+    memcpy(h_N,&N,sizeof(CBigInt));
+    memcpy(h_A,&A,sizeof(CBigInt));
+    //printf("h_N = %s\n",Put(*h_N,HEX));
+    //printf("h_A = %s\n",Put(*h_A,HEX));
+  
+    CHECK(cudaMalloc((void **)&dev_N,sizeof(CBigInt)));
+    CHECK(cudaMalloc((void **)&dev_A,sizeof(CBigInt)));
+    CHECK(cudaMalloc((void **)&dev_YY,parasize*(sizeof(CBigInt))));
+ 
+    //assignn_Big_to_Big_para(h_YY,N,32);
+
+    // transfer the array to the GPU my dude. Copy's contents of h_in to d_in
+    cudaMemcpy(dev_A, h_A, sizeof(CBigInt), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_N, h_N, sizeof(CBigInt), cudaMemcpyHostToDevice);
+    //cudaMemcpy(dev_YY, h_YY, parasize*(sizeof(CBigInt)), cudaMemcpyHostToDevice);
+
+    // launch the kernel
+    mul_big_big_thread<<<1,parasize>>>(dev_YY,dev_N,dev_A);
+
+    // copy the result back to the CPU mem
+    cudaMemcpy(h_YY, dev_YY, parasize*(sizeof(CBigInt)), cudaMemcpyDeviceToHost);
+
+    //Mov_Big_Big(Y,h_YY[0]);
+    memcpy(YY,h_YY,parasize*(sizeof(CBigInt)));
+    /*
+    for(int i=0;i<parasize;i++){
+        printf("thread work out YY[%d] = %s\n",i,Put(YY[i],HEX));
+    }
+    */
+    
+    cudaFree(h_N);
+    cudaFree(h_A);
+    cudaFree(h_YY);
+    cudaFree(dev_N);
+    cudaFree(dev_A);
+    cudaFree(dev_YY);	
+
+}
+
+
+/****************************************************************************************
+大数相除
+调用形式：Div_Big_Big(P,N,A)
+返回值：P=N/A
+void Div_Big_Long_para(CBigInt *Y, CBigInt N, unsigned long A)
+{
+	CBigInt X;
+	unsigned long long div,mul;
+	unsigned long carry=0;
+	int i;
+	//CBigIntInit(X);
+	Mov_Big_Big(&X,N);;
+	if(X.m_nLength==1)
+	{
+		X.m_ulValue[0]=X.m_ulValue[0]/A;
+		Mov_Big_Big(Y,X);
+	}
+	else
+	{
+		for(i=X.m_nLength-1;i>=0;i--)
+		{
+			div=carry;
+			div=(div<<32)+X.m_ulValue[i];
+			X.m_ulValue[i]=(unsigned long)(div/A);
+			mul=(div/A)*A;
+			carry=(unsigned long)(div-mul);
+		}
+		if(X.m_ulValue[X.m_nLength-1]==0)
+			X.m_nLength--;
+		Mov_Big_Big(Y,X);
+	}
+}
+****************************************************************************************/
+
