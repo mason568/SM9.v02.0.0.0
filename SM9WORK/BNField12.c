@@ -392,7 +392,7 @@ void F12_exp(BNField12 *p, BNField12 b, CBigInt e)
 
 void parallel_F12_exp(BNField12 *p[], BNField12 b[], CBigInt e[],int num)
 {
-	char *bits[num],str[1024][num];
+	char *bits[num],str[num][1024];
 	int len[num];
 	BNField12 q[num];
 
@@ -414,7 +414,7 @@ void parallel_F12_exp(BNField12 *p[], BNField12 b[], CBigInt e[],int num)
 			for(int i=1;i<len[k];i++)
 			{
 				F12_square(&q[k],q[k]);
-				if(str[i][k]=='1')
+				if(str[k][i]=='1')
 					F12_multiply(&q[k],q[k],b[k]);			   
 			}
 			F12_assign(p[k],q[k]);
