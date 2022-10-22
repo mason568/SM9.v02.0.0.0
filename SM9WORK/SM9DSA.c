@@ -226,11 +226,15 @@ void parallel_DSA_Sign(CBigInt *h[], BNPoint *S[], BYTE *M, BNPoint P1, BNPoint2
 	{
 		F12_assign(&g[i],SIGNPRE.geP1Ppubs);
 		Get(&r[i],"033C8616B06704813203DFD00965022ED15975C662337AED648835DC4B1CBE",HEX);
-		F12_exp(&w[i],g[i],r[i]);//可以并行
+		//F12_exp(&w[i],g[i],r[i]);//可以并行
 	}
 
-	
-	//parallel_F12_exp(&w,g,r,num);
+	BNField12* para_w[num];
+	for(int i=0;i<num;i++)
+	{
+		para_w[i]=&w;
+	}
+	parallel_F12_exp(para_w,g,r,num);
 
 	//F12_toString(g,HEX);
 	//F12_toString(w,HEX);

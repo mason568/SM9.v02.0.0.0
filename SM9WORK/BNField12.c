@@ -389,35 +389,40 @@ void F12_exp(BNField12 *p, BNField12 b, CBigInt e)
 	}
 }
 
-/*
+
 void parallel_F12_exp(BNField12 *p[], BNField12 b[], CBigInt e[],int num)
 {
-	char *bits,str[1024];
-	int len,i;
-	BNField12 q;
-	if(F12_isZero(b))
-		F12_assign(p,b);
-	else
-	{
-		if(Cmp(e,BN.ZERO)==0)	
-			F12_assign_1(p);		
-        else 
-		{
+	char *bits[num],str[1024][num];
+	int len[num];
+	BNField12 q[num];
 
-	    	bits = Put(e, 2);
-	        len = strlen(bits);
-			strcpy(str,bits);
-        	F12_assign(&q,b);
-           for(i=1;i<len;i++)
-		   {
-	    	   F12_square(&q,q);
-	           if(str[i]=='1')
-		           F12_multiply(&q,q,b);			   
-		   }
-		   F12_assign(p,q);
-		}    	
-	}
-}*/
+	for(int k=0;k<num;k++)
+	{
+		if(F12_isZero(b[k]))
+			F12_assign(p[k],b[k]);
+		else
+		{
+			if(Cmp(e[k],BN.ZERO)==0)	
+				F12_assign_1(p[k]);		
+			else 
+			{
+
+				bits[k] = Put(e[k], 2);
+				len[k] = strlen(bits[k]);
+				strcpy(str[k],bits[k]);
+				F12_assign(&q[k],b[k]);
+			for(int i=1;i<len[k];i++)
+			{
+				F12_square(&q[k],q[k]);
+				if(str[i][k]=='1')
+					F12_multiply(&q[k],q[k],b[k]);			   
+			}
+			F12_assign(p[k],q[k]);
+			}    	
+		}		
+	}	
+
+}/**/
 
 
 
