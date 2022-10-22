@@ -46,8 +46,9 @@ void Mod_Big_Long_para(unsigned long *ZZ, CBigInt N, unsigned long A, int parasi
 
 
 # 2022.20.23 
-> todo:合并橙子哥的代码，确认接口引用方式，再修改
+## todo:
+1. 合并橙子哥的代码，确认接口引用方式，再修改
 
-> 重新写签名函数的，并行版本
+2. 重新写签名函数的，并行版本
 
-> 测试双线性对速度，在不同的parasize上实验
+3. 测试双线性对速度，在不同的parasize上实验
