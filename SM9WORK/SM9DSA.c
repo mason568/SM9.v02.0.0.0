@@ -57,7 +57,10 @@ void DSA_Demo()
 
     //数字签名阶段
 	start = clock();
-	int count = 10;
+	int count = 10; //一共需要处理的数量
+    const int num=10;//一次性处理的数量  count为num的整数倍
+
+
     struct timeval tv1,tv2;
 	long time_begin,time_end;
     gettimeofday(&tv1,NULL);//获取开始时间
@@ -66,13 +69,31 @@ void DSA_Demo()
     printf("millisecond: %d\n", tv1.tv_sec*1000 + tv1.tv_usec/1000);  //毫秒
     printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
 
-	
+	/*
+	//sequential
     while(count){
 
         DSA_Sign(&h, &S, M, P1, P_pub_s, dsA);
         //res = SM9_Verify(msg, 20, &sign, &pk, NULL);
         count--;
-    }
+    }*/
+    
+    //parallel
+	CBigInt *para_h[num];
+	BNPoint *para_S[num];
+	BNPoint para_dsA[num];
+	for(int i=0;i<num;i++)
+	{
+		para_h[i]=&h;
+		para_S[i]= &S;
+		para_dsA[i]=dsA;
+	}
+
+	for(int i=0;i<(count/num);i++)
+	{
+        parallel_DSA_Sign(para_h, para_S, M, P1, P_pub_s, para_dsA,num);	
+	}
+    
 
 	gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
     printf("second: %d s\n",tv2.tv_sec - tv1.tv_sec);  //秒
@@ -187,6 +208,49 @@ void DSA_Sign(CBigInt *h, BNPoint *S, BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoi
 	P_multiply(S,dsA,l);//可以
 	P_normorlize(S,*S);//可以
 	free(msg);
+}
+
+void parallel_DSA_Sign(CBigInt *h[], BNPoint *S[], BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoint dsA[],const int num)
+{
+	//for(int i=0;i<num;i++)
+	//{
+	//	DSA_Sign(h,S, M, P1, P_pub,dsA);
+	//}
+	BNField12 g[num],w[num];
+	CBigInt r[num],l[num];
+	unsigned int len1[num],len2[num];
+	BYTE *msg[num];
+
+    //F12_assign(&g,SIGNPRE.geP1Ppubs);//可以并行
+	for(int i=0;i<num;i++)
+	{
+		F12_assign(&g[i],SIGNPRE.geP1Ppubs);
+		Get(&r[i],"033C8616B06704813203DFD00965022ED15975C662337AED648835DC4B1CBE",HEX);
+		F12_exp(&w[i],g[i],r[i]);//可以并行
+	}
+
+	
+	//parallel_F12_exp(&w,g,r,num);
+
+	//F12_toString(g,HEX);
+	//F12_toString(w,HEX);
+
+	for(int i=0;i<num;i++)
+	{
+		len1[i] = strlen((const char*)M);
+		len2[i] = len1[i] + 384;
+		msg[i] = (BYTE*)malloc(len2[i]);
+		memcpy(msg[i],M,len1[i]);
+		F12toByte(&msg[i][len1[i]],w[i]);
+		Hash_2(h[i], msg[i], len2[i], BN.n);
+		CBigInt_substract_modN(&l[i],r[i],*h[i]);//可以并行
+		P_multiply(S[i],dsA[i],l[i]);//可以
+		P_normorlize(S[i],*S[i]);//可以
+		free(msg[i]);
+	}
+	    
+	//Hash_2(h, msg, len2, BN.n);//可以并行
+	//parallel_Hash_2(h, msg, len2, BN.n,num);
 }
 
 int DSA_Verify(CBigInt *h2, CBigInt h, BNPoint S, BYTE *M, BYTE *ID,BNPoint P1, BNPoint2 P2, BNPoint2 P_pub)

@@ -389,6 +389,37 @@ void F12_exp(BNField12 *p, BNField12 b, CBigInt e)
 	}
 }
 
+/*
+void parallel_F12_exp(BNField12 *p[], BNField12 b[], CBigInt e[],int num)
+{
+	char *bits,str[1024];
+	int len,i;
+	BNField12 q;
+	if(F12_isZero(b))
+		F12_assign(p,b);
+	else
+	{
+		if(Cmp(e,BN.ZERO)==0)	
+			F12_assign_1(p);		
+        else 
+		{
+
+	    	bits = Put(e, 2);
+	        len = strlen(bits);
+			strcpy(str,bits);
+        	F12_assign(&q,b);
+           for(i=1;i<len;i++)
+		   {
+	    	   F12_square(&q,q);
+	           if(str[i]=='1')
+		           F12_multiply(&q,q,b);			   
+		   }
+		   F12_assign(p,q);
+		}    	
+	}
+}*/
+
+
 
 /*
   显示十二次扩域元素
