@@ -30,7 +30,7 @@ __device__ void dev_cbigintinit(CBigInt *d_A);
 ```
 
 
-# 2022.10.21
+# 2022.10.22
 > @zjc 将一些基本的运算，直接改写成在__device__ 函数，由GPU进行调用，便于并行如Mod_Big_Big_para这样的函数
 
 > 重写了一些函数,并测试
@@ -43,3 +43,11 @@ void Div_Big_Big_para(CBigInt *MM,CBigInt N, CBigInt A,int parasize);
 void Mod_Big_Big_para(CBigInt *ZZ,CBigInt N, CBigInt A, int parasize);
 void Mod_Big_Long_para(unsigned long *ZZ, CBigInt N, unsigned long A, int parasize);
 ```
+
+
+# 2022.20.23 
+> todo:合并橙子哥的代码，确认接口引用方式，再修改
+
+> 重新写签名函数的，并行版本
+
+> 测试双线性对速度，在不同的parasize上实验
