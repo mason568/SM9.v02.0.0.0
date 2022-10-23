@@ -215,6 +215,83 @@ void P_add(BNPoint *p, BNPoint p1, BNPoint p2)
 	}
 }
 
+/*
+void parallel_P_add(BNPoint *p[], BNPoint p1[], BNPoint p2[],int num)
+{
+	
+	CBigInt t1[num],t2[num],t3[num],t4[num],t5[num];
+	CBigInt A[num],B[num],C[num],D[num],x[num],y[num],z[num];
+
+
+	if(P_isZero(p1[0]))
+	{
+		for(int i=0;i<num;i++)
+		{
+			P_assign(p[i],p2[i]);
+		}
+	}
+	else if(P_isZero(p2[0]))
+	{
+		for(int i=0;i<num;i++)
+		{
+			P_assign(p[i],p1[i]);
+		}
+	}
+	else if(P_equal(p1[0],p2[0]))
+	{
+		//P_twice(p,p1);
+		for(int i=0;i<num;i++)
+		{
+			P_twice(p[i],p1[i]);
+		}
+	}
+	else
+	{ 
+	   Mul_Big_Big_para(&t1[0],p1[0].z,p1[0].z,num);
+	   Mul_Big_Big_para(&t2[0],p2[0].z,p2[0].z,num);
+	   Mul_Big_Big_para(&t3[0],t1[0],p1[0].z,num);
+	   Mod_Big_Big_para(&t3[0],t3[0],BN.q,num); //mod约减，防止越界
+	   Mul_Big_Big_para(&t4[0],t2[0],p2[0].z,num);
+	   Mod_Big_Big_para(&t4[0],t4[0],BN.q,num);//mod约减，防止越界
+	   Mul_Big_Big_para(&t3[0],p2[0].y,t3[0],num);
+	   Mul_Big_Big_para(&A[0],p1[0].y,t4[0],num);
+	   CBigInt_substract_para(&A[0],t3[0],A[0],num);
+
+	   Mul_Big_Big_para(&t3[0],p2[0].x,t1[0],num);
+	   Mul_Big_Big_para(&t5[0],p1[0].x,t2[0],num);
+	   CBigInt_substract_para(&B[0],t3[0],t5[0],num);
+  
+	   Mul_Big_Big_para(&C[0],p1[0].z,p2[0].z,num);
+	   Add_Big_Big_para(&D[0],t3[0],t5[0],num);
+	   Mod_Big_Big_para(&D[0],D[0],BN.q,num); //mod约减，防止越界
+
+	   Mul_Big_Big_para(&t3[0],B[0],B[0],num);
+	   Mul_Big_Big_para(&t5[0],t3[0],D[0],num);
+	   Mul_Big_Big_para(&x[0],A[0],A[0],num);
+	   CBigInt_substract_para(&x[0],x[0],t5[0],num);
+  
+	   Mod_Big_Big_para(&t2[0],t2[0],BN.q,num);  //mod约减，防止越界
+	   Mod_Big_Big_para(&t3[0],t3[0],BN.q,num);  //mod约减，防止越界
+	   Mul_Big_Big_para(&t5[0],t3[0],t2[0],num);
+	   Mul_Big_Big_para(&t5[0],p1[0].x,t5[0],num);
+	   CBigInt_substract_para(&t5[0],t5[0],x[0],num);
+	   Mul_Big_Big_para(&t5[0],A[0],t5[0],num);
+	   Mul_Big_Big_para(&t3[0],t3[0],B[0],num);
+	   Mul_Big_Big_para(&t3[0],t3[0],t4[0],num);
+	   Mod_Big_Big_para(&t3[0],t3[0],BN.q,num);  //mod约减，防止越界
+	   Mul_Big_Big_para(&t3[0],p1[0].y,t3[0],num);
+	   CBigInt_substract(&y[0],t5[0],t3[0],num);
+
+	   Mul_Big_Big_para(&z[0],B[0],C[0],num); 
+	  	
+		for(int i=0;i<num;i++)
+		{
+			P_construct(p[i],x[i],y[i],z[i]);
+		}
+	
+	}
+}*/
+
 
 /*
    BNPoint: *p = 2*q；
