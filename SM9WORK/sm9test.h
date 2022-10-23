@@ -30,4 +30,6 @@ void test_Div_Big_Big_para();
 void test_Mod_Big_Big_para();
 void test_Mod_Big_Long_para();
 
+void test_Get_para();
+
 #endif

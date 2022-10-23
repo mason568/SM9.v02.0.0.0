@@ -1340,3 +1340,107 @@ void Mod_Big_Long_para(unsigned long *ZZ, CBigInt N, unsigned long A,int parasiz
     cudaFree(dev_A);
     cudaFree(dev_ZZ);
 }
+
+
+/****************************************************************************************
+从字符串按10进制或16进制格式输入到 N个 大数
+调用格式：Get(N,str,sys)
+返回值：N被赋值为相应大数
+sys暂时只能为10或16
+****************************************************************************************/
+__global__ void get_para_thread(CBigInt *dev_NN, char* dev_str, unsigned int *dev_system, int str_len){
+    int idx = threadIdx.x;   
+    int i;
+	//char s[1024];
+	int k;
+	//CBigInt N;
+	dev_cbigintinit(&(dev_NN[idx]));
+	//memset(s, 0x00, sizeof(s));
+    //len = strlen(dev_str);
+	//printf("this is a test for string: %s \n",str);
+	//dev_strcpy(s, dev_str,len);
+	//printf("this is a test for string: %s \n",s);
+	//getchar();
+	
+	dev_mov_big_long(&(dev_NN[idx]),0);
+	//for(i = len -1;i >= 0;i --)
+	//printf("hhh \n");
+	for(i = 0; i < str_len; i++)
+	{
+		dev_mul_big_long(&(dev_NN[idx]),dev_NN[idx],(unsigned long)*dev_system);
+		//Mov_Big_Big(N,Mul_Big_Long(N,system));
+		if((dev_str[i]>='0')&&(dev_str[i]<='9'))
+			k=dev_str[i]-48;
+		else 
+			if((dev_str[i]>='A')&&(dev_str[i]<='F'))
+				k=dev_str[i]-55;
+		else 
+			if((dev_str[i]>='a')&&(dev_str[i]<='f'))
+				k=dev_str[i]-87;
+		else k=0;
+		//Mov_Big_Big(N,Add_Big_Long(N,k));
+
+			/*for(int i=N->m_nLength-1;i>=0;i--)
+			{
+				printf(" %lx ",N->m_ulValue[i]);
+			}
+			printf(" + %d ===> ",k);*/
+
+		dev_add_big_long(&(dev_NN[idx]),dev_NN[idx],k);
+
+			/*for(int i=N->m_nLength-1;i>=0;i--)
+			{
+				printf("%lx ",N->m_ulValue[i]);
+			}
+			printf("# \n");
+			*/
+	}
+	//return N;
+
+}
+void Get_para(CBigInt *NN, char* str, unsigned int system, int parasize)
+{
+    CBigInt *h_NN, *dev_NN;
+    char *h_str,*dev_str;
+    unsigned int * h_system,*dev_system;
+    int h_len,dev_len;
+    h_len = sizeof(str);
+    
+    // host alloc and cuda malloc in one time
+	CHECK(cudaHostAlloc((void**) &h_NN,parasize*sizeof(CBigInt),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_str,1024,cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &dev_system,sizeof(unsigned int),cudaHostAllocDefault));
+    //CHECK(cudaHostAlloc((void**) &h_ZZ,parasize*(sizeof(unsigned long)),cudaHostAllocDefault));
+    
+    memcpy(h_str,&str,h_len*sizeof(char));
+    //memcpy(h_A,&A,sizeof(unsigned long));
+    //printf("h_N = %s\n",Put(*h_N,HEX));
+    //printf("h_A = %s\n",Put(*h_A,HEX));
+  
+    CHECK(cudaMalloc((void **)&dev_NN,parasize*sizeof(CBigInt)));
+    //CHECK(cudaMalloc((void **)&dev_A,sizeof(unsigned long)));
+    CHECK(cudaMalloc((void **)&dev_str,parasize*sizeof(char)));
+
+    // transfer the array to the GPU my dude. Copy's contents of h_in to d_in
+    cudaMemcpy(dev_str, h_str, 1024, cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_system, &system, sizeof(unsigned int), cudaMemcpyHostToDevice);
+    //cudaMemcpy(dev_ZZ, h_ZZ, parasize*(sizeof(CBigInt)), cudaMemcpyHostToDevice);
+
+    // launch the kernel
+    get_para_thread<<<1,parasize>>>(dev_NN,dev_str,dev_system,h_len);
+
+    // copy the result back to the CPU mem
+    cudaMemcpy(h_NN, dev_NN, parasize*(sizeof(CBigInt)), cudaMemcpyDeviceToHost);
+
+    //Mov_Big_Big(Y,h_YY[0]);
+    memcpy(NN,h_NN,parasize*(sizeof(CBigInt)));
+
+    
+    cudaFree(h_NN);
+    cudaFree(h_str);
+    cudaFree(h_system);
+    cudaFree(dev_NN);
+    cudaFree(dev_str);
+    cudaFree(dev_system);
+	
+}

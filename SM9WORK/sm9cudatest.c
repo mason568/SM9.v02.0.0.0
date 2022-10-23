@@ -74,7 +74,8 @@ int main(){
     //test_Div_Big_Long_para();
     //test_Div_Big_Big_para();
     //test_Mod_Big_Big_para();
-    test_Mod_Big_Long_para();
+    //test_Mod_Big_Long_para();
+    test_Get_para();
 
     return 0;
 } 

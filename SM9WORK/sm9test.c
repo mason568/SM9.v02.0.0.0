@@ -1646,3 +1646,26 @@ void test_Mod_Big_Long_para(){
     printf("test_Mod_Big_Big_para test: over! \n");
 
 }
+
+void test_Get_para(){
+
+    printf("test_Get_para test: Begin! \n");
+    
+    CBigInt Y;
+    CBigInt *YY = (CBigInt *)malloc(32*sizeof(CBigInt));
+    char array_2[65];
+    strcpy(array_2, "93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD3");
+    //CBigInt *PYY= (CBigInt *)malloc(32*sizeof(CBigInt));
+    unsigned long a = 2;
+    //Get(&N,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD3",HEX);
+	//Get(&A,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
+
+    Get_para(YY,array_2,HEX,32);
+    printf("h_str = %s\n",array_2);
+    //printf("h_A = %s\n",Put(A,HEX));
+    //printf("h_A = %ld\n",a);
+    printf("h_YY 12 = %s\n",Put(YY[12],HEX));
+    Get(&Y,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD3",HEX);
+    printf("original Get answer = %s\n", Put(Y,HEX));
+    printf("test_Get_para test: over! \n");
+}
