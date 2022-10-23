@@ -337,6 +337,53 @@ void P_twice(BNPoint *p, BNPoint q)
 }
 
 /*
+void parallel_P_twice(BNPoint *p[], BNPoint q[], int num)
+{
+
+    CBigInt t1[num],t2[num],t3[num],t4[num],t5[num];
+	CBigInt x[num],y[num],z[num];
+
+	if(P_isZero(q[0]))
+	{		
+		for(int i=0;i<num;i++)
+		{
+			P_assign(p[i],q[i]);
+		}
+	}
+	else
+	{
+		Mul_Big_Big_para(&t1[0],q.x,q.x);
+		Mod_Big_Big_para(&t1[0],t1,BN.q);   //mod约减，防止越界
+		Mul_Big_Big_para(&t2[0],t1,t1);
+		Mod_Big_Big_para(&t2[0],t2,BN.q);   //mod约减，防止越界
+		Mul_Big_Long_para(&t2[0],t2,9);
+		Mul_Big_Big_para(&t3[0],q.y,q.y);
+		Mul_Big_Big_para(&t4[0],t3,q.x);
+		Mod_Big_Big_para(&t4[0],t4,BN.q);   //mod约减，防止越界
+		Mul_Big_Long_para(&t5[0],t4,8);
+	
+		CBigInt_substract_para(&x[0],t2,t5);
+		Mul_Big_Long_para(&t5[0],t4,4);
+		CBigInt_substract_para(&t5[0],t5,x);
+		Mod_Big_Big_para(&t1[0],t1,BN.q);   //mod约减，防止越界
+		Mul_Big_Big_para(&t5[0],t5,t1);
+		Mul_Big_Long_para(&t5[0],t5,3);
+        Mod_Big_Big_para(&t5[0],t5,BN.q);  //mod约减，防止越界
+		Mod_Big_Big_para(&t3[0],t3,BN.q);  //mod约减，防止越界
+		Mul_Big_Big_para(&t4[0],t3,t3);
+		Mul_Big_Long_para(&t4[0],t4,8);
+		CBigInt_substract_para(&y[0],t5,t4);
+		Mul_Big_Big_para(&z[0],q.y,q.z);
+		Add_Big_Big_para(&z[0],z,z);
+
+		for(int i=0;i<num;i++)
+		{
+			P_construct(p[i],x[i],y[i],z[i]);
+		}
+	}
+}*/
+
+/*
   计算 BNPoint: *p = k*q；
    k为大于等于0的正整数
 
@@ -370,6 +417,35 @@ void P_multiply(BNPoint *p, BNPoint q, CBigInt k)
 	}
 	P_assign(p,t);
 }
+/*
+void parallel_P_multiply(BNPoint *p, BNPoint q, CBigInt k)
+{
+	
+	char *bits,str[1024];
+	int len,i;
+	BNPoint t;	
+	if(Cmp(k,BN.ZERO)==0)
+		Mov_Big_Long(&t.z,0);
+    else 
+	{	
+     	bits = Put(k,2);	
+		len = strlen(bits);
+		
+		//str = (char *)malloc(len);
+	//	for(i=0; i<len; i++)
+	//		str[i] = bits[i];
+		strcpy(str,bits);
+    	P_assign(&t,q);
+
+       for(i=1;i<len;i++)
+	   {
+	    	P_twice(&t,t);
+	    	if(str[i]=='1')			
+		    	P_add(&t,t,q);	
+	   }
+	}
+	P_assign(p,t);
+}*/
 
 /*
 判断点是否在BN曲线y^2 = x^3 + 5 z^6
