@@ -44,13 +44,19 @@ void Mod_Big_Big_para(CBigInt *ZZ,CBigInt N, CBigInt A, int parasize);
 void Mod_Big_Long_para(unsigned long *ZZ, CBigInt N, unsigned long A, int parasize);
 ```
 
-
 # 2022.20.23 
+> @zjc 完成CBigint.c内函数的重写
+
+
+# 2022.20.24 
+
 ## todo:
 1. 合并橙子哥的代码，确认接口引用方式，再修改
 
 2. 重新写签名函数的，并行版本，给出第一个优化版本的测试数据
 
 3. 测试双线性对速度，在不同的parasize上实验
+
+4. 下午开会讨论，不想写文档233333
 ## idea
-我感觉是完不成了，争取明天后天把上面的todo做完，然后一天做一个讨论会上讲的优化方案？？？？ 
+我感觉是完不成了，争取今天把上面的todo做完，然后一天做一个讨论会上讲的优化方案？？？？ 
