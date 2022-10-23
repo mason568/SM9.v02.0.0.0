@@ -136,8 +136,8 @@ void  P2_negate(BNPoint2 *p, BNPoint2 b)
 
  */
 
-/*
-void 5P2_add(BNPoint2 *p, BNPoint2 p1, BNPoint2 p2)
+
+void P2_add(BNPoint2 *p, BNPoint2 p1, BNPoint2 p2)
 {
 	
 	BNField2 t1,t2,t3,t4,t5;
@@ -187,7 +187,7 @@ void 5P2_add(BNPoint2 *p, BNPoint2 p1, BNPoint2 p2)
 	   P2_construct(p,x,y,z);
 	}
 }
-*/
+
 
 
 /*

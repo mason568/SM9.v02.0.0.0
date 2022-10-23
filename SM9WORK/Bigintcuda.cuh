@@ -34,7 +34,9 @@ extern "C" {          //告诉编译器，这部分代码按C语言的格式进�
     void Mod_Big_Long_para(unsigned long *ZZ, CBigInt N, unsigned long A, int parasize);
 
     void Get_para(CBigInt *NN, char* str, unsigned int system, int parasize);
-
+    void Put_para(CBigInt *NN, unsigned int system,int parasize);
+    void Inv_para(CBigInt *ZZ, CBigInt N, CBigInt A, int parasize);
+    void Exp_para(CBigInt *ZZ, CBigInt N, CBigInt A, CBigInt B, int parasize);
 
 #ifdef __cplusplus
 }

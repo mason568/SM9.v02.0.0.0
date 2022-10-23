@@ -342,6 +342,7 @@ void Div_Big_Big(CBigInt *M,CBigInt N, CBigInt A)
 		Div_Big_Long(M,N,A.m_ulValue[0]);
 	else
 	{
+        
 		CBigIntInit(&X);
 		CBigIntInit(&Y);
 		CBigIntInit(&Z);
@@ -549,7 +550,7 @@ void Get(CBigInt *N, char* str, unsigned int system)
 	len = strlen(str);
 	Mov_Big_Long(N,0);
 	//for(i = len -1;i >= 0;i --)
-	//printf("hhh \n");
+	//printf("Get len = %d \n", len);
 	for(i = 0; i < len; i++)
 	{
 		Mul_Big_Long(N,*N,system);
@@ -674,6 +675,7 @@ void Inv(CBigInt *Z, CBigInt N, CBigInt A)
 	Mov_Big_Long(&X,0);
 	Mov_Big_Long(&Y,1);
 	x=y=1;
+    //printf("Test Cbitint A= %s\n",Put(A,HEX));
 	while((E.m_nLength!=1)||(E.m_ulValue[0]!=0))
 	{
 		//Mov_Big_Big(&I,Div_Big_Big(M,E));

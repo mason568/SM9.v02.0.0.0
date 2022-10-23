@@ -232,6 +232,160 @@ __device__ unsigned long dev_mod_big_long(CBigInt N, unsigned long A)
 	}
 	return carry;
 }
+
+
+__device__ void dev_mod_big_big(CBigInt *Z,CBigInt N, CBigInt A)
+{
+	CBigInt X,Y;
+	unsigned long long div,num;
+	unsigned long carry=0;
+	unsigned int i,len;
+	dev_cbigintinit(&X);
+	dev_cbigintinit(&Y);
+	dev_mov_big_big(&X,N);//dev_mov_big_big
+	while(dev_cmp(&X,&A)>=0)
+	{
+		div=X.m_ulValue[X.m_nLength-1];
+		num=A.m_ulValue[A.m_nLength-1];
+		len=X.m_nLength-A.m_nLength;
+		if((div==num)&&(len==0))
+		{
+			//Mov_Big_Big(&X,Sub_Big_Big(X,A));
+			dev_sub_big_big(&X,X,A);//dev_sub_big_big
+			break;
+		}
+		if((div<=num)&&len)
+		{
+			len--;div=(div<<32)+X.m_ulValue[X.m_nLength-2];
+		}
+		div=div/(num+1);
+		dev_mov_big_long(&Y,div);	//dev_mov_big_long	
+		//Mov_Big_Big(&Y,Mul_Big_Big(A,Y));
+		dev_mul_big_big(&Y,A,Y); //dev_mul_big_big
+		if(len)
+		{
+			Y.m_nLength+=len;
+			for(i=Y.m_nLength-1;i>=len;i--)
+				Y.m_ulValue[i]=Y.m_ulValue[i-len];
+			for(i=0;i<len;i++)
+				Y.m_ulValue[i]=0;
+		}
+		//Mov_Big_Big(&X,Sub_Big_Big(X,Y));
+		dev_sub_big_big(&X,X,Y);
+	}
+	dev_mov_big_big(Z,X);
+}
+
+__device__ void dev_div_big_long(CBigInt *Y, CBigInt N, unsigned long A)
+{
+	CBigInt X;
+	unsigned long long div,mul;
+	unsigned long carry=0;
+	int i;
+	//CBigIntInit(X);
+	dev_mov_big_big(&X,N);;
+	if(X.m_nLength==1)
+	{
+		X.m_ulValue[0]=X.m_ulValue[0]/A;
+		dev_mov_big_big(Y,X);
+	}
+	else
+	{
+		for(i=X.m_nLength-1;i>=0;i--)
+		{
+			div=carry;
+			div=(div<<32)+X.m_ulValue[i];
+			X.m_ulValue[i]=(unsigned long)(div/A);
+			mul=(div/A)*A;
+			carry=(unsigned long)(div-mul);
+		}
+		if(X.m_ulValue[X.m_nLength-1]==0)
+			X.m_nLength--;
+		dev_mov_big_big(Y,X);
+	}
+}
+
+__device__ void dev_div_big_big(CBigInt *M,CBigInt N, CBigInt A)
+{
+	CBigInt X,Y,Z,T;
+	unsigned int i,len;
+	unsigned long long num,div;
+	if(A.m_nLength==1)
+		dev_div_big_long(M,N,A.m_ulValue[0]);
+	else
+	{
+		dev_cbigintinit(&X);
+		dev_cbigintinit(&Y);
+		dev_cbigintinit(&Z);
+		dev_cbigintinit(&T);
+		dev_mov_big_big(&Y,N);
+		while(dev_cmp(&Y,&A)>=0)
+		{        
+			div=Y.m_ulValue[Y.m_nLength-1];
+			num=A.m_ulValue[A.m_nLength-1];
+			len=Y.m_nLength-A.m_nLength;
+			if((div==num)&&(len==0))
+			{
+				//Mov_Big_Big(&X,Add_Big_Long(X,1));
+				dev_add_big_long(&X,X,1);//dev_add_big_long
+				break;
+			}
+			if((div<=num)&&len)
+			{
+				len--;
+				div=(div<<32)+Y.m_ulValue[Y.m_nLength-2];
+			}
+			div=div/(num+1);
+			dev_mov_big_long(&Z,div);
+			if(len)
+			{
+				Z.m_nLength+=len;
+				for(i=Z.m_nLength-1;i>=len;i--)
+					Z.m_ulValue[i]=Z.m_ulValue[i-len];
+				for(i=0;i<len;i++)
+					Z.m_ulValue[i]=0;
+			}
+			//Mov_Big_Big(&X,Add_Big_Big(X,Z));
+			dev_add_big_big(&X,X,Z);
+			//Mov_Big_Big(&Y,Sub_Big_Big(Y,Mul_Big_Big(A,Z)));
+			dev_mul_big_big(&T,A,Z);
+			dev_sub_big_big(&Y,Y,T);
+		}
+		dev_mov_big_big(M,X);
+	}
+}
+
+
+__device__ char* dev_put(CBigInt *N, unsigned int system)
+{
+	char* str;	
+	char t[17]="0123456789ABCDEF";
+	int i, a, len;
+	char s[1024] = {"0"};
+	char s1[1024] = {"0"};
+	CBigInt X;
+	str="";
+	if((N->m_nLength==1)&&(N->m_ulValue[0]==0))
+	{
+		str="0";
+		return str;
+	}
+
+	dev_cbigintinit(&X);
+	dev_mov_big_big(&X,*N);;
+	for(i = 0; X.m_ulValue[X.m_nLength-1]>0; i ++)
+	{
+		a=dev_mod_big_long(X,system);
+		s[i] = t[a]; 
+		//Mov_Big_Big(&X,Div_Big_Long(X,system));
+		dev_div_big_long(&X,X,system);
+	}
+	len = i-1;  
+	for( i= 0; i<= len; i++)
+		s1[i] = s[len-i];
+	str = s1;
+	return str;
+}
 /****************************************************************************************
 //构造大数对象并初始化为零 + 其对应的kernal函数
 若想返回parasize的数据量请启用 free the device yo 之前的memcpy 并注释替代函数
@@ -1197,7 +1351,7 @@ __global__ void mod_big_big_thread(CBigInt *dev_YY, CBigInt *dev_N,CBigInt *dev_
     int idx = threadIdx.x;    
     CBigInt X,Y;
 	unsigned long long div,num;
-	unsigned long carry=0;
+	//unsigned long carry=0;
 	unsigned int i,len;
 	dev_cbigintinit(&X);
 	dev_cbigintinit(&Y);
@@ -1348,27 +1502,18 @@ void Mod_Big_Long_para(unsigned long *ZZ, CBigInt N, unsigned long A,int parasiz
 返回值：N被赋值为相应大数
 sys暂时只能为10或16
 ****************************************************************************************/
-__global__ void get_para_thread(CBigInt *dev_NN, char* dev_str, unsigned int *dev_system, int str_len){
+__global__ void get_para_thread(CBigInt *dev_NN, char* dev_str, unsigned int dev_system, int str_len){
     int idx = threadIdx.x;   
     int i;
-	//char s[1024];
 	int k;
-	//CBigInt N;
 	dev_cbigintinit(&(dev_NN[idx]));
-	//memset(s, 0x00, sizeof(s));
-    //len = strlen(dev_str);
-	//printf("this is a test for string: %s \n",str);
-	//dev_strcpy(s, dev_str,len);
-	//printf("this is a test for string: %s \n",s);
-	//getchar();
+
 	
 	dev_mov_big_long(&(dev_NN[idx]),0);
-	//for(i = len -1;i >= 0;i --)
-	//printf("hhh \n");
+
 	for(i = 0; i < str_len; i++)
 	{
-		dev_mul_big_long(&(dev_NN[idx]),dev_NN[idx],(unsigned long)*dev_system);
-		//Mov_Big_Big(N,Mul_Big_Long(N,system));
+		dev_mul_big_long(&(dev_NN[idx]),dev_NN[idx],(unsigned long)dev_system);
 		if((dev_str[i]>='0')&&(dev_str[i]<='9'))
 			k=dev_str[i]-48;
 		else 
@@ -1378,69 +1523,308 @@ __global__ void get_para_thread(CBigInt *dev_NN, char* dev_str, unsigned int *de
 			if((dev_str[i]>='a')&&(dev_str[i]<='f'))
 				k=dev_str[i]-87;
 		else k=0;
-		//Mov_Big_Big(N,Add_Big_Long(N,k));
-
-			/*for(int i=N->m_nLength-1;i>=0;i--)
-			{
-				printf(" %lx ",N->m_ulValue[i]);
-			}
-			printf(" + %d ===> ",k);*/
 
 		dev_add_big_long(&(dev_NN[idx]),dev_NN[idx],k);
 
-			/*for(int i=N->m_nLength-1;i>=0;i--)
-			{
-				printf("%lx ",N->m_ulValue[i]);
-			}
-			printf("# \n");
-			*/
 	}
-	//return N;
+
 
 }
 void Get_para(CBigInt *NN, char* str, unsigned int system, int parasize)
 {
+    
     CBigInt *h_NN, *dev_NN;
     char *h_str,*dev_str;
-    unsigned int * h_system,*dev_system;
-    int h_len,dev_len;
-    h_len = sizeof(str);
+    int h_len = strlen(str);
     
     // host alloc and cuda malloc in one time
 	CHECK(cudaHostAlloc((void**) &h_NN,parasize*sizeof(CBigInt),cudaHostAllocDefault));
     CHECK(cudaHostAlloc((void**) &h_str,1024,cudaHostAllocDefault));
-    CHECK(cudaHostAlloc((void**) &dev_system,sizeof(unsigned int),cudaHostAllocDefault));
-    //CHECK(cudaHostAlloc((void**) &h_ZZ,parasize*(sizeof(unsigned long)),cudaHostAllocDefault));
-    
-    memcpy(h_str,&str,h_len*sizeof(char));
-    //memcpy(h_A,&A,sizeof(unsigned long));
-    //printf("h_N = %s\n",Put(*h_N,HEX));
-    //printf("h_A = %s\n",Put(*h_A,HEX));
+
+    strcpy(h_str,str);
+
   
     CHECK(cudaMalloc((void **)&dev_NN,parasize*sizeof(CBigInt)));
-    //CHECK(cudaMalloc((void **)&dev_A,sizeof(unsigned long)));
-    CHECK(cudaMalloc((void **)&dev_str,parasize*sizeof(char)));
+    CHECK(cudaMalloc((void **)&dev_str,1024));
 
     // transfer the array to the GPU my dude. Copy's contents of h_in to d_in
     cudaMemcpy(dev_str, h_str, 1024, cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_system, &system, sizeof(unsigned int), cudaMemcpyHostToDevice);
-    //cudaMemcpy(dev_ZZ, h_ZZ, parasize*(sizeof(CBigInt)), cudaMemcpyHostToDevice);
+
 
     // launch the kernel
-    get_para_thread<<<1,parasize>>>(dev_NN,dev_str,dev_system,h_len);
+    get_para_thread<<<1,parasize>>>(dev_NN,dev_str,system,h_len);
 
     // copy the result back to the CPU mem
     cudaMemcpy(h_NN, dev_NN, parasize*(sizeof(CBigInt)), cudaMemcpyDeviceToHost);
 
-    //Mov_Big_Big(Y,h_YY[0]);
     memcpy(NN,h_NN,parasize*(sizeof(CBigInt)));
-
     
     cudaFree(h_NN);
     cudaFree(h_str);
-    cudaFree(h_system);
     cudaFree(dev_NN);
     cudaFree(dev_str);
-    cudaFree(dev_system);
+	
+}
+
+/****************************************************************************************
+将大数按10进制或16进制格式输出为字符串
+调用格式：Put_para(N,str,sys,num)
+返回值：无，直接GPU打印多个大数为16或者10进制字符串 
+sys暂时只能为10或16
+****************************************************************************************/
+__global__ void put_para_thread(CBigInt *dev_NN, unsigned int dev_system){
+    int idx = threadIdx.x;
+    printf("dev_NN[%d] CBigInt = %s\n",idx,dev_put(&(dev_NN[idx]),dev_system));
+}
+
+void Put_para(CBigInt *NN, unsigned int system,int parasize)
+{
+    CBigInt *dev_NN;
+
+    // host alloc and cuda malloc in one time
+    CHECK(cudaMalloc((void **)&dev_NN,parasize*sizeof(CBigInt)));
+
+
+    // transfer the array to the GPU my dude. Copy's contents of h_in to d_in
+    cudaMemcpy(dev_NN, NN, parasize*sizeof(CBigInt), cudaMemcpyHostToDevice);
+
+    // launch the kernel
+    put_para_thread<<<1,parasize>>>(dev_NN,system);
+    // copy the result back to the CPU mem
+    cudaFree(dev_NN);
+	
+}
+
+
+/****************************************************************************************
+求不定方程ax-by=1的最小整数解
+调用方式：Inv_para(N,A,num)
+返回值：Z,满足：NZ mod A=1
+****************************************************************************************/
+__global__ void inv_para_thread(CBigInt *dev_NN, CBigInt *dev_N, CBigInt *dev_A){
+    int idx = threadIdx.x;
+	CBigInt M,E,X,Y,I,J;
+	int x,y;	
+	dev_cbigintinit(&M);
+	dev_cbigintinit(&E);
+	dev_cbigintinit(&X);
+	dev_cbigintinit(&Y);
+	dev_cbigintinit(&I);
+	dev_cbigintinit(&J);
+	if(dev_cmp(dev_N,dev_A)>=0)//dev_cmp
+		dev_mod_big_big(dev_N,*dev_N,*dev_A);//dev_mod_big_big
+	dev_mov_big_big(&M,*dev_A);
+	dev_mov_big_big(&E,*dev_N);
+	dev_mov_big_long(&X,0); //dev_mov_big_long
+	dev_mov_big_long(&Y,1);
+	x=y=1;
+    //printf("Para Test Cbitint  dev_A\n");
+    //printf("Para Test Cbitint  dev_A= %s\n",dev_put(dev_A,HEX)); //Put(YY[12],HEX)
+	while((E.m_nLength!=1)||(E.m_ulValue[0]!=0))
+	{
+		//Mov_Big_Big(&I,Div_Big_Big(M,E));
+		dev_div_big_big(&I,M,E); //dev_div_big_big
+		//Mov_Big_Big(&J,Mod_Big_Big(M,E));
+		dev_mod_big_big(&J,M,E);//dev_mod_big_big
+		dev_mov_big_big(&M,E);
+		dev_mov_big_big(&E,J);
+		dev_mov_big_big(&J,Y);
+		//Mov_Big_Big(&Y,Mul_Big_Big(Y,I));
+		dev_mul_big_big(&Y,Y,I); //dev_mul_big_big
+		if(x==y)
+		{
+			if(dev_cmp(&X,&Y)>=0)
+				dev_sub_big_big(&Y,X,Y); // Mov_Big_Big(&Y,Sub_Big_Big(X,Y));
+			else
+			{
+				//Mov_Big_Big(&Y,Sub_Big_Big(Y,X));
+				dev_sub_big_big(&Y,Y,X);
+				y=0;
+			}
+		}
+		else
+		{
+			//Mov_Big_Big(&Y,Add_Big_Big(X,Y));
+			dev_add_big_big(&Y,X,Y);
+			x=1-x;
+			y=1-y;
+		}
+		dev_mov_big_big(&X,J);
+	}
+	if(x==0)
+		dev_sub_big_big(&X,*dev_A,X);  // Mov_Big_Big(&X,Sub_Big_Big(A,X));
+	if(dev_cmp(&X,dev_A)>= 0)
+	    dev_mod_big_big(&X,X,*dev_A);
+	dev_mov_big_big(&(dev_NN[idx]),X); //dev_mov_big_big
+}
+
+void Inv_para(CBigInt *ZZ, CBigInt N, CBigInt A, int parasize)
+{
+    CBigInt *h_N, *dev_N,*dev_ZZ;
+    CBigInt *h_A,*dev_A;
+    // host alloc and cuda malloc in one time
+    CHECK(cudaHostAlloc((void**) &h_N,sizeof(CBigInt),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_A,sizeof(CBigInt),cudaHostAllocDefault));
+    //CHECK(cudaHostAlloc((void**) &h_ZZ,parasize*(sizeof(CBigInt)),cudaHostAllocDefault));
+
+    memcpy(h_N,&N,sizeof(CBigInt));
+    memcpy(h_A,&A,sizeof(CBigInt));
+    //printf("h_N = %s\n",Put(*h_N,HEX));
+    //printf("h_A = %s\n",Put(*h_A,HEX));
+
+    CHECK(cudaMalloc((void **)&dev_N,sizeof(CBigInt)));
+    CHECK(cudaMalloc((void **)&dev_A,sizeof(CBigInt)));
+    CHECK(cudaMalloc((void **)&dev_ZZ,parasize*(sizeof(CBigInt))));
+
+    //assignn_Big_to_Big_para(h_YY,N,32);
+
+    // transfer the array to the GPU my dude. Copy's contents of h_in to d_in
+    cudaMemcpy(dev_A, h_A, sizeof(CBigInt), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_N, h_N, sizeof(CBigInt), cudaMemcpyHostToDevice);
+    //cudaMemcpy(dev_ZZ, h_ZZ, parasize*(sizeof(CBigInt)), cudaMemcpyHostToDevice);
+
+    // launch the kernel
+    inv_para_thread<<<1,parasize>>>(dev_ZZ,dev_N,dev_A);
+
+    // copy the result back to the CPU mem
+    cudaMemcpy(ZZ, dev_ZZ, parasize*(sizeof(CBigInt)), cudaMemcpyDeviceToHost);
+
+    //Mov_Big_Big(Y,h_YY[0]);
+    //memcpy(ZZ,h_YY,parasize*(sizeof(CBigInt)));
+
+    
+    cudaFree(h_N);
+    cudaFree(h_A);
+    //cudaFree(h_YY);
+    cudaFree(dev_N);
+    cudaFree(dev_A);
+    cudaFree(dev_ZZ);
+
+
+}
+
+/****************************************************************************************
+求乘方的模
+调用方式：Exp_para(N,A,B,num)
+返回值：Z=N^A MOD B
+****************************************************************************************/
+__global__ void exp_para_thread(CBigInt *dev_NN, CBigInt *dev_N, CBigInt *dev_A,  CBigInt *dev_B){
+    int idx = threadIdx.x;
+    CBigInt X,Y,M;
+	int i,j,k;
+	unsigned int n;
+	unsigned long num;
+	k=dev_A->m_nLength*32-32;
+	num=dev_A->m_ulValue[dev_A->m_nLength-1];
+	while(num)
+	{
+		num=num>>1;
+		k++;
+	}
+	dev_cbigintinit(&X);
+	dev_cbigintinit(&Y);
+	dev_cbigintinit(&M);
+	dev_mov_big_big(&X,*dev_N);
+	for(i=k-2;i>=0;i--)
+	{
+		//Mov_Big_Big(&Y,Mul_Big_Long(X,X.m_ulValue[X.m_nLength-1]));
+		dev_mul_big_long(&Y,X,X.m_ulValue[X.m_nLength-1]); //dev_mul_big_long
+		//Mov_Big_Big(&Y,Mod_Big_Big(Y,B));
+		dev_mod_big_big(&Y,Y,*dev_B); //dev_mod_big_big
+		for(n=1;n<X.m_nLength;n++)
+		{          
+			for(j=Y.m_nLength;j>0;j--)
+				Y.m_ulValue[j]=Y.m_ulValue[j-1];
+			Y.m_ulValue[0]=0;
+			Y.m_nLength++;
+			//Mov_Big_Big(&Y,Add_Big_Big(Y,Mul_Big_Long(X,X.m_ulValue[X.m_nLength-n-1])));
+			dev_mul_big_long(&Y,X,X.m_ulValue[X.m_nLength-n-1]);
+			//Mov_Big_Big(&Y,Mod_Big_Big(Y,B));
+			dev_mod_big_big(&Y,Y,*dev_B);
+		}
+		dev_mov_big_big(&X,Y);
+		if((dev_A->m_ulValue[i>>5]>>(i&31))&1)
+		{
+			//Mov_Big_Big(&Y,Mul_Big_Long(N,X.m_ulValue[X.m_nLength-1]));
+			dev_mul_big_long(&Y,*dev_N,X.m_ulValue[X.m_nLength-1]);
+			//Mov_Big_Big(&Y,Mod_Big_Big(Y,B));
+			dev_mod_big_big(&Y,Y,*dev_B);
+			for(n=1;n<X.m_nLength;n++)
+			{          
+				for(j=Y.m_nLength;j>0;j--)
+					Y.m_ulValue[j]=Y.m_ulValue[j-1];
+				Y.m_ulValue[0]=0;
+				Y.m_nLength++;
+				//Mov_Big_Big(&Y,Add_Big_Big(Y,Mul_Big_Long(N,X.m_ulValue[X.m_nLength-n-1])));
+				dev_mul_big_long(&M,*dev_N,X.m_ulValue[X.m_nLength-n-1]);
+				dev_add_big_big(&Y,Y,M);
+				//Mov_Big_Big(&Y,Mod_Big_Big(Y,B));
+				dev_mod_big_big(&Y,Y,*dev_B);
+			}
+			dev_mov_big_big(&X,Y);
+		}
+	}
+	dev_mov_big_big(&(dev_NN[idx]),X);
+
+}
+
+void Exp_para(CBigInt *ZZ, CBigInt N, CBigInt A, CBigInt B, int parasize)
+{
+
+    CBigInt *h_N, *dev_N,*dev_ZZ,*h_A,*dev_A,*h_B,*dev_B;;
+    // host alloc and cuda malloc in one time
+    CHECK(cudaHostAlloc((void**) &h_N,sizeof(CBigInt),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_A,sizeof(CBigInt),cudaHostAllocDefault));
+    CHECK(cudaHostAlloc((void**) &h_B,sizeof(CBigInt),cudaHostAllocDefault));
+    //CHECK(cudaHostAlloc((void**) &h_ZZ,parasize*(sizeof(CBigInt)),cudaHostAllocDefault));
+
+    memcpy(h_N,&N,sizeof(CBigInt));
+    memcpy(h_A,&A,sizeof(CBigInt));
+    memcpy(h_B,&B,sizeof(CBigInt));
+    //printf("h_N = %s\n",Put(*h_N,HEX));
+    //printf("h_A = %s\n",Put(*h_A,HEX));
+
+    CHECK(cudaMalloc((void **)&dev_N,sizeof(CBigInt)));
+    CHECK(cudaMalloc((void **)&dev_A,sizeof(CBigInt)));
+    CHECK(cudaMalloc((void **)&dev_B,sizeof(CBigInt)));
+    CHECK(cudaMalloc((void **)&dev_ZZ,parasize*(sizeof(CBigInt))));
+
+    //assignn_Big_to_Big_para(h_YY,N,32);
+
+    // transfer the array to the GPU my dude. Copy's contents of h_in to d_in
+    cudaMemcpy(dev_A, h_A, sizeof(CBigInt), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_N, h_N, sizeof(CBigInt), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_B, h_B, sizeof(CBigInt), cudaMemcpyHostToDevice);
+    //cudaMemcpy(dev_ZZ, h_ZZ, parasize*(sizeof(CBigInt)), cudaMemcpyHostToDevice);
+
+    // launch the kernel
+    exp_para_thread<<<1,parasize>>>(dev_ZZ,dev_N,dev_A,dev_B);
+
+    // copy the result back to the CPU mem
+    cudaMemcpy(ZZ, dev_ZZ, parasize*(sizeof(CBigInt)), cudaMemcpyDeviceToHost);
+
+    //Mov_Big_Big(Y,h_YY[0]);
+    //memcpy(ZZ,h_YY,parasize*(sizeof(CBigInt)));
+
+    
+    cudaFree(h_N);
+    cudaFree(h_A);
+    cudaFree(h_B);
+    //cudaFree(h_YY);
+    cudaFree(dev_N);
+    cudaFree(dev_B);
+    cudaFree(dev_A);
+    cudaFree(dev_ZZ);
+
+
+
+
+
+
+
+
+
+
+
 	
 }

@@ -1659,8 +1659,9 @@ void test_Get_para(){
     unsigned long a = 2;
     //Get(&N,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD3",HEX);
 	//Get(&A,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
-
+    //printf("Get src_carry_len = %d , %d\n", sizeof(array_2), strlen(array_2));
     Get_para(YY,array_2,HEX,32);
+    
     printf("h_str = %s\n",array_2);
     //printf("h_A = %s\n",Put(A,HEX));
     //printf("h_A = %ld\n",a);
@@ -1668,4 +1669,41 @@ void test_Get_para(){
     Get(&Y,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD3",HEX);
     printf("original Get answer = %s\n", Put(Y,HEX));
     printf("test_Get_para test: over! \n");
+
+    printf("test_Put_para test: Begin! \n");
+    Put_para(YY,HEX,32);
+    printf("test_Put_para test: over! \n");
+}
+
+void test_Inv_para(){
+    printf("test_Inv_para test: Begin! \n");
+    CBigInt Y,N,A;
+    CBigInt *YY = (CBigInt *)malloc(32*sizeof(CBigInt));
+    Get(&N,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD3",HEX);
+	Get(&A,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
+    //printf("Get src_carry_len = %d , %d\n", sizeof(array_2), strlen(array_2));
+    Inv_para(YY,N,A,32);
+    
+    Put_para(YY,HEX,32);
+    Inv(&Y,N,A);
+    printf("original Inv answer = %s\n", Put(Y,HEX));
+    printf("test_Inv_para test: over! \n");
+
+}
+
+void test_Exp_para(){
+
+    printf("test_Exp_para test: Begin! \n");
+    CBigInt Y,N,A,B;
+    CBigInt *YY = (CBigInt *)malloc(32*sizeof(CBigInt));
+    Get(&N,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD3",HEX);
+	Get(&A,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
+    Get(&B,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC32350C464CD70A3EA616",HEX);
+    //printf("Get src_carry_len = %d , %d\n", sizeof(array_2), strlen(array_2));
+    Exp_para(YY,N,A,B,32);
+    
+    Put_para(YY,HEX,32);
+    Exp(&Y,N,A,B);
+    printf("original Exp answer = %s\n", Put(Y,HEX));
+    printf("test_Exp_para test: over! \n");
 }
