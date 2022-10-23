@@ -28,3 +28,27 @@ __device__ void dev_mov_big_long(CBigInt *d_N,unsigned long d_A);
 __device__ void dev_mov_big_big(CBigInt *d_N, CBigInt d_A);
 __device__ void dev_cbigintinit(CBigInt *d_A);
 ```
+
+
+# 2022.10.22
+> @zjc 将一些基本的运算，直接改写成在__device__ 函数，由GPU进行调用，便于并行如Mod_Big_Big_para这样的函数
+
+> 重写了一些函数,并测试
+```
+//以下的CBigInt *YY为parasize个
+void Mul_Big_Long_para(CBigInt *YY, CBigInt N, unsigned long A, int parasize);
+void Mul_Big_Big_para(CBigInt *YY, CBigInt N, CBigInt A, int parasize);
+void Div_Big_Long_para(CBigInt *YY, CBigInt N, unsigned long A, int parasize);
+void Div_Big_Big_para(CBigInt *MM,CBigInt N, CBigInt A,int parasize);
+void Mod_Big_Big_para(CBigInt *ZZ,CBigInt N, CBigInt A, int parasize);
+void Mod_Big_Long_para(unsigned long *ZZ, CBigInt N, unsigned long A, int parasize);
+```
+
+
+# 2022.20.23 
+## todo:
+1. 合并橙子哥的代码，确认接口引用方式，再修改
+
+2. 重新写签名函数的，并行版本
+
+3. 测试双线性对速度，在不同的parasize上实验
