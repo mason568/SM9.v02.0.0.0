@@ -340,6 +340,42 @@ void CBigInt_substract_modN(CBigInt *X, CBigInt a, CBigInt b)
 }
 
 /*
+void parallel_CBigInt_substract_modN(CBigInt *X[], CBigInt a[], CBigInt b[],int num)
+{
+	CBigInt c[num],div[num];
+	CBigInt para_n[num];
+	unsigned long one[num];
+	for(int i=0;i<num;i++)
+	{
+		para_n[i]=BN.n;
+		one[i]=1;
+	}
+
+	if(Cmp(a[0],b[0])>=0)//因为参数一样，所以只比较第一个
+	{
+		Sub_Big_Big_para(&c[0],a,b,num);  //传入首地址&c[0]，CBigInt数组的第一个元素的地址
+		if(Cmp(c[0],BN.n)>=0 )
+		{
+			Mod_Big_Big_para(&c[0],c,para_n,num);
+		}
+	        
+	}
+    else
+	{
+		//
+		Sub_Big_Big_para(&c[0],b,a,num);		
+		Div_Big_Big_para(&div[0],c,para_n,num);
+		Add_Big_Long_para(&div[0],div,one,num);
+		Mul_Big_Big_para(&div[0],div,BN.n,num);
+		Sub_Big_Big_para(&c[0],div,c,num);
+		if(Cmp(c[0],BN.n)==0)
+			Mov_Big_Long_para(&c[0],0,num);
+	}
+
+	Mov_Big_Big_para(X,c,num);
+}*/
+
+/*
 
 void Hash_1(CBigInt *h1, BYTE *msg, unsigned int len, CBigInt n)
 {

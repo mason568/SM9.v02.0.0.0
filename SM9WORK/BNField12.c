@@ -43,6 +43,17 @@ void F12_assign(BNField12 *p,BNField12 b)
 	F4_assign(&p->sq,b.sq);
 }
 
+void parallel_F12_assign(BNField12 *p[],BNField12 b[],int num)
+{
+	for(int i=0;i<num;i++)
+	{
+		F4_assign(&p[i]->re,b[i].re);
+		F4_assign(&p[i]->im,b[i].im);
+		F4_assign(&p[i]->sq,b[i].sq);		
+	}     
+
+}
+
 /*
   赋值函数p=1 
  */
@@ -396,6 +407,7 @@ void parallel_F12_exp(BNField12 *p[], BNField12 b[], CBigInt e[],int num)
 	int len[num];
 	BNField12 q[num];
 
+    
 	for(int k=0;k<num;k++)
 	{
 		if(F12_isZero(b[k]))

@@ -228,11 +228,12 @@ void parallel_DSA_Sign(CBigInt *h[], BNPoint *S[], BYTE *M, BNPoint P1, BNPoint2
 		Get(&r[i],"033C8616B06704813203DFD00965022ED15975C662337AED648835DC4B1CBE",HEX);
 		//F12_exp(&w[i],g[i],r[i]);//可以并行
 	}
-
+    
+	//F12_exp 中BNField12*变量&w[i]在使用数组的时候，定义para_w
 	BNField12* para_w[num];
 	for(int i=0;i<num;i++)
 	{
-		para_w[i]=&w;
+		para_w[i]=&w[i];
 	}
 	parallel_F12_exp(para_w,g,r,num);
 
@@ -247,7 +248,23 @@ void parallel_DSA_Sign(CBigInt *h[], BNPoint *S[], BYTE *M, BNPoint P1, BNPoint2
 		memcpy(msg[i],M,len1[i]);
 		F12toByte(&msg[i][len1[i]],w[i]);
 		Hash_2(h[i], msg[i], len2[i], BN.n);
-		CBigInt_substract_modN(&l[i],r[i],*h[i]);//可以并行
+	}
+
+    CBigInt* para_l[num];
+	CBigInt para_h[num];
+	for(int i=0;i<num;i++)
+	{
+		para_l[i]=&l[i];
+		para_h[i]=*h[i];
+	}
+	
+	//先测试一下这个函数
+	//parallel_CBigInt_substract_modN(para_l,r,para_h);//可以并行
+	
+	for(int i=0;i<num;i++)
+	{
+		
+		CBigInt_substract_modN(&l[i],r[i],*h[i]);//测试parallel_CBigInt_substract_modN的时候将这一行注释掉
 		P_multiply(S[i],dsA[i],l[i]);//可以
 		P_normorlize(S[i],*S[i]);//可以
 		free(msg[i]);
