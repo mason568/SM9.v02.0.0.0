@@ -259,7 +259,7 @@ void parallel_DSA_Sign(CBigInt *h[], BNPoint *S[], BYTE *M, BNPoint P1, BNPoint2
 	}
 	
 	//先测试一下这个函数
-	parallel_CBigInt_substract_modN(para_l,r,para_h);//可以并行
+	parallel_CBigInt_substract_modN(para_l,r,para_h,num);//可以并行
 	
 	for(int i=0;i<num;i++)
 	{
@@ -309,3 +309,4 @@ int DSA_Verify(CBigInt *h2, CBigInt h, BNPoint S, BYTE *M, BYTE *ID,BNPoint P1, 
 	free(msg2);
 	return Cmp(*h2,h)==0 ? 1 : 0;
 }
+

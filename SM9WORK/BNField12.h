@@ -18,6 +18,7 @@ void F12_construct(BNField12 *p,BNField4 re, BNField4 im, BNField4 sq); //十二
 void F12_normorlize(BNField12 *p,BNField12 b);  //规约化处理
 
 void  F12_assign(BNField12 *p,BNField12 b);  //赋值函数 p=b 
+void parallel_F12_assign(BNField12 *p[],BNField12 b[],int num);
 
 void  F12_assign_1(BNField12 *p); //赋值函数p=1 
 
@@ -73,6 +74,7 @@ void  F12_square(BNField12 *p, BNField12 b);
 void  F12_inverse(BNField12 *p, BNField12 b);
 
 void F12_exp(BNField12 *p, BNField12 b, CBigInt e); //计算 *p = b^e，e为大于或等于0的正整数 
+void parallel_F12_exp(BNField12 *p[], BNField12 b[], CBigInt e[],int num);
 
 void F12_toString_d(BNField12 b,unsigned int system); // 以一般形式显示十二次扩域元素
 
