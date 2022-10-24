@@ -378,12 +378,12 @@ void parallel_DSA_Sign(CBigInt *h[], BNPoint *S[], BYTE *M, BNPoint P1, BNPoint2
 	}
 	
 	//先测试一下这个函数
-	//parallel_CBigInt_substract_modN(para_l,r,para_h);//可以并行
+	parallel_CBigInt_substract_modN(para_l,r,para_h);//可以并行
 	
 	for(int i=0;i<num;i++)
 	{
 		
-		CBigInt_substract_modN(&l[i],r[i],*h[i]);//测试parallel_CBigInt_substract_modN的时候将这一行注释掉
+		//CBigInt_substract_modN(&l[i],r[i],*h[i]);//测试parallel_CBigInt_substract_modN的时候将这一行注释掉
 		P_multiply(S[i],dsA[i],l[i]);//可以
 		P_normorlize(S[i],*S[i]);//可以
 		free(msg[i]);
