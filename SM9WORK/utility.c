@@ -221,7 +221,7 @@ void Hash_2(CBigInt *h1, BYTE *msg, unsigned int len, CBigInt n)
 	}else
 		printf("Hash1中存在未处理的异常！");	
 
-//	free(msg2);              //此语句易导致错误
+	free(msg2);              //此语句易导致错误
 }
 
 /*

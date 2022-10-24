@@ -60,3 +60,7 @@ void Mod_Big_Long_para(unsigned long *ZZ, CBigInt N, unsigned long A, int parasi
 4. 下午开会讨论，不想写文档233333
 ## idea
 我感觉是完不成了，争取今天把上面的todo做完，然后一天做一个讨论会上讲的优化方案？？？？ 
+
+
+## actually do 
+wdnmd... m* f**king bug ? 

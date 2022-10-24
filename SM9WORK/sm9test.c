@@ -1539,6 +1539,7 @@ void test_Mul_Big_Long_para(){
     Mul_Big_Long(&PY,N,a);
     printf("original Mul answer = %s\n", Put(PY,HEX));
     printf("Mul_Big_Long_para test: over! \n");
+    free(YY);
     //free(YY);
     //free(PYY);
 
@@ -1560,7 +1561,7 @@ void test_Mul_Big_Big_para(){
 	Get(&A,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
 
     //Mul_Big_Big_para(YY,N,A,32); //淦 因为之前这里多了一个取地址符号，导致报错，找了几个小时bug
-	Mul_Big_Big_para(&YY[0],N,A,32); //淦 因为之前这里多了一个取地址符号，导致报错，找了几个小时bug
+	Mul_Big_Big_para(YY,N,A,32); //淦 因为之前这里多了一个取地址符号，导致报错，找了几个小时bug
     printf("h_N = %s\n",Put(N,HEX));
     printf("h_A = %s\n",Put(A,HEX));
     printf("h_Y = %s\n",Put(YY[1],HEX));
@@ -1586,6 +1587,7 @@ void test_Div_Big_Long_para(){
     Div_Big_Long(&PY,N,a);
     printf("original Div answer = %s\n", Put(PY,HEX));
     printf("Div_Big_Long_para test: over! \n");
+    free(YY);
 
 }
 
@@ -1607,6 +1609,7 @@ void test_Div_Big_Big_para(){
     Div_Big_Big(&PY,N,A);
     printf("original Div answer = %s\n", Put(PY,HEX));
     printf("Div_Big_Big_para test: over! \n");
+    free(YY);
 
 }
 
@@ -1628,6 +1631,8 @@ void test_Mod_Big_Big_para(){
     Mod_Big_Big(&PY,N,A);
     printf("original Mod answer = %s\n", Put(PY,HEX));
     printf("test_Mod_Big_Big_para test: over! \n");
+    free(YY);
+    
 }
 
 void test_Mod_Big_Long_para(){
@@ -1645,9 +1650,10 @@ void test_Mod_Big_Long_para(){
     //printf("h_A = %s\n",Put(A,HEX));
     printf("h_A = %ld\n",a);
     printf("h_ZZ 12 = %ld\n",ZZ[12]);
-    ;
+    
     printf("original Mod_Long answer = %ld\n", Mod_Big_Long(N,a));
     printf("test_Mod_Big_Big_para test: over! \n");
+    free(ZZ);
 
 }
 
@@ -1677,6 +1683,7 @@ void test_Get_para(){
     printf("test_Put_para test: Begin! \n");
     Put_para(YY,HEX,32);
     printf("test_Put_para test: over! \n");
+    free(YY);
 }
 
 void test_Inv_para(){
@@ -1692,6 +1699,7 @@ void test_Inv_para(){
     Inv(&Y,N,A);
     printf("original Inv answer = %s\n", Put(Y,HEX));
     printf("test_Inv_para test: over! \n");
+    free(YY);
 
 }
 
@@ -1710,6 +1718,7 @@ void test_Exp_para(){
     Exp(&Y,N,A,B);
     printf("original Exp answer = %s\n", Put(Y,HEX));
     printf("test_Exp_para test: over! \n");
+    free(YY);
 }
 
 
@@ -1771,4 +1780,6 @@ void test_pairing(struct SM9DSAParams *signpre, BNPoint P1, BNPoint2 P_pub){
     printf("millisecond: %d ms\n", tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
     printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
     printf("test_pairing test: over! \n");
+    exit(-1);
+
 }

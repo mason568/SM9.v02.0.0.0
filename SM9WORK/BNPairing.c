@@ -138,7 +138,6 @@ void Pairing_opt(BNField12 *f,BNPoint2 Q, BNPoint P)
 	 {
 		F12_square(f,*f);
 	    Line_Funtion(&ff,T,T,P);				
-
 		F12_multiply(f,*f,ff);
 		P2_twice(&T,T);
 	    if(bits[i]=='1')

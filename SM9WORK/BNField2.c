@@ -209,7 +209,7 @@ void F2_GFrobenius(BNField2 *p, BNField2 b, unsigned int e)
 
 
 /*
-   (a+bu)(a'+b'u)  ；
+   (a+bu)(a'+b'u)  ；  3 次模乘
        =(aa'-2bb')+((a+b)(a'+b')-aa'-bb')u
  */
 void  F2_multiply(BNField2 *b3, BNField2 b1,BNField2 b2)
@@ -258,7 +258,7 @@ void  F2_multiply_i( BNField2 *b2, BNField2 b, int k)
 
 
 /*
-   乘以u 
+   乘以u    1 次模乘
    (a+bu)u  ；
        =-2b+au
  */
@@ -274,12 +274,12 @@ void F2_multiply_u(BNField2 *p, BNField2 b)
 }
 
 /*
-   二次扩域元素的平方运算
+   二次扩域元素的平方运算   3 次模乘
    (a+bu)^2=a^2+2abu+b^2 u^2 
                     =a^2-2b^2+2abu
 
  */
-void  F2_square(BNField2 *p, BNField2 b)
+void  F2_square(BNField2 *p, BNField2 b)  
 {
 	
 	CBigInt m,re,im;

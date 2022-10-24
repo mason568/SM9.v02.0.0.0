@@ -1580,17 +1580,22 @@ __global__ void put_para_thread(CBigInt *dev_NN, unsigned int dev_system){
 
 void Put_para(CBigInt *NN, unsigned int system,int parasize)
 {
-    CBigInt *dev_NN;
+    CBigInt *dev_NN, *h_NN;
 
+    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     // host alloc and cuda malloc in one time
     CHECK(cudaMalloc((void **)&dev_NN,parasize*sizeof(CBigInt)));
-
-
-    // transfer the array to the GPU my dude. Copy's contents of h_in to d_in
+    //CHECK(cudaHostAlloc((void**) &h_NN,parasize*sizeof(CBigInt),cudaHostAllocDefault));
+    //CHECK(cudaMalloc((void **)&h_NN,parasize*sizeof(CBigInt)));
+    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    //memcpy(h_NN,&NN,parasize*sizeof(CBigInt));
+    //transfer the array to the GPU my dude. Copy's contents of h_in to d_in
     cudaMemcpy(dev_NN, NN, parasize*sizeof(CBigInt), cudaMemcpyHostToDevice);
-
+    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     // launch the kernel
     put_para_thread<<<1,parasize>>>(dev_NN,system);
+    //printf("original hhdev[%d] = %s\n",10 , Put(h_NN[10],HEX));
+    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     // copy the result back to the CPU mem
     cudaFree(dev_NN);
 	

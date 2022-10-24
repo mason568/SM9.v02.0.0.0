@@ -75,12 +75,13 @@ int main(){
     //test_Mod_Big_Big_para();
     //test_Mod_Big_Long_para();
     //test_Get_para();
+    //test_Get_para();
     //test_Inv_para();
     //test_Exp_para();
 
     SM9Params_init(&BN);//一定要有，否则会出现总线错误
+    parallel_DSA_Demo();
     //DSA_Demo();  //签名demo
-    parallel_DSA_Demo(); // 并行化
     //test_pairing();
 
     return 0;
