@@ -3,11 +3,13 @@
 //为g=e(P1,P_pubs)赋值
 void geP1Ppubs_assign(struct SM9DSAParams *signpre, BNPoint2 P_pub, BNPoint P1){
     BNField12 g;
-
+    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     Pairing_opt(&g,P_pub,P1);
-
-
-    F12_construct(&signpre->geP1Ppubs,g.im,g.re,g.sq);
+    F12_toString(g,HEX);
+    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    F12_construct(&signpre->geP1Ppubs,g.re,g.im,g.sq);
+    F12_toString(signpre->geP1Ppubs,HEX);
+    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
 }
 
 #if 0
@@ -276,34 +278,6 @@ void DSA_Demo()
 
 void parallel_DSA_Demo()
 {
-
-    #if 1
-    printf("test_Get_para test: Begin! \n");
-    
-    CBigInt Y;
-    CBigInt *YY = (CBigInt *)malloc(32*sizeof(CBigInt));
-    char array_2[65];
-    strcpy(array_2, "93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD3");
-    //CBigInt *PYY= (CBigInt *)malloc(32*sizeof(CBigInt));
-    
-    //Get(&N,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD3",HEX);
-	//Get(&A,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
-    //printf("Get src_carry_len = %d , %d\n", sizeof(array_2), strlen(array_2));
-    Get_para(YY,array_2,HEX,32);
-    
-    printf("h_str = %s\n",array_2);
-    //printf("h_A = %s\n",Put(A,HEX));
-    //printf("h_A = %ld\n",a);
-    printf("h_YY 12 = %s\n",Put(YY[12],HEX));
-    Get(&Y,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD3",HEX);
-    printf("original Get answer = %s\n", Put(Y,HEX));
-    printf("test_Get_para test: over! \n");
-
-    printf("test_Put_para test: Begin! \n");
-    Put_para(YY,HEX,32);
-    printf("test_Put_para test: over! \n");
-    free(YY);
-    #endif
 	CBigInt a,b,c,d,e,f,ks,h,h2;
 	BNField2 b1,b2;
 	BNPoint2 P2,P_pub_s;
@@ -359,7 +333,7 @@ void parallel_DSA_Demo()
     printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
 	CBigInt *para_h =  (CBigInt *)malloc(num*sizeof(CBigInt));
 	BNPoint *para_S = (BNPoint *)malloc(num *sizeof(BNPoint));
-	BNPoint *para_dsA = (BNPoint *)malloc(num *sizeof(BNPoint));
+	//BNPoint *para_dsA = (BNPoint *)malloc(num *sizeof(BNPoint));
     printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     #if 0
 	for(int i=0;i<num;i++)
@@ -394,7 +368,7 @@ void parallel_DSA_Demo()
     int nNUM = num;
     len1 = strlen((const char*)M);;
     len2 = len1+384;
-    msg = (BYTE*)malloc(len1);//
+    msg = (BYTE*)malloc(len2);//
     memcpy(msg,M,len1);
     F12toByte(&msg[len1],WW);
     for(int i=0;i<32;i++){
@@ -409,23 +383,16 @@ void parallel_DSA_Demo()
     
     //Put_para((CBigInt *)hh,HEX,nNUM);
     
-    
-	BNField12* para_w[num];
-	for(int i=0;i<num;i++)
-	{
-		para_w[i]=&w[i];
-        F12_exp(para_w[i],g[i],r[i]);
-	}
-	//F12_toString(g,HEX);
-	//F12_toString(w,HEX);
+
     printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     
-    CBigInt para_l[num];
+    CBigInt para_l[32];
 
 	//先测试一下这个函数
 	printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     for(int i=0;i<num;i++){
-        CBigInt_substract_modN(&para_l[i],r[i],para_h[i]);//可以并行
+        CBigInt_substract_modN(&(para_l[i]),r[i],para_h[i]);//可以并行
+        printf("original hh[%d] = %s\n",i , Put(para_l[i],HEX));
     }
 	
 	printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
@@ -466,8 +433,9 @@ void parallel_DSA_Demo()
     
 	start = clock();
     printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-	sign = parallel_DSA_Verify(&h2, &para_h[0], &para_S[0], M, id, P1, P2, P_pub_s);
+	sign = parallel_DSA_Verify(&h2, &(para_h[0]), &(para_S[0]), M, id, P1, P2, P_pub_s);
     printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    printf("verify h2 = %s\n", Put(h2,HEX));
 	finish = clock();
      	
 	time3 = (double)(finish-start);
@@ -492,9 +460,9 @@ void parallel_DSA_Demo()
 	printf("***********************\n");
 	printf("待签名的消息M: %s\n",M);
 	printf("消息M的签名为（h,S）: \n");
-	printf("h = %s\n",Put(h,HEX));
+	printf("h = %s\n",Put(para_h[0],HEX));
 	printf("S = \n");
-	P_toString(S,HEX);
+	P_toString(para_S[0],HEX);
 	printf("\n***************************\n");
 	printf("****3、数字签名验证阶段****\n");
 	printf("***************************\n");
@@ -508,7 +476,7 @@ void parallel_DSA_Demo()
 	printf("SM9 数字签名时间：%f ms\n",time2);
 	printf("SM9 数字签名验证时间：%f ms\n",time3);
     free(para_h);
-    free(para_h);
+    free(para_S);
 }
 
 
@@ -622,6 +590,7 @@ void parallel_DSA_Sign(CBigInt *h[], BNPoint *S[], BYTE *M, BNPoint P1, BNPoint2
 		memcpy(msg[i],M,len1[i]);
 		F12toByte(&msg[i][len1[i]],w[i]);
 		Hash_2(h[i], msg[i], len2[i], BN.n);
+        free(msg);
 	}
     printf("here 1 \n ");
     CBigInt* para_l[num];
@@ -824,11 +793,4 @@ void parallel_DSA_Sign_v2(CBigInt *hh, BNPoint *SS, BYTE *M, BNPoint P1, BNPoint
 	}
     printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     free(msg);
-    #if 0
-	//printf("done  \n");
-	//Hash_2(h, msg, len2, BN.n);//可以并行
-	//parallel_Hash_2(h, msg, len2, BN.n,num);
-   
-    #endif
-    
 }
