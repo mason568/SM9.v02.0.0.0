@@ -1117,12 +1117,13 @@ __global__ void mul_big_big_thread(CBigInt *dev_YY, CBigInt *dev_N,CBigInt *dev_
 
 void Mul_Big_Big_para(CBigInt *YY, CBigInt N, CBigInt A, int parasize)
 {
+	printf("e\n");
     CBigInt *h_N, *h_A, *h_YY, *dev_N, *dev_A, *dev_YY;
     // host alloc and cuda malloc in one time
 	CHECK(cudaHostAlloc((void**) &h_N,sizeof(CBigInt),cudaHostAllocDefault));
     CHECK(cudaHostAlloc((void**) &h_A,sizeof(CBigInt),cudaHostAllocDefault));
     CHECK(cudaHostAlloc((void**) &h_YY,parasize*(sizeof(CBigInt)),cudaHostAllocDefault));
- 
+    printf("e\n");
     memcpy(h_N,&N,sizeof(CBigInt));
     memcpy(h_A,&A,sizeof(CBigInt));
     //printf("h_N = %s\n",Put(*h_N,HEX));
@@ -1131,7 +1132,7 @@ void Mul_Big_Big_para(CBigInt *YY, CBigInt N, CBigInt A, int parasize)
     CHECK(cudaMalloc((void **)&dev_N,sizeof(CBigInt)));
     CHECK(cudaMalloc((void **)&dev_A,sizeof(CBigInt)));
     CHECK(cudaMalloc((void **)&dev_YY,parasize*(sizeof(CBigInt))));
- 
+    printf("e\n");
     //assignn_Big_to_Big_para(h_YY,N,32);
 
     // transfer the array to the GPU my dude. Copy's contents of h_in to d_in

@@ -353,7 +353,13 @@ void parallel_CBigInt_substract_modN(CBigInt *X[], CBigInt a[], CBigInt b[],int 
 
 	if(Cmp(a[0],b[0])>=0)//因为参数一样，所以只比较第一个
 	{
-		Sub_Big_Big_para(&c[0],a[0],b[0],num);  //传入首地址&c[0]，CBigInt数组的第一个元素的地址
+		printf("here 0 \n");
+		//Sub_Big_Big_para(&c[0],a[0],b[0],num);  //传入首地址&c[0]，CBigInt数组的第一个元素的地址
+		for (int i = 0; i < num; i++)
+		{
+			Sub_Big_Big(&c[i],a[i],b[i]);
+		}
+		
 		if(Cmp(c[0],BN.n)>=0 )
 		{
 			Mod_Big_Big_para(&c[0],c[0],BN.n,num);
@@ -362,11 +368,21 @@ void parallel_CBigInt_substract_modN(CBigInt *X[], CBigInt a[], CBigInt b[],int 
 	}
     else
 	{
-		//
-		Sub_Big_Big_para(&c[0],b[0],a[0],num);		
-		Div_Big_Big_para(&div[0],c[0],BN.n,num);
-		Add_Big_Long_para(&div[0],div[0],1,num);
-		Mul_Big_Big_para(&div[0],div[0],BN.n,num);
+		printf("here 1 \n");
+
+		//Sub_Big_Big_para(&c[0],b[0],a[0],num);		
+		for (int i = 0; i < num; i++)
+		{
+			Sub_Big_Big(&c[i],a[i],b[i]);
+			Div_Big_Big(&div[i],c[i],BN.n);
+			Add_Big_Long(&div[i],div[i],1);
+		}
+		printf("here 1 \n");
+		//Div_Big_Big_para(&div[0],c[0],BN.n,num);
+		//Add_Big_Long_para(&div[0],div[0],1,num);
+		Mul_Big_Big_para(&(div[0]),div[0],BN.n,num);
+		
+		printf("here 2 \n");
 		Sub_Big_Big_para(&c[0],div[0],c[0],num);
 		if(Cmp(c[0],BN.n)==0)
 		{

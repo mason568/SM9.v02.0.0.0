@@ -325,7 +325,7 @@ void parallel_DSA_Demo()
     struct timeval tv1,tv2;
 	long time_begin,time_end;
     gettimeofday(&tv1,NULL);//获取开始时间
-    printf("sign 1 time:\n");
+    printf("sign %d time at the same time \n", num);
     printf("second: %d\n", tv1.tv_sec);  //秒
     printf("millisecond: %d\n", tv1.tv_sec*1000 + tv1.tv_usec/1000);  //毫秒
     printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
@@ -481,21 +481,26 @@ void parallel_DSA_Sign(CBigInt *h[], BNPoint *S[], BYTE *M, BNPoint P1, BNPoint2
 	{
 		para_w[i]=&w[i];
 	}
-	parallel_F12_exp(para_w,g,r,num);
 
+	printf("parallel_F12_exp begin \n");
+	parallel_F12_exp(para_w,g,r,num);
+    printf("parallel_F12_exp done \n");
 	//F12_toString(g,HEX);
 	//F12_toString(w,HEX);
-
+    
+	printf("here 0 \n ");
+	unsigned int temp = strlen((const char*)M);
+	unsigned int temp2 = temp+384;
 	for(int i=0;i<num;i++)
 	{
-		len1[i] = strlen((const char*)M);
-		len2[i] = len1[i] + 384;
-		msg[i] = (BYTE*)malloc(len2[i]);
+		len1[i] = strlen((const char*)M);;
+		len2[i] = len1[i]+384;
+		msg[i] = (BYTE*)malloc(temp2);//
 		memcpy(msg[i],M,len1[i]);
 		F12toByte(&msg[i][len1[i]],w[i]);
 		Hash_2(h[i], msg[i], len2[i], BN.n);
 	}
-
+    printf("here 1 \n ");
     CBigInt* para_l[num];
 	CBigInt para_h[num];
 	for(int i=0;i<num;i++)
@@ -505,17 +510,23 @@ void parallel_DSA_Sign(CBigInt *h[], BNPoint *S[], BYTE *M, BNPoint P1, BNPoint2
 	}
 	
 	//先测试一下这个函数
+	printf("parallel_CBigInt_substract_modN begin \n");
 	parallel_CBigInt_substract_modN(para_l,r,para_h,num);//可以并行
-	
+	printf("parallel_CBigInt_substract_modN end  \n");
+
 	for(int i=0;i<num;i++)
 	{
 		
 		//CBigInt_substract_modN(&l[i],r[i],*h[i]);//测试parallel_CBigInt_substract_modN的时候将这一行注释掉
+		//printf("here=%d \n",i);
 		P_multiply(S[i],dsA[i],l[i]);//可以
+		//printf("end=%d \n",i);
 		P_normorlize(S[i],*S[i]);//可以
-		free(msg[i]);
+		//printf("end=%d \n",i);
+		//free(msg[i]);
+		//printf("end=%d \n",i);
 	}
-	    
+	//printf("done  \n");
 	//Hash_2(h, msg, len2, BN.n);//可以并行
 	//parallel_Hash_2(h, msg, len2, BN.n,num);
 }
