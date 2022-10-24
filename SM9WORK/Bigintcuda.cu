@@ -238,7 +238,7 @@ __device__ void dev_mod_big_big(CBigInt *Z,CBigInt N, CBigInt A)
 {
 	CBigInt X,Y;
 	unsigned long long div,num;
-	unsigned long carry=0;
+	//unsigned long carry=0;
 	unsigned int i,len;
 	dev_cbigintinit(&X);
 	dev_cbigintinit(&Y);
@@ -1816,15 +1816,4 @@ void Exp_para(CBigInt *ZZ, CBigInt N, CBigInt A, CBigInt B, int parasize)
     cudaFree(dev_A);
     cudaFree(dev_ZZ);
 
-
-
-
-
-
-
-
-
-
-
-	
 }

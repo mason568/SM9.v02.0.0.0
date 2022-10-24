@@ -13,7 +13,7 @@ struct SM9DSAParams
 
 }SIGNPRE;
 
-void geP1Ppubs_assign(struct SM9DSAParams *bn, BNPoint P1, BNPoint2 P_pub);
+void geP1Ppubs_assign(struct SM9DSAParams *signpre, BNPoint2 P_pub, BNPoint P1);
 
 void DSA_Demo();
 
@@ -22,4 +22,6 @@ void DSA_Keygen(BNPoint *dsA,CBigInt ks, BYTE *ID,BNPoint P1);
 void DSA_Sign(CBigInt *h, BNPoint *S, BYTE *M,BNPoint P1, BNPoint2 P_pub, BNPoint dsA);
 
 int DSA_Verify(CBigInt *h2, CBigInt h, BNPoint S, BYTE *M, BYTE *ID,BNPoint P1, BNPoint2 P2, BNPoint2 P_pub);
+
+void parallel_DSA_Sign(CBigInt *h[], BNPoint *S[], BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoint dsA[],const int num);
 #endif

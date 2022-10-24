@@ -70,13 +70,16 @@ void  F12_square(BNField12 *p, BNField12 b);
       B = c^2 v-ab
 	  C = b^2-ac
  */
-void  F12_inverse(BNField12 *p, BNField12 b);
+void F12_inverse(BNField12 *p, BNField12 b);
 
 void F12_exp(BNField12 *p, BNField12 b, CBigInt e); //计算 *p = b^e，e为大于或等于0的正整数 
 
 void F12_toString_d(BNField12 b,unsigned int system); // 以一般形式显示十二次扩域元素
 
 void F12_toString(BNField12 b,unsigned int system); //根据SM9标准，以十六进或十进制显示十二次扩域元素
+
+
+
 #endif
 
  

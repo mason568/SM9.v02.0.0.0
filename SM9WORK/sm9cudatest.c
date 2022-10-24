@@ -55,8 +55,7 @@ int main(){
     squaretest();
     printf("GPU test over!\r");
     */
-    //SM9Params_init(&BN);//一定要有，否则会出现总线错误
-    //DSA_Demo();  //签名demo
+
     
     
     
@@ -77,7 +76,11 @@ int main(){
     //test_Mod_Big_Long_para();
     //test_Get_para();
     //test_Inv_para();
-    test_Exp_para();
+    //test_Exp_para();
+
+    SM9Params_init(&BN);//一定要有，否则会出现总线错误
+    DSA_Demo();  //签名demo
+    //test_pairing();
 
     return 0;
 } 

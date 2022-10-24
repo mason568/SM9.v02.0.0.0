@@ -33,5 +33,6 @@ void test_Mod_Big_Long_para();
 void test_Get_para();
 void test_Inv_para();
 void test_Exp_para();
+void test_pairing();
 
 #endif
