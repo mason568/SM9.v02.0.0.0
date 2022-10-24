@@ -339,7 +339,7 @@ void CBigInt_substract_modN(CBigInt *X, CBigInt a, CBigInt b)
 	Mov_Big_Big(X,c);
 }
 
-/*
+
 void parallel_CBigInt_substract_modN(CBigInt *X[], CBigInt a[], CBigInt b[],int num)
 {
 	CBigInt c[num],div[num];
@@ -369,11 +369,17 @@ void parallel_CBigInt_substract_modN(CBigInt *X[], CBigInt a[], CBigInt b[],int 
 		Mul_Big_Big_para(&div[0],div[0],BN.n,num);
 		Sub_Big_Big_para(&c[0],div[0],c[0],num);
 		if(Cmp(c[0],BN.n)==0)
-			Mov_Big_Long_para(&c[0],0,num);
+		{
+			//Mov_Big_Long_para(&c[0],0,num);
+			for (int i = 0; i < num; i++)
+			{
+				Mov_Big_Long(&c[i],0);
+			}
+		}
 	}
 
 	Mov_Big_Big_para(X,c[0],num);
-}*/
+}/**/
 
 /*
 
