@@ -277,25 +277,6 @@ void F4_square(BNField4 *p, BNField4 b)
  */
 
 void  F4_speedsquare(BNField4 *p, BNField4 b){
-
-    /*
-    BNField2 m,n,re,im;
-
-	F2_multiply_u(&n,b.im);
-	F2_add(&n,b.re,n);
-	F2_add(&re,b.re,b.im);
-	F2_multiply(&re,re,n);
-
-	F2_multiply(&m,b.re,b.im);  //m=ab=B
-	
-	F2_substract(&re,re,m);  //re=A-B
-	F2_add(&im,m,m);
-	F2_multiply_u(&m,m);     //m=uB
-	F2_substract(&re,re,m);   //re=A-B-uB=C  这里如果再加一个变量会更清楚 不用刻意安排顺序
-    
-	F4_construct(p,re,im);
-*/
-    
     BNField2 m,n,re,im,ub;
 
 	F2_multiply_u(&n,b.im);
@@ -311,15 +292,11 @@ void  F4_speedsquare(BNField4 *p, BNField4 b){
 	F2_substract(&re,re,m);   //re=A-B-uB=C  这里如果再加一个变量会更清楚 不用刻意安排顺序
     
 	F4_construct(p,re,im);
-    
-    
-
-
 }
 
 void F4_square(BNField4 *p, BNField4 b)
 {
-	
+	#if 0 //0 表示启用优化代码
 	BNField2 m,re,im;
 
 	F2_square(&re,b.re);  //不知道为什么，这里调用F2_speedsquare会出错  但是单独测试的话又没有问题
@@ -331,6 +308,24 @@ void F4_square(BNField4 *p, BNField4 b)
 	F2_add(&im,im,im);
     
 	F4_construct(p,re,im);
+    #else
+    BNField2 m,n,re,im,ub;
+
+	F2_multiply_u(&n,b.im);
+	F2_add(&n,b.re,n);
+	F2_add(&re,b.re,b.im);
+	F2_multiply(&re,re,n);
+
+	F2_multiply(&m,b.re,b.im);  //m=ab=B
+	F2_add(&im,m,m);
+
+	F2_multiply_u(&ub,m); 
+	F2_add(&m,m,ub);
+	F2_substract(&re,re,m);   //re=A-B-uB=C  这里如果再加一个变量会更清楚 不用刻意安排顺序
+    
+	F4_construct(p,re,im);
+
+    #endif
 }
 
 

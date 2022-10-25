@@ -365,7 +365,7 @@ void F12_speedsquare(BNField12 *p, BNField12 b){
 
 void  F12_square(BNField12 *p, BNField12 b)
 {
-	
+	#if 0// 0表示启用优化代码
 	BNField4 t1,t2,t3,t4,re,im,sq;
 
     F4_square(&t1,b.re);
@@ -395,6 +395,35 @@ void  F12_square(BNField12 *p, BNField12 b)
 	F4_assign(&p->re,re);
 	F4_assign(&p->im,im);
 	F4_assign(&p->sq,sq);
+    #else
+    BNField4 t1,t2,t3,t4,t5,re,im,sq;
+
+    F4_square(&t1,b.re);
+	F4_square(&t5,b.sq);
+
+	F4_add(&t3,b.re,b.sq);
+	F4_substract(&t3,t3,b.im);	
+	F4_square(&t3,t3);             //得到C
+
+	F4_multiply(&t4,b.im,b.sq);
+	F4_add(&t4,t4,t4);       //得到D 这里 *2 即为 两个相加
+	F4_multiply_v(&re,t4);
+	F4_add(&re,re,t1);
+
+	F4_multiply(&t2,b.re,b.im);
+	F4_add(&t2,t2,t2);      //得到B
+	F4_multiply_v(&im,t5);
+	F4_add(&im,im,t2);
+
+	F4_add(&sq,t2,t3);
+	F4_add(&sq,sq,t4);
+	F4_substract(&sq,sq,t1);
+	F4_substract(&sq,sq,t5);
+
+	F4_assign(&p->re,re);
+	F4_assign(&p->im,im);
+	F4_assign(&p->sq,sq);
+    #endif
 }
 
 /*

@@ -1420,7 +1420,7 @@ CBigInt a,b,c,d,e,f,zero;
 	Get(&e,"17509B092E845C1266BA0D262CBEE6ED0736A96FA347C8BD856DC76B84EBEB96",HEX);
 	Get(&f,"A7CF28D519BE3DA65F3170153D278FF247EFBA98A71A08116215BBA5C999A7C7",HEX);
 	
-	printf("test_BNField12_speedsquare 1000 times test: Begin! \n");
+	printf("test_BNField12_speedsquare 10000 times test: Begin! \n");
 
     F2_construct(&b1,a,b);
     F2_construct(&b2,a,c);
@@ -1472,7 +1472,7 @@ CBigInt a,b,c,d,e,f,zero;
 	long time_begin,time_end;
     //printf("microsecond: %ld\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
     gettimeofday(&tv1,NULL);//获取开始时间
-    for(int i=0;i<1000;i++){
+    for(int i=0;i<10000;i++){
 	    F12_square(&SN1,BN1);
     }
 
@@ -1482,7 +1482,7 @@ CBigInt a,b,c,d,e,f,zero;
 
     gettimeofday(&tv1,NULL);//获取开始时间
 
-    for(int i=0;i<1000;i++){
+    for(int i=0;i<10000;i++){
 	    F12_speedsquare(&TN1,BN1);
     }
     gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
@@ -1512,7 +1512,7 @@ void test_BNField4_speedsqure(){
 	Get(&e,"17509B092E845C1266BA0D262CBEE6ED0736A96FA347C8BD856DC76B84EBEB96",HEX);
 	Get(&f,"A7CF28D519BE3DA65F3170153D278FF247EFBA98A71A08116215BBA5C999A7C7",HEX);
 
-	printf("test_BNField4_speedsquare 1000 times test: Begin! \n");
+	printf("test_BNField4_speedsquare 10000 times test: Begin! \n");
 
     F2_construct(&b1,a,b);
     F2_construct(&b2,a,c);
@@ -1529,7 +1529,7 @@ void test_BNField4_speedsqure(){
 	long time_begin,time_end;
     //printf("microsecond: %ld\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
     gettimeofday(&tv1,NULL);//获取开始时间
-    for(int i=0;i<1000;i++){
+    for(int i=0;i<10000;i++){
 	    F4_square(&T1,B1);
     }
     gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
@@ -1537,7 +1537,7 @@ void test_BNField4_speedsqure(){
     long int sp1 = tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec);
 
     gettimeofday(&tv1,NULL);//获取开始时间
-    for(int i=0;i<1000;i++){
+    for(int i=0;i<10000;i++){
         F4_speedsquare(&SN1,B1);
     }
     gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
@@ -1592,14 +1592,14 @@ void test_BNField2_speedsqure(){
     F2_construct(&b1,a,b);
     F2_construct(&b2,c,d);
 	F2_construct(&b3,e,f);
-	printf("test_BNField2_speedsquare 1000 times test: Begin! \n");
+	printf("test_BNField2_speedsquare 10000 times test: Begin! \n");
 
 	// 测试b1 ^2 == b1*b1	
     struct timeval tv1,tv2;
 	long time_begin,time_end;
     //printf("microsecond: %ld\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
     gettimeofday(&tv1,NULL);//获取开始时间
-    for(int i=0;i<1000;i++){
+    for(int i=0;i<10000;i++){
 	    F2_square(&t1,b1);
     }
     gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
@@ -1607,7 +1607,7 @@ void test_BNField2_speedsqure(){
     long int sp1 = tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec);
 
     gettimeofday(&tv1,NULL);//获取开始时间
-    for(int i=0;i<1000;i++){
+    for(int i=0;i<10000;i++){
         F2_speedsquare(&SN1,b1);
     }
     gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间

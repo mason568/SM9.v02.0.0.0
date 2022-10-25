@@ -97,5 +97,29 @@ test_BNField2_speedsquare test: over!
 ```
 
 3. BNField2_speedsquare 好像有问题，虽然单个测试没问题，但是把他放到F4_square() 让 调用F12_square() 中会出错 ,所以等于最后修改BNField12_speedsqure 和  BNField4_speedsqure ，除非bug解决，否则不动 NField2_square
+- 10000次效果变小
+``` 
+test_BNField12_speedsquare 10000 times test: Begin! 
+BNField2 test: TN1 == TN2        
+BNField2 test: TN1 == SN1        
+BNField2 test: TN2 == SN1        
+microsecond: 4771111 us
+microsecond: 4746067 us
+speed up 1 to 1.005277
+test_BNField12_speedsqure test: over! 
+test_BNField4_speedsquare 10000 times test: Begin! 
+microsecond: 652855 us
+microsecond: 702711 us
+speed up 1 to 0.929052
+Test passed!
+test_BNField4_speedsquare test: over! 
+test_BNField2_speedsquare 10000 times test: Begin! 
+microsecond: 165521 us
+microsecond: 164100 us
+speed up 1 to 1.008659
+Test passed!
+test_BNField2_speedsquare test: over! 
+```
+
 
 
