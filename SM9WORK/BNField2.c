@@ -279,6 +279,37 @@ void F2_multiply_u(BNField2 *p, BNField2 b)
                     =a^2-2b^2+2abu
 
  */
+
+/*
+   二次扩域元素的平方运算   可以改成2 次模乘
+   (a+bu)^2=a^2+2abu+b^2 u^2 
+                    =a^2-2b^2+2abu
+	                =(a+b)(a-2b)+ab+2abu
+
+ */
+/*
+void  F2_square(BNField2 *p, BNField2 b)  
+{
+	
+	CBigInt n,re,im;
+
+	Mul_Big_Big(&im,b.re,b.im);   //此时im 为ab 两个b含义不同
+
+	add_Big_Big(&n,b.im,b.im);
+	sub_Big_Big(&n,b.re,n);
+
+	add_Big_Big(&re,b.re,b.im);
+	Mul_Big_Big(&re,re,n)
+
+	CBigInt_neg(&re,re);
+	CBigInt_substract(&re,im,re);    //由于没有找到模加运算 故用一个负模运算和模减运算代替 
+
+	Add_Big_Big(&im,im,im);  //最后加到2ab
+
+    F2_construct(p,re,im);
+}
+
+ */
 void  F2_square(BNField2 *p, BNField2 b)  
 {
 	
@@ -291,6 +322,29 @@ void  F2_square(BNField2 *p, BNField2 b)
 
 	Mul_Big_Big(&im,b.re,b.im);
 	Add_Big_Big(&im,im,im);
+
+    F2_construct(p,re,im);
+}
+
+
+void  F2_speedsquare(BNField2 *p, BNField2 b)  
+{
+	
+	CBigInt n,re,im;
+
+	Mul_Big_Big(&im,b.re,b.im);   //此时im 为ab 两个b含义不同
+
+	Add_Big_Big(&n,b.im,b.im);
+	Sub_Big_Big(&n,b.re,n);
+
+	Add_Big_Big(&re,b.re,b.im);
+	Mul_Big_Big(&re,re,n);
+
+	//CBigInt_neg(&re,re);
+	//CBigInt_substract(&re,im,re);    //由于没有找到模加运算 故用一个负模运算和模减运算代替 
+    Add_Big_Big(&re,re,im);
+
+	Add_Big_Big(&im,im,im);  //最后加到2ab
 
     F2_construct(p,re,im);
 }

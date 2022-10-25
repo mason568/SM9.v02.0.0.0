@@ -287,8 +287,82 @@ void  F12_multiply_I(BNField12 *p, BNField12 b, CBigInt k)
    (a+bw+cw^2)^2  ；
        =a^2+((b+c)^2-b^2-c^2)v+((a+b)^2-a^2-b^2+c^2 v)w
 	           + ((a+c)^2-a^2-c^2+b^2)w^2
-
+6次平方
  */
+/*
+   十二次扩域元素的平方运算可以改成：
+ (a+bw+cw^2)^2=a^2+2bcv+(2ab+vc^2)w
+	           + (2ac+b^2)w^2
+			=(A+Dv)+(B+Ev)w+Fw^2
+ 其中 A=a^2 B=2ab C=(c-b+a)^2 D=2bc E=c^2
+    F=B+C+D-A-E=b^2+2ac
+2次模乘 三次平方  但存储好像需求更高
+ */
+/*
+void  F12_square(BNField12 *p, BNField12 b)
+{
+	
+	BNField4 t1,t2,t3,t4,t5,re,im,sq;
+
+    F4_square(&t1,b.re);
+	F4_square(&t5,b.sq);
+
+	F4_add(&t3,b.re,b.sq);
+	F4_substract(&t3,t3,b.im);	
+	F4_square(&t3,t3);             //得到C
+
+	F4_multiply(&t4,b.im,b.sq);
+	F4_add(&t4,t4,t4);       //得到D 这里 *2 即为 两个相加
+	F4_multiply_v(&re,t4);
+	F4_add(&re,re,t1);
+
+	F4_multiply(&t2,b.re,b.im);
+	F4_add(&t2,t2,t2);      //得到B
+	F4_multiply_v(&im,t5);
+	F4_add(&im,im,t2);
+
+	F4_add(&sq,t2,t3);
+	F4_add(&sq,sq,t4);
+	F4_substract(&sq,sq,t1);
+	F4_substract(&sq,sq,t5);
+
+	F4_assign(&p->re,re);
+	F4_assign(&p->im,im);
+	F4_assign(&p->sq,sq);
+}
+*/
+
+void F12_speedsquare(BNField12 *p, BNField12 b){
+	BNField4 t1,t2,t3,t4,t5,re,im,sq;
+
+    F4_speedsquare(&t1,b.re);
+	F4_speedsquare(&t5,b.sq);
+
+	F4_add(&t3,b.re,b.sq);
+	F4_substract(&t3,t3,b.im);	
+	F4_speedsquare(&t3,t3);             //得到C
+
+	F4_multiply(&t4,b.im,b.sq);
+	F4_add(&t4,t4,t4);       //得到D 这里 *2 即为 两个相加
+	F4_multiply_v(&re,t4);
+	F4_add(&re,re,t1);
+
+	F4_multiply(&t2,b.re,b.im);
+	F4_add(&t2,t2,t2);      //得到B
+	F4_multiply_v(&im,t5);
+	F4_add(&im,im,t2);
+
+	F4_add(&sq,t2,t3);
+	F4_add(&sq,sq,t4);
+	F4_substract(&sq,sq,t1);
+	F4_substract(&sq,sq,t5);
+
+	F4_assign(&p->re,re);
+	F4_assign(&p->im,im);
+	F4_assign(&p->sq,sq);
+
+}
+
 void  F12_square(BNField12 *p, BNField12 b)
 {
 	
@@ -322,7 +396,6 @@ void  F12_square(BNField12 *p, BNField12 b)
 	F4_assign(&p->im,im);
 	F4_assign(&p->sq,sq);
 }
-
 
 /*
    十二次扩域元素的逆运算

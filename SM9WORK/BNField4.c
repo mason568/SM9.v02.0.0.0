@@ -236,12 +236,93 @@ void F4_multiply_v(BNField4 *p, BNField4 b)
                     =a^2+b^2u+2abv
 
  */
+/*
+   四次扩域元素的平方运算可改成
+   (a+bv)^2=a^2+2abv+b^2 u^4 
+                    =a^2+b^2u+2abv
+					=C+2Bv
+	A=(a+b)*(a+bu) B=ab C=A-uB-B
+这样是两次模乘 比上面三次模乘要好
+ */
+
+/*
+void F4_square(BNField4 *p, BNField4 b)
+{
+	
+	BNField2 m,n,re,im;
+
+	F2_multiply_u(&n,b.im);
+	F2_add(&n,b.re,n);
+	F2_add(&re,b.re,b.im);
+	F2_multiply(&re,re,n);
+
+	F2_multiply(&m,b.re,b.im);  //m=ab=B
+	
+	F2_substract(&re,re,m)   //re=A-B
+	F2_add(&im,m,m);
+	F2_multiply_u(&m,m);     //m=uB
+	F2_substract(&re,re,m)   //re=A-B-uB=C  这里如果再加一个变量会更清楚 不用刻意安排顺序
+    
+	F4_construct(p,re,im);
+}
+ */
+
+/*
+   四次扩域元素的平方运算可改成
+   (a+bv)^2=a^2+2abv+b^2 u^4 
+                    =a^2+b^2u+2abv
+					=C+2Bv
+	A=(a+b)*(a+bu) B=ab C=A-uB-B
+这样是两次模乘 比上面三次模乘要好
+ */
+
+void  F4_speedsquare(BNField4 *p, BNField4 b){
+
+    /*
+    BNField2 m,n,re,im;
+
+	F2_multiply_u(&n,b.im);
+	F2_add(&n,b.re,n);
+	F2_add(&re,b.re,b.im);
+	F2_multiply(&re,re,n);
+
+	F2_multiply(&m,b.re,b.im);  //m=ab=B
+	
+	F2_substract(&re,re,m);  //re=A-B
+	F2_add(&im,m,m);
+	F2_multiply_u(&m,m);     //m=uB
+	F2_substract(&re,re,m);   //re=A-B-uB=C  这里如果再加一个变量会更清楚 不用刻意安排顺序
+    
+	F4_construct(p,re,im);
+*/
+    
+    BNField2 m,n,re,im,ub;
+
+	F2_multiply_u(&n,b.im);
+	F2_add(&n,b.re,n);
+	F2_add(&re,b.re,b.im);
+	F2_multiply(&re,re,n);
+
+	F2_multiply(&m,b.re,b.im);  //m=ab=B
+	F2_add(&im,m,m);
+
+	F2_multiply_u(&ub,m); 
+	F2_add(&m,m,ub);
+	F2_substract(&re,re,m);   //re=A-B-uB=C  这里如果再加一个变量会更清楚 不用刻意安排顺序
+    
+	F4_construct(p,re,im);
+    
+    
+
+
+}
+
 void F4_square(BNField4 *p, BNField4 b)
 {
 	
 	BNField2 m,re,im;
 
-	F2_square(&re,b.re);
+	F2_square(&re,b.re);  //不知道为什么，这里调用F2_speedsquare会出错  但是单独测试的话又没有问题
     F2_square(&m,b.im);
 	F2_multiply_u(&m,m);
 	F2_add(&re,re,m);

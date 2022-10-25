@@ -48,6 +48,52 @@ make
 问题：有很多函数虽然披着并行的壳，但它实际返回的参数只有数组的第一个元素
 
 
+# 优化三 
+修改2 4 12 扩域上的平方运算
+## 平方优化结果
+1. 直接修改单个层次的运算
 
+```
+test_BNField12_speedsquare 1000 times test: Begin! 
+microsecond: 561741 us
+microsecond: 470745 us
+speed up 1 to 1.193302
+Test passed!
+test_BNField12_speedsqure test: over! 
+test_BNField4_speedsquare 1000 times test: Begin! 
+microsecond: 67406 us
+microsecond: 71497 us
+speed up 1 to 0.942781
+Test passed!
+test_BNField4_speedsquare test: over! 
+test_BNField2_speedsquare 1000 times test: Begin! 
+microsecond: 16800 us
+microsecond: 16405 us
+speed up 1 to 1.024078
+BNField2 test: b1 ^2 != b1*b1    
+test_BNField2_speedsquare test: over! 
+```
+
+2. 各乘均修改后的结果
+test_BNField12_speedsquare 1000 times test: Begin! 
+microsecond: 562487 us
+microsecond: 473135 us
+speed up 1 to 1.188851
+Test passed!
+test_BNField12_speedsquare test: over! 
+test_BNField4_speedsquare 1000 times test: Begin! 
+microsecond: 66886 us
+microsecond: 71112 us
+speed up 1 to 0.940573
+Test passed!
+test_BNField4_speedsquare test: over! 
+test_BNField2_speedsquare 1000 times test: Begin! 
+microsecond: 16734 us
+microsecond: 16456 us
+speed up 1 to 1.016894
+Test passed!
+test_BNField2_speedsquare test: over! 
+
+3. BNField2_speedsquare 好像有问题，虽然单个测试没问题，但是把他放到F4_square() 让 调用F12_square() 中会出错 ,所以等于最后修改BNField12_speedsqure 和  BNField4_speedsqure ，除非bug解决，否则不动 NField2_square
 
 

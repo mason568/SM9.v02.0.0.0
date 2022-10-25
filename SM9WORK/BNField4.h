@@ -57,6 +57,8 @@ void  F4_inverse(BNField4 *p, BNField4 b); // 四次扩域元素的逆运算  (a
 
 void F4_toString(BNField4 b,unsigned int system);//显示四次扩域元素
 
+void  F4_speedsquare(BNField4 *p, BNField4 b);
+
 #endif
 
 

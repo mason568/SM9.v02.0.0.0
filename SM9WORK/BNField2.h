@@ -60,4 +60,6 @@ void F2_toString(BNField2 b,unsigned int system);//显示二次扩域元素:  �
 
 void F2_normorlize(BNField2 *b, BNField2 p); // 规约化处理
 
+void  F2_speedsquare(BNField2 *p, BNField2 b); 
+
 #endif

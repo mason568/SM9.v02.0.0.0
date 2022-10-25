@@ -81,6 +81,7 @@ void F12_toString_d(BNField12 b,unsigned int system); // 以一般形式显示�
 void F12_toString(BNField12 b,unsigned int system); //根据SM9标准，以十六进或十进制显示十二次扩域元素
 
 
+void F12_speedsqure(BNField12 *p, BNField12 b);
 
 #endif
 

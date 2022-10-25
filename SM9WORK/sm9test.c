@@ -1404,6 +1404,242 @@ void test_BNField2()
 }
 
 
+void test_BNField12_speedsqure(){
+CBigInt a,b,c,d,e,f,zero;
+//	mpz_t a1,b1,c1,d1,e1,f1;
+	BNField2 b1,b2,b3,b4,b5,b6;
+	BNField2 t1,t2,t3,t4,t5,t6;
+	BNField4 B1,B2,B3,T1,T2,T3;
+	BNField12 BN1,BN2,BN3,TN1,TN2,TN3,SN1;
+	
+	  
+	Get(&a,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD",HEX);
+	Get(&b,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
+	Get(&c,"85AEF3D078640C98597B6027B441A01FF1DD2C190F5E93C454806C11D8806141",HEX);
+	Get(&d,"3722755292130B08D2AAB97FD34EC120EE265948D19C17ABF9B7213BAF82D65B",HEX);
+	Get(&e,"17509B092E845C1266BA0D262CBEE6ED0736A96FA347C8BD856DC76B84EBEB96",HEX);
+	Get(&f,"A7CF28D519BE3DA65F3170153D278FF247EFBA98A71A08116215BBA5C999A7C7",HEX);
+	
+	printf("test_BNField12_speedsquare 1000 times test: Begin! \n");
+
+    F2_construct(&b1,a,b);
+    F2_construct(&b2,a,c);
+	F2_construct(&b3,a,d);
+    F2_construct(&t1,a,b);
+    F2_construct(&t2,b,d);
+	F2_construct(&t3,b,f);
+
+    F4_construct(&B1,b1,t1);
+    F4_construct(&B2,b2,t2);
+	F4_construct(&B3,b3,t3);
+
+    F12_construct(&BN1,B1,B2,B3);
+	F12_construct(&BN2,B2,B3,B1);
+	F12_construct(&BN3,B3,B1,B2);
+	// 测试b1 ^2 == b1*b1	
+    F12_speedsquare(&TN1,BN1);
+    F12_square(&SN1,BN1);
+	F12_multiply(&TN2,BN1,BN1);
+    printf("TN1\n");
+    F12_toString(TN1 ,HEX); 
+    printf("\n");
+    printf("SN1\n");
+    F12_toString(SN1 ,HEX); 
+    printf("\n");
+    printf("TN2\n");
+    F12_toString(TN2 ,HEX); 
+    printf("\n");
+    
+    if(!F12_equal(TN1,TN2))
+	{
+		printf("BNField2 test: TN1 != TN2	 \n");
+	}else{
+        printf("BNField2 test: TN1 == TN2	 \n");
+    }
+    if(!F12_equal(SN1,TN1)){
+        printf("BNField2 test: TN1 != SN1	 \n");
+    }else{
+        printf("BNField2 test: TN1 == SN1	 \n");
+    }
+    if(!F12_equal(SN1,TN2)){
+        printf("BNField2 test: TN2 != SN1	 \n");
+    }else{
+        printf("BNField2 test: TN2 == SN1	 \n");
+    }
+
+
+    struct timeval tv1,tv2;
+	long time_begin,time_end;
+    //printf("microsecond: %ld\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
+    gettimeofday(&tv1,NULL);//获取开始时间
+    for(int i=0;i<1000;i++){
+	    F12_square(&SN1,BN1);
+    }
+
+    gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
+    printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
+    long int sp1 = tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec);
+
+    gettimeofday(&tv1,NULL);//获取开始时间
+
+    for(int i=0;i<1000;i++){
+	    F12_speedsquare(&TN1,BN1);
+    }
+    gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
+    printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
+    long int sp2 = tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec);
+    float spu = (1.0*sp1)/(1.0*sp2);
+    printf("speed up 1 to %f\n",spu);
+
+
+
+
+	printf("test_BNField12_speedsqure test: over! \n");
+
+}
+void test_BNField4_speedsqure(){
+
+	CBigInt a,b,c,d,e,f;
+//	mpz_t a1,b1,c1,d1,e1,f1;
+	BNField2 b1,b2,b3,b4,b5,b6;
+	BNField2 t1,t2,t3,t4,t5,t6;
+	BNField4 B1,B2,B3,T1,T2,T3,SN1;
+	
+	Get(&a,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD",HEX);
+	Get(&b,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
+	Get(&c,"85AEF3D078640C98597B6027B441A01FF1DD2C190F5E93C454806C11D8806141",HEX);
+	Get(&d,"3722755292130B08D2AAB97FD34EC120EE265948D19C17ABF9B7213BAF82D65B",HEX);
+	Get(&e,"17509B092E845C1266BA0D262CBEE6ED0736A96FA347C8BD856DC76B84EBEB96",HEX);
+	Get(&f,"A7CF28D519BE3DA65F3170153D278FF247EFBA98A71A08116215BBA5C999A7C7",HEX);
+
+	printf("test_BNField4_speedsquare 1000 times test: Begin! \n");
+
+    F2_construct(&b1,a,b);
+    F2_construct(&b2,a,c);
+	F2_construct(&b3,a,d);
+    F2_construct(&t1,a,b);
+    F2_construct(&t2,b,d);
+	F2_construct(&t3,b,f);
+
+    F4_construct(&B1,b1,t1);
+    F4_construct(&B2,b2,t2);
+	F4_construct(&B3,b3,t3);
+	// 测试b1 ^2 == b1*b1	
+    struct timeval tv1,tv2;
+	long time_begin,time_end;
+    //printf("microsecond: %ld\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
+    gettimeofday(&tv1,NULL);//获取开始时间
+    for(int i=0;i<1000;i++){
+	    F4_square(&T1,B1);
+    }
+    gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
+    printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
+    long int sp1 = tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec);
+
+    gettimeofday(&tv1,NULL);//获取开始时间
+    for(int i=0;i<1000;i++){
+        F4_speedsquare(&SN1,B1);
+    }
+    gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
+    printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
+    long int sp2 = tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec);
+    float spu = (1.0*sp1)/(1.0*sp2);
+    printf("speed up 1 to %f\n",spu);
+
+	
+   
+
+
+
+	F4_multiply(&T2,B1,B1);
+    /*
+    F4_toString(T1 ,HEX); 
+    printf("\n");
+    F4_toString(SN1 ,HEX); 
+    printf("\n");
+    F4_toString(T2 ,HEX);
+    printf("\n");
+    */
+
+
+	if(!F4_equal(T1,T2)||!F4_equal(SN1,T1))
+	{
+		printf("BNField4 test: B1 ^2 != B1*B1	 \n");
+	}else printf("Test passed!\n");
+
+	printf("test_BNField4_speedsquare test: over! \n");
+
+}
+
+
+void test_BNField2_speedsqure(){
+    CBigInt a,b,c,d,e,f;
+	BNField2 b1,b2,b3,t1,t2,t3,SN1;
+/*
+    b1 = BNField2_init();
+    b2 = BNField2_init();
+	b3 = BNField2_init();
+	t1 = BNField2_init();
+	t2 = BNField2_init();
+	t3 = BNField2_init();
+	*/
+	Get(&a,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD",HEX);
+	Get(&b,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
+	Get(&c,"85AEF3D078640C98597B6027B441A01FF1DD2C190F5E93C454806C11D8806141",HEX);
+	Get(&d,"3722755292130B08D2AAB97FD34EC120EE265948D19C17ABF9B7213BAF82D65B",HEX);
+	Get(&e,"17509B092E845C1266BA0D262CBEE6ED0736A96FA347C8BD856DC76B84EBEB96",HEX);
+	Get(&f,"A7CF28D519BE3DA65F3170153D278FF247EFBA98A71A08116215BBA5C999A7C7",HEX);
+    F2_construct(&b1,a,b);
+    F2_construct(&b2,c,d);
+	F2_construct(&b3,e,f);
+	printf("test_BNField2_speedsquare 1000 times test: Begin! \n");
+
+	// 测试b1 ^2 == b1*b1	
+    struct timeval tv1,tv2;
+	long time_begin,time_end;
+    //printf("microsecond: %ld\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
+    gettimeofday(&tv1,NULL);//获取开始时间
+    for(int i=0;i<1000;i++){
+	    F2_square(&t1,b1);
+    }
+    gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
+    printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
+    long int sp1 = tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec);
+
+    gettimeofday(&tv1,NULL);//获取开始时间
+    for(int i=0;i<1000;i++){
+        F2_speedsquare(&SN1,b1);
+    }
+    gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
+    printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
+    long int sp2 = tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec);
+    float spu = (1.0*sp1)/(1.0*sp2);
+    printf("speed up 1 to %f\n",spu);
+
+	F2_multiply(&t2,b1,b1);
+
+	if(!F2_equal(t1,t2))
+	{
+		printf("BNField2 test: t1 != t2	 \n");
+	}else if(!F2_equal(t1,SN1)){
+        printf("BNField2 test: t1 != SN1	 \n");
+    }else if(!F2_equal(SN1,t2)){
+        printf("BNField2 test: t2 != SN1	 \n");
+    }else printf("Test passed!\n");
+    /*
+    F2_toString(t1 ,HEX); 
+    printf("\n");
+    F2_toString(SN1 ,HEX); 
+    printf("\n");
+    F2_toString(t2 ,HEX);
+    printf("\n");
+    */
+	printf("test_BNField2_speedsquare test: over! \n");
+
+}
+
+
+
 void test_CBigIntInit_para(){
     printf("CBigIntInit_para test: Begin! \n");
     

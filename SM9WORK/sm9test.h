@@ -14,6 +14,11 @@ void test_Hash1();
 void test_Hash2();
 void test_SM4();
 //重写基础运算
+
+void test_BNField12_speedsqure();
+void test_BNField4_speedsqure();
+void test_BNField2_speedsqure();
+
 void test_CBigIntInit_para();
 void test_Cmp_para();
 void test_Mov_Big_Big_para();

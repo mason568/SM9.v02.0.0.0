@@ -78,9 +78,14 @@ int main(){
     //test_Get_para();
     //test_Inv_para();
     //test_Exp_para();
-
     SM9Params_init(&BN);//一定要有，否则会出现总线错误
-    parallel_DSA_Demo();
+    //test_BNField2();
+    //test_BNField12();
+    test_BNField12_speedsqure();
+    test_BNField4_speedsqure();
+    test_BNField2_speedsqure();
+
+    //parallel_DSA_Demo();
     //DSA_Demo();  //签名demo
     //test_pairing();
 
