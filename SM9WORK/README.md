@@ -75,6 +75,7 @@ test_BNField2_speedsquare test: over!
 ```
 
 2. 各乘均修改后的结果
+```
 test_BNField12_speedsquare 1000 times test: Begin! 
 microsecond: 562487 us
 microsecond: 473135 us
@@ -93,6 +94,7 @@ microsecond: 16456 us
 speed up 1 to 1.016894
 Test passed!
 test_BNField2_speedsquare test: over! 
+```
 
 3. BNField2_speedsquare 好像有问题，虽然单个测试没问题，但是把他放到F4_square() 让 调用F12_square() 中会出错 ,所以等于最后修改BNField12_speedsqure 和  BNField4_speedsqure ，除非bug解决，否则不动 NField2_square
 
