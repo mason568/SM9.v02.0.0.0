@@ -1,15 +1,11 @@
 #include "SM9DSA.h"
 #include "Bigintcuda.cuh"
+#include "utilitycuda.cuh"
 //为g=e(P1,P_pubs)赋值
 void geP1Ppubs_assign(struct SM9DSAParams *signpre, BNPoint2 P_pub, BNPoint P1){
     BNField12 g;
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     Pairing_opt(&g,P_pub,P1);
-    F12_toString(g,HEX);
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     F12_construct(&signpre->geP1Ppubs,g.re,g.im,g.sq);
-    F12_toString(signpre->geP1Ppubs,HEX);
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
 }
 
 #if 0
@@ -275,8 +271,7 @@ void DSA_Demo()
    P1：群G1的生成元
 
 */
-
-void parallel_DSA_Demo()
+void parallel_DSA_Demo()  //实际并行测试函数
 {
 	CBigInt a,b,c,d,e,f,ks,h,h2;
 	BNField2 b1,b2;
@@ -301,7 +296,6 @@ void parallel_DSA_Demo()
 	F2_construct(&b2,f,e);    
     P2_construct_xy(&P2,b1,b2);
     
-	printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
 	//密钥生成阶段
 	Get(&ks,"0130E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2DC5F4",HEX);
 	P2_multiply(&P_pub_s,P2,ks);
@@ -327,115 +321,30 @@ void parallel_DSA_Demo()
     struct timeval tv1,tv2;
 	long time_begin,time_end;
     gettimeofday(&tv1,NULL);//获取开始时间
-    printf("sign %d time at the same time \n", num);
-    printf("second: %d\n", tv1.tv_sec);  //秒
-    printf("millisecond: %d\n", tv1.tv_sec*1000 + tv1.tv_usec/1000);  //毫秒
-    printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
+    printf("sign %d time... \n", num);
+    //printf("second: %d\n", tv1.tv_sec);  //秒
+    printf("签名%d次用时: %d\n", num, tv1.tv_sec*1000 + tv1.tv_usec/1000);  //毫秒
+    //printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
 	CBigInt *para_h =  (CBigInt *)malloc(num*sizeof(CBigInt));
 	BNPoint *para_S = (BNPoint *)malloc(num *sizeof(BNPoint));
-	//BNPoint *para_dsA = (BNPoint *)malloc(num *sizeof(BNPoint));
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    #if 0
-	for(int i=0;i<num;i++)
-	{
-        //Get(&para_h[i],"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDD3",HEX);
-	    //Get(&para_S[i],"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
-        //parallel_DSA_Sign_v2(para_h, para_S, M, P1, P_pub_s,dsA,num);	
-
-	}
-    #else  //直接签  调什么函数？
-	BNField12 g[num],w[num];
-	CBigInt r[num],l[num];
-	unsigned int len1,len2;
-	BYTE *msg;
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    //F12_assign(&g,SIGNPRE.geP1Ppubs);//可以并行
-    BNField12 WW;
-	for(int i=0;i<num;i++)
-	{
-		//Pairing_opt(&g[i],P_pub,P1);
-		F12_assign(&(g[i]),SIGNPRE.geP1Ppubs);
-		Get(&r[i],"033C8616B06704813203DFD00965022ED15975C662337AED648835DC4B1CBE",HEX);
-		F12_exp(&w[i],g[i],r[i]);
-	}
-    F12_exp(&WW,g[0],r[0]);
     
+    parallel_DSA_Sign_v2(para_h, para_S, M, P1, P_pub_s,dsA,num);	
 
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-	//F12_exp 中BNField12*变量&w[i]在使用数组的时候，定义para_w
-    //F12_exp(&w[i],g[i],r[i]);
-
-    int nNUM = num;
-    len1 = strlen((const char*)M);;
-    len2 = len1+384;
-    msg = (BYTE*)malloc(len2);//
-    memcpy(msg,M,len1);
-    F12toByte(&msg[len1],WW);
-    for(int i=0;i<32;i++){
-
-        Hash_2(&(para_h[i]), msg, len2, BN.n);
-        printf("original hh[%d] = %s\n",i , Put(para_h[i],HEX));
-    }
-    
-	//Hash_2(&(hh[2]), msg, len2, BN.n);
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    //printf("original hh = %s\n", Put(hh[0],HEX));
-    
-    //Put_para((CBigInt *)hh,HEX,nNUM);
-    
-
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    
-    CBigInt para_l[32];
-
-	//先测试一下这个函数
-	printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    for(int i=0;i<num;i++){
-        CBigInt_substract_modN(&(para_l[i]),r[i],para_h[i]);//可以并行
-        printf("original hh[%d] = %s\n",i , Put(para_l[i],HEX));
-    }
-	
-	printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-
-	for(int i=0;i<num;i++)
-	{
-		
-		//CBigInt_substract_modN(&l[i],r[i],*h[i]);//测试parallel_CBigInt_substract_modN的时候将这一行注释掉
-		//printf("here=%d \n",i);
-		P_multiply(&(para_S[i]),dsA,para_l[i]);//可以
-		//printf("end=%d \n",i);
-		P_normorlize(&(para_S[i]),para_S[i]);//可以
-		//printf("end=%d \n",i);
-		//free(msg[i]);
-		//printf("end=%d \n",i);
-	}
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    free(msg);
-
-
-    #endif
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    for(int i=0;i<32;i++){
-        printf("original222 hh[%d] = %s\n",i , Put(para_h[i],HEX));
-        P_toString(para_S[i],HEX);
-    }
-    //Put_para(para_h,HEX,10);
-	//DSA_Sign(&h, &S, M, P1, P_pub_s, dsA);
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
-    printf("second: %d s\n",tv2.tv_sec - tv1.tv_sec);  //秒
-    printf("millisecond: %d ms\n", tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
-    printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
+    //printf("second: %d s\n",tv2.tv_sec - tv1.tv_sec);  //秒
+    printf("验签%d次用时: %d\n", num, tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
+    //printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
 	finish = clock();
     
 	time2 = (double)(finish-start);
 	//数字签名验证阶段
-    
-	start = clock();
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-	sign = parallel_DSA_Verify(&h2, &(para_h[0]), &(para_S[0]), M, id, P1, P2, P_pub_s);
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    printf("verify h2 = %s\n", Put(h2,HEX));
+    start = clock();
+    CBigInt *para_h2 =  (CBigInt *)malloc(num*sizeof(CBigInt));
+	printf("verify %d time... \n", num);
+    gettimeofday(&tv1,NULL);//获取开始时间
+	sign = parallel_DSA_Verify(para_h2, para_h, para_S, M, id, P1, P2, P_pub_s,num);
+    gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
+    printf("millisecond: %d ms\n", tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
 	finish = clock();
      	
 	time3 = (double)(finish-start);
@@ -466,7 +375,7 @@ void parallel_DSA_Demo()
 	printf("\n***************************\n");
 	printf("****3、数字签名验证阶段****\n");
 	printf("***************************\n");
-	printf("h2 = %s\n",Put(h2,HEX));
+	printf("h2 = %s\n",Put(para_h2[0],HEX));
 	if(sign)
 		printf("h2 = h, 签名验证能过！\n");
 	else
@@ -477,9 +386,83 @@ void parallel_DSA_Demo()
 	printf("SM9 数字签名验证时间：%f ms\n",time3);
     free(para_h);
     free(para_S);
+    //free(para_h2); //容易引起报错 bug待解决
 }
 
+/*
+* 签名函数parallel版本
+*
+*/
+void parallel_DSA_Sign_v2(CBigInt *hh, BNPoint *SS, BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoint dsA, const int num)
+{
+	BNField12 g[num],w[num];
+	CBigInt r[num],l[num];
+	unsigned int len1,len2;
+	BYTE *msg;
+    //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    //F12_assign(&g,SIGNPRE.geP1Ppubs);//可以并行
+    BNField12 WW;
+	for(int i=0;i<num;i++)
+	{
+		//Pairing_opt(&g[i],P_pub,P1);
+		F12_assign(&(g[i]),SIGNPRE.geP1Ppubs);
+		Get(&r[i],"033C8616B06704813203DFD00965022ED15975C662337AED648835DC4B1CBE",HEX);
+		F12_exp(&w[i],g[i],r[i]);
+	}
+    F12_exp(&WW,g[0],r[0]);
+    
 
+    //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+	//F12_exp 中BNField12*变量&w[i]在使用数组的时候，定义para_w
+    //F12_exp(&w[i],g[i],r[i]);
+
+    int nNUM = num;
+    len1 = strlen((const char*)M);;
+    len2 = len1+384;
+    msg = (BYTE*)malloc(len2);//
+    memcpy(msg,M,len1);
+    F12toByte(&msg[len1],WW);
+    for(int i=0;i<32;i++){
+
+        Hash_2(&(hh[i]), msg, len2, BN.n);
+        //printf("original hh[%d] = %s\n",i , Put(hh[i],HEX));
+    }
+    
+	//Hash_2(&(hh[2]), msg, len2, BN.n);
+    //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    //printf("original hh = %s\n", Put(hh[0],HEX));
+    
+    //Put_para((CBigInt *)hh,HEX,nNUM);
+    
+
+    //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    
+    CBigInt para_l[32];
+
+	//先测试一下这个函数
+	//printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    for(int i=0;i<num;i++){
+        CBigInt_substract_modN(&(para_l[i]),r[i],hh[i]);//可以并行
+        //printf("original hh[%d] = %s\n",i , Put(para_l[i],HEX));
+    }
+	
+	//printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+
+	for(int i=0;i<num;i++)
+	{
+		
+		//CBigInt_substract_modN(&l[i],r[i],*h[i]);//测试parallel_CBigInt_substract_modN的时候将这一行注释掉
+		//printf("here=%d \n",i);
+		P_multiply(&(SS[i]),dsA,para_l[i]);//可以
+		//printf("end=%d \n",i);
+		P_normorlize(&(SS[i]),SS[i]);//可以
+		//printf("end=%d \n",i);
+		//free(msg[i]);
+		//printf("end=%d \n",i);
+	}
+    //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    free(msg);
+}
 
 void DSA_Keygen(BNPoint *dsA,CBigInt ks, BYTE *ID,BNPoint P1)
 {
@@ -540,91 +523,6 @@ void DSA_Sign(CBigInt *h, BNPoint *S, BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoi
     
 }
 
-void parallel_DSA_Sign(CBigInt *h[], BNPoint *S[], BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoint dsA,const int num)
-{
-	//for(int i=0;i<num;i++)
-	//{
-	//	DSA_Sign(h,S, M, P1, P_pub,dsA);
-	//}
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    
-	BNField12 g[num],w[num];
-	CBigInt r[num],l[num];
-	unsigned int len1[num],len2[num];
-	BYTE *msg[num];
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    //F12_assign(&g,SIGNPRE.geP1Ppubs);//可以并行
-    
-	for(int i=0;i<num;i++)
-	{
-		//Pairing_opt(&g[i],P_pub,P1);
-		F12_assign(&(g[i]),SIGNPRE.geP1Ppubs);
-		Get(&r[i],"033C8616B06704813203DFD00965022ED15975C662337AED648835DC4B1CBE",HEX);
-		//F12_exp(&w[i],g[i],r[i]);//可以并行
-
-	}
-    
-
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-	//F12_exp 中BNField12*变量&w[i]在使用数组的时候，定义para_w
-	BNField12* para_w[num];
-	for(int i=0;i<num;i++)
-	{
-		para_w[i]=&w[i];
-	}
-
-	printf("parallel_F12_exp begin \n");
-	parallel_F12_exp(para_w,g,r,num);
-    printf("parallel_F12_exp done \n");
-	//F12_toString(g,HEX);
-	//F12_toString(w,HEX);
-    
-	printf("here 0 \n ");
-	unsigned int temp = strlen((const char*)M);
-	unsigned int temp2 = temp+384;
-	for(int i=0;i<num;i++)
-	{
-		len1[i] = strlen((const char*)M);;
-		len2[i] = len1[i]+384;
-		msg[i] = (BYTE*)malloc(temp2);//
-		memcpy(msg[i],M,len1[i]);
-		F12toByte(&msg[i][len1[i]],w[i]);
-		Hash_2(h[i], msg[i], len2[i], BN.n);
-        free(msg);
-	}
-    printf("here 1 \n ");
-    CBigInt* para_l[num];
-	CBigInt para_h[num];
-	for(int i=0;i<num;i++)
-	{
-		para_l[i]=&l[i];
-		para_h[i]=*h[i];
-	}
-	
-	//先测试一下这个函数
-	printf("parallel_CBigInt_substract_modN begin \n");
-	parallel_CBigInt_substract_modN(para_l,r,para_h,num);//可以并行
-	printf("parallel_CBigInt_substract_modN end  \n");
-
-	for(int i=0;i<num;i++)
-	{
-		
-		//CBigInt_substract_modN(&l[i],r[i],*h[i]);//测试parallel_CBigInt_substract_modN的时候将这一行注释掉
-		//printf("here=%d \n",i);
-		P_multiply(S[i],dsA,l[i]);//可以
-		//printf("end=%d \n",i);
-		P_normorlize(S[i],*S[i]);//可以
-		//printf("end=%d \n",i);
-		//free(msg[i]);
-		//printf("end=%d \n",i);
-	}
-	//printf("done  \n");
-	//Hash_2(h, msg, len2, BN.n);//可以并行
-	//parallel_Hash_2(h, msg, len2, BN.n,num);
-    //free(para_S);
-    
-}
-
 int DSA_Verify(CBigInt *h2, CBigInt h, BNPoint S, BYTE *M, BYTE *ID,BNPoint P1, BNPoint2 P2, BNPoint2 P_pub)
 {
 	BNField12 g,t,u,w;
@@ -661,136 +559,74 @@ int DSA_Verify(CBigInt *h2, CBigInt h, BNPoint S, BYTE *M, BYTE *ID,BNPoint P1, 
 	return Cmp(*h2,h)==0 ? 1 : 0;
 }
 
-int parallel_DSA_Verify(CBigInt *h2, CBigInt *h, BNPoint *S, BYTE *M, BYTE *ID,BNPoint P1, BNPoint2 P2, BNPoint2 P_pub)
+int parallel_DSA_Verify(CBigInt *h2h2, CBigInt *hh, BNPoint *SS, BYTE *M, BYTE *ID,BNPoint P1, BNPoint2 P2, BNPoint2 P_pub, const int num)
 {
-	BNField12 g,t,u,w;
+	
+    BNField12 g[num],t[num],u[num],w[num];
 	BYTE *msg1,*msg2;
 	BYTE hid = 0x01;
 	int len1,len2;
-	CBigInt h1;
+	CBigInt h1[num];
 	BNPoint2 P;
+    
+    if(Cmp(hh[0],BN.n)>=0||Cmp(hh[0],BN.ONE)<=0){
+        return 0;
+    } //假设verify的参数都一直，否侧要改底层的cmp_para代码
+  
+    for(int i=0;i<num;i++)
+	{
+		//Pairing_opt(&g,P_pub,P1); //从初始化参数中取出来
+		F12_assign(&(g[i]),SIGNPRE.geP1Ppubs);
+		F12_exp(&t[i],g[i],hh[i]);
+		//F12_exp(&w[i],g[i],r[i]);
+	}
+	
 
-	if( Cmp(*h,BN.n)>=0 || Cmp(*h,BN.ONE)<=0)
-		return 0;
-	Pairing_opt(&g,P_pub,P1);
-	F12_exp(&t,g,*h);
+
 	len1 = strlen((const char*)ID);
 	len1 +=1;
 	msg1 = (BYTE*)malloc(len1);
 	memcpy(msg1,ID,len1-1);
 	msg1[len1-1] = hid;
-	Hash_1(&h1, msg1, len1, BN.n);
-	P2_multiply(&P,P2,h1);
+    
+    for(int i=0;i<32;i++){
+
+        Hash_1(&(h1[i]), msg1, len2, BN.n);
+        //printf("original hh[%d] = %s\n",i , Put(h1[i],HEX));
+
+    }
+	//Hash_1(&h1, msg1, len1, BN.n);
+    
+	P2_multiply(&P,P2,h1[0]);
+   
 	P2_add(&P,P,P_pub);
-	Pairing_opt(&u,P,*S);
-	F12_multiply(&w,u,t);
+    
+    for(int i=0;i<32;i++){
+        Pairing_opt(&(u[i]),P,SS[i]);
+        F12_multiply(&(w[i]),u[i],t[i]);
+    }
+
 
 	len1 = strlen((const char*)M);
 	len2 = len1 + 384;  // 一个12次扩域元素需要 32*12 = 384 个字节
 	msg2 = (BYTE*)malloc(len2);
 	memcpy(msg2,M,len1);
-	F12toByte(&msg2[len1],w);
-	Hash_2(h2, msg2, len2, BN.n);
-	
-	free(msg1);
-	free(msg2);
-	return Cmp(*h2,*h)==0 ? 1 : 0;
-}
-
-
-
-
-
-void parallel_DSA_Sign_v2(CBigInt *hh, BNPoint *SS, BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoint dsA,const int num)
-{
-	//for(int i=0;i<num;i++)
-	//{
-	//	DSA_Sign(h,S, M, P1, P_pub,dsA);
-	//}
-    
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    
-
-	BNField12 g[num],w[num];
-	CBigInt r[num],l[num];
-	unsigned int len1,len2;
-	BYTE *msg;
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    //F12_assign(&g,SIGNPRE.geP1Ppubs);//可以并行
-    BNField12 WW;
-	for(int i=0;i<num;i++)
-	{
-		//Pairing_opt(&g[i],P_pub,P1);
-		F12_assign(&(g[i]),SIGNPRE.geP1Ppubs);
-		Get(&r[i],"033C8616B06704813203DFD00965022ED15975C662337AED648835DC4B1CBE",HEX);
-		F12_exp(&w[i],g[i],r[i]);
-	}
-    F12_exp(&WW,g[0],r[0]);
-    
-
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-	//F12_exp 中BNField12*变量&w[i]在使用数组的时候，定义para_w
-    //F12_exp(&w[i],g[i],r[i]);
-
-    int nNUM = num;
-    len1 = strlen((const char*)M);;
-    len2 = len1+384;
-    msg = (BYTE*)malloc(len1);//
-    memcpy(msg,M,len1);
-    F12toByte(&msg[len1],WW);
+	F12toByte(&msg2[len1],w[0]);
+    int ret = 1;
     for(int i=0;i<32;i++){
-
-        Hash_2(&(hh[i]), msg, len2, BN.n);
-        printf("original hh[%d] = %s\n",i , Put(hh[i],HEX));
+        Hash_2(&(h2h2[i]), msg2, len2, BN.n);
+        //printf("original h2h2[%d] = %s\n",i , Put(h2h2[i],HEX));
+        if(Cmp(h2h2[i],hh[i]) ==0){
+            ret = 0;
+            break;
+        }
     }
-    
-	//Hash_2(&(hh[2]), msg, len2, BN.n);
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    //printf("original hh = %s\n", Put(hh[0],HEX));
-    
-    //Put_para((CBigInt *)hh,HEX,nNUM);
-    
-    
-	BNField12* para_w[num];
-	for(int i=0;i<num;i++)
-	{
-		para_w[i]=&w[i];
-        F12_exp(para_w[i],g[i],r[i]);
-	}
-	//F12_toString(g,HEX);
-	//F12_toString(w,HEX);
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    
-
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    CBigInt* para_l[num];
-	CBigInt para_h[num];
-	for(int i=0;i<num;i++)
-	{
-		para_l[i]=&l[i];
-		para_h[i]=hh[i];
-	}
-	
-	//先测试一下这个函数
-	printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    for(int i=0;i<num;i++){
-        CBigInt_substract_modN(para_l[i],r[i],para_h[i]);//可以并行
-    }
-	
-	printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-
-	for(int i=0;i<num;i++)
-	{
-		
-		//CBigInt_substract_modN(&l[i],r[i],*h[i]);//测试parallel_CBigInt_substract_modN的时候将这一行注释掉
-		//printf("here=%d \n",i);
-		P_multiply(&(SS[i]),dsA,l[i]);//可以
-		//printf("end=%d \n",i);
-		P_normorlize(&(SS[i]),SS[i]);//可以
-		//printf("end=%d \n",i);
-		//free(msg[i]);
-		//printf("end=%d \n",i);
-	}
-    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    free(msg);
+    free(msg1);
+	free(msg2);
+	return ret;
 }
+
+
+
+
+

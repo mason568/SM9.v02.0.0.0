@@ -4,7 +4,11 @@
 > 在他人写好的库的基础上做优化: https://github.com/Federico2014/SM9
 
 ## 头文件包含关系
-SM9PKC.h > SM9KA.h > SM9DSA.h > utility.h > BNPairing.h > BNPoint2.h > BNPoint.h > BNField12.h > BNField4.h > BNField2.h > BNField2.h > Params.h > BigInt.h > 
+SM9PKC.h > SM9KA.h > SM9DSA.h > utility.h > BNPairing.h > BNPoint2.h > BNPoint.h > BNField12.h > BNField4.h > BNField2.h >  Params.h > BigInt.h > 
+
+sm9cudatest.c > "square063.cuh" "Bigintcuda.cuh" "sm9test.h" "SM9PKC.h"
+sm9test.c > "sm9test.h" "SM9PKC.h"
+
 
 ## 编译
 ```makefile
@@ -24,7 +28,7 @@ make
 
 3. 一次R-ate对pairing时间：415.4 ms
 
-4. SM9 数字签名时间：738.8 ms
+4. SM9 数字签名时间：738.8 ms -> 676ms ????????????
 
 5. SM9 数字签名验证时间：1327.8 ms
 
@@ -120,6 +124,16 @@ speed up 1 to 1.008659
 Test passed!
 test_BNField2_speedsquare test: over! 
 ```
+
+# 测试结果
+
+# 展望工作
+因为时间很赶，预想的还有几个优化方案未能落实
+## 莫幂运算的预计算
+> ...
+## pairing的计算，点加的顺序
+> ...
+
 
 
 

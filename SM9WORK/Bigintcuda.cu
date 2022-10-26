@@ -493,9 +493,7 @@ int Cmp_para(CBigInt N,CBigInt A, int parasize)
 
     // copy the result back to the CPU mem
     cudaMemcpy(h_cmp_ret, d_cmp_ret, parasize*(sizeof(int)), cudaMemcpyDeviceToHost);
-    for(int i=0;i<parasize;i++){
-        printf("para %d cmp_ret = %d\n",i, h_cmp_ret[i]);
-    }
+
     //memcpy(N,h_N,parasize*(sizeof(CBigInt)));  
     ret = h_cmp_ret[0];
         // free the device yo

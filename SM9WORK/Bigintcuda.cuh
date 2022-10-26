@@ -15,6 +15,26 @@ extern "C" {          //告诉编译器，这部分代码按C语言的格式进�
 #endif
     #include "BigInt.h"
     #include "common.h"
+
+    /**** some device func declaration  *****/  
+    __device__ int dev_cmp(CBigInt *d_N,CBigInt *d_A);
+    __device__ void dev_mov_big_long(CBigInt *d_N,unsigned long d_A);
+    __device__ void dev_mov_big_big(CBigInt *d_N, CBigInt d_A);
+    __device__ void dev_cbigintinit(CBigInt *d_A);
+    __device__ void dev_add_big_long(CBigInt *Y, CBigInt N, unsigned long A);
+    __device__ void dev_add_big_big(CBigInt *Y, CBigInt N, CBigInt A);
+    __device__ void dev_mul_big_long(CBigInt *Y, CBigInt N, unsigned long A);
+    __device__ void dev_mul_big_big(CBigInt *Y, CBigInt N, CBigInt A);
+    __device__ void dev_sub_big_big(CBigInt *Y, CBigInt N, CBigInt A);
+    __device__ unsigned long dev_mod_big_long(CBigInt N, unsigned long A);
+    __device__ void dev_mod_big_big(CBigInt *Z,CBigInt N, CBigInt A);
+    __device__ void dev_div_big_long(CBigInt *Y, CBigInt N, unsigned long A);
+    __device__ void dev_div_big_big(CBigInt *M,CBigInt N, CBigInt A);
+    __device__ char* dev_put(CBigInt *N, unsigned int system);
+
+
+
+
     /**** some declaration or so *****/  
     void CBigIntInit_para(CBigInt *A,int parasize);
     int Cmp_para(CBigInt N,CBigInt A, int parasize);

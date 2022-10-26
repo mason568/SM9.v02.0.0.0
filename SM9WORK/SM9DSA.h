@@ -26,5 +26,5 @@ void parallel_DSA_Sign(CBigInt *h[], BNPoint *S[], BYTE *M, BNPoint P1, BNPoint2
 int DSA_Verify(CBigInt *h2, CBigInt h, BNPoint S, BYTE *M, BYTE *ID,BNPoint P1, BNPoint2 P2, BNPoint2 P_pub);
 
 void parallel_DSA_Sign_v2(CBigInt *hh, BNPoint *SS, BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoint dsA,const int num);
-int parallel_DSA_Verify(CBigInt *h2, CBigInt *h, BNPoint *S, BYTE *M, BYTE *ID,BNPoint P1, BNPoint2 P2, BNPoint2 P_pub);
+int parallel_DSA_Verify(CBigInt *h2h2, CBigInt *hh, BNPoint *SS, BYTE *MM, BYTE *ID,BNPoint P1, BNPoint2 P2, BNPoint2 P_pub, const int num);
 #endif

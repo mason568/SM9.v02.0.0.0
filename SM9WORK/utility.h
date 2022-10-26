@@ -50,5 +50,5 @@ void F12toByte(BYTE *msg,BNField12 b);
 
 //计算（a-b）mod N
 void CBigInt_substract_modN(CBigInt *X, CBigInt a, CBigInt b);
-void parallel_CBigInt_substract_modN(CBigInt *X[], CBigInt a[], CBigInt b[],int num);
+void parallel_CBigInt_substract_modN(CBigInt *XX, CBigInt *aa, CBigInt *bb,int num);
 #endif

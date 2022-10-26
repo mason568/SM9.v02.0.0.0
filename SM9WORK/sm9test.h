@@ -2,7 +2,7 @@
 #define _SM9TEST_H_
 
 #include "Bigintcuda.cuh" 
-
+#include "utilitycuda.cuh"
 void test_BNField2();
 void test_BNField4();
 void test_BNField12();

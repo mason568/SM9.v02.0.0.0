@@ -65,5 +65,12 @@ void Mod_Big_Long_para(unsigned long *ZZ, CBigInt N, unsigned long A, int parasi
 ## actually do 
 wdnmd... m* f**king bug ? 
 
-# 2022.20.24 
+# 2022.20.25 
 > @zjc 测试佳涵给出的扩域上平方优化方法
+
+# 2022.20.26
+> @zjc 最后修改代码，解决bug，出demo
+
+# 2022.20.27
+> 构想测试方案并给出测试结果
+> 放到报告里头

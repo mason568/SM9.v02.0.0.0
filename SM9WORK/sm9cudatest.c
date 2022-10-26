@@ -3,7 +3,8 @@
 #include <time.h>
 #include <sys/time.h>
 #include "square063.cuh"
-#include "Bigintcuda.cuh"
+//#include "Bigintcuda.cuh"
+
 #include "sm9test.h"
 #include "SM9PKC.h"
 
@@ -81,11 +82,11 @@ int main(){
     SM9Params_init(&BN);//一定要有，否则会出现总线错误
     //test_BNField2();
     //test_BNField12();
-    test_BNField12_speedsqure();
-    test_BNField4_speedsqure();
-    test_BNField2_speedsqure();
+    //test_BNField12_speedsqure();
+    //test_BNField4_speedsqure();
+    //test_BNField2_speedsqure();
 
-    //parallel_DSA_Demo();
+    parallel_DSA_Demo();
     //DSA_Demo();  //签名demo
     //test_pairing();
 

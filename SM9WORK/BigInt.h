@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-
+//#include "utilitycuda.cuh"
 //允许生成1024位（二进制）的中间结果
 #ifndef BI_MAXLEN
 #define BI_MAXLEN 32
