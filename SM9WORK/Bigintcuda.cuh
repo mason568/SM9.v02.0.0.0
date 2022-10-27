@@ -32,7 +32,7 @@ extern "C" {          //告诉编译器，这部分代码按C语言的格式进�
     __device__ void dev_div_big_big(CBigInt *M,CBigInt N, CBigInt A);
     __device__ char* dev_put(CBigInt *N, unsigned int system);
 
-
+    //__global__ void cintbig_substract_modn_thread(CBigInt *dev_YY, CBigInt *dev_N,CBigInt *dev_A);
 
 
     /**** some declaration or so *****/  
@@ -57,6 +57,10 @@ extern "C" {          //告诉编译器，这部分代码按C语言的格式进�
     void Put_para(CBigInt *NN, unsigned int system,int parasize);
     void Inv_para(CBigInt *ZZ, CBigInt N, CBigInt A, int parasize);
     void Exp_para(CBigInt *ZZ, CBigInt N, CBigInt A, CBigInt B, int parasize);
+
+    
+
+
 
 #ifdef __cplusplus
 }

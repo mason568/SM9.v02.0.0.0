@@ -129,24 +129,19 @@ void test_Paiiring_Rate()
     clock_t start,finish;
 	int i,n;
 	double time;
-	
 	Get(&a,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD",HEX);
 	Get(&b,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
 	Get(&c,"85AEF3D078640C98597B6027B441A01FF1DD2C190F5E93C454806C11D8806141",HEX);
 	Get(&d,"3722755292130B08D2AAB97FD34EC120EE265948D19C17ABF9B7213BAF82D65B",HEX);
 	Get(&e,"17509B092E845C1266BA0D262CBEE6ED0736A96FA347C8BD856DC76B84EBEB96",HEX);
 	Get(&f,"A7CF28D519BE3DA65F3170153D278FF247EFBA98A71A08116215BBA5C999A7C7",HEX);
-
-    printf("BNPairing Rate test: begin!\n");
-
+    
 	P_construct_xy(&P,a,b);
-
 	F2_construct(&b1,d,c);
 	F2_construct(&b2,f,e);    
     P2_construct_xy(&Q,b1,b2);
-  
+    /*
 	Pairing_Rate(&g,Q,P);
-    
     P_twice(&P1,P);
 	P_normorlize(&P1,P1);
 	Pairing_Rate(&f1,Q,P1);
@@ -160,148 +155,19 @@ void test_Paiiring_Rate()
 		printf("Rate Paring right 1!\n");
 	if(F12_equal(f2,f3))
 		printf("Rate Paring right 2!\n"); 
-/*	printf("f1 = \n");
-	F12_toString(f1,DEC);
-	printf("f2 = \n");
-	F12_toString(f2,DEC);
-	printf("f3 = \n");
-	F12_toString(f3,DEC);
- */  // printf("BNPairing test: over!\n");
-	
-/*	
-	printf("SM9双线性对Rate计算：\n");
-	printf("P = \n");
-	P_toString_d(P);
-	printf("Q = \n");
-	P2_toString_d(Q); 
-	printf("SM9_Rate(Q,P) = \n");
-	F12_toString_d(g);
-//	printf("SM9_opt(Q,P) = \n");
-//	Pairing_opt(&g,Q,P);
-//	F12_toString_d(g);
+    */
+    printf("单次双线性对延时测试...\n");
 
-	printf("SM9_Rate(Q,2P) = \n");
-	F12_toString_d(f1);
-	printf("SM9_Rate(2Q,P) = \n");
-	F12_toString_d(f2);
-	printf("SM9_Rate(Q,P)^2 = \n");
-	F12_toString_d(f3);
-	printf("SM9_Rate(Q,2P) = SM9_Rate(2Q,P) = SM9_Rate(Q,P)^2 \n");
-*/
-    printf("测试开始：\n");
-
-    int count = 10;
     struct timeval tv1, tv2;
     gettimeofday(&tv1,NULL);//获取开始时间
-    //输出程序开始的时刻
-    printf("sign 10 time:\n");
-    printf("second: %d\n", tv1.tv_sec);  //秒
-    printf("millisecond: %d\n", tv1.tv_sec*1000 + tv1.tv_usec/1000);  //毫秒
-    printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
     //程序运行
-    while(count){
-
-        Pairing_Rate(&g,Q,P);
-        //res = SM9_Verify(msg, 20, &sign, &pk, NULL);
-        count--;
-    }
-    //......
+    Pairing_Rate(&g,Q,P);
 
     gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
-    printf("second: %d s\n",tv2.tv_sec - tv1.tv_sec);  //秒
-    printf("millisecond: %d ms\n", tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
-    printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
-/*
-       mpz_init_set_str(ks,"0130E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2DC5F4",16);
-       P2_multiply(&Q3,Q,ks);
-	// P2_normorlize(&Q1,Q1);
-       Pairing_Rate(&g,Q3,P);
-	   printf("P = \n");
-	   P_toString_H(P);
-       printf("Q = \n");
-	   P2_toString_H(Q);
-       printf("ks = %s\n",mpz_get_str(NULL, 16, ks));
-       printf("SM9_Opt(ks*Q,P) = \n"); 	   
-	   F12_toString_H(g);
+    printf("单次Rate双线性对运算用时 %d ms\n", tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
+    
 
-       mpz_init_set_str(ks,"0130E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2DC5F4",16);
-       Pairing_Rate(&g,Q,P);
-	
-       P_multiply(&P1,P,ks);
-       P_normorlize(&P1,P1);
-       Pairing_Rate(&f1,Q,P1);
-
-       P2_multiply(&Q4,Q,ks);
-	   Pairing_Rate(&f2,Q4,P);
-
-	   F12_exp(&f3,g,ks);
-	 //  P2_toString_d(Q4);
-       printf("ks 测试\n");  
-	   if(F12_equal(f1,f2))
-		  printf("Paring right 1!\n");
-	   if(F12_equal(f2,f3))
-	      printf("Paring right 2!\n");  
-   
-	   
-       F12_toString_H(f1);
-	   printf("\n");  
-       F12_toString_H(f2);
-	   printf("\n"); 
-       F12_toString_H(f3); 
-
-	   P_multiply(&P2,P1,BN.n);
-	   P_normorlize(&P2,P2);
-	   P_toString_d(P2);
-	   printf("Q = \n"); 
-	   P2_toString_d(Q);
-	   printf("Q4 = \n"); 
-	   P2_toString_d(Q4);
-	   P2_multiply(&Q5,Q4,BN.n);
-	   P2_normorlize(&Q5,Q5);
-	   P2_toString_d(Q5);
-	   F12_exp(&f3,f3,BN.n);
-	   F12_toString_d(f3);
-   */	
- /*
-	   //测试 R(kt*Q,ks*P) = R(Q,P)^(kt*ks)
-       mpz_init_set_str(ks,"0130E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2DC5F4",16);
-       mpz_init_set_str(kt,"5730E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2D4571",16);
- //      mpz_init_set_str(ks,"4",16);
- //      mpz_init_set_str(kt,"3",16);
-       Pairing_Rate(&g,Q,P);
-	
-       P_multiply(&P1,P,ks);
-       P_normorlize(&P1,P1);
-       Pairing_Rate(&f1,Q,P1);
-    	if(P_isOnBNCurve(P1))
-		{
-           printf("BNPoint test:　p1 is  on the Curve \n");
-		}       
-       P2_multiply(&Q4,Q,kt);
-	   if(P2_isOnBNTCurve(Q4))
-	   {
-          printf("BNPoint2 test:　p2 is on the BNT Curve \n");
-	   } 
-        printf(" 测试开始\n");
-		P_toString_d(P1);
-		P2_toString_d(Q4);
-	    Pairing_Rate(&f5,Q4,P1);
-    //    mpz_mul(kt,kt,ks);
-	   F12_exp(&f4,g,ks);
-	   F12_exp(&f4,f4,kt);
-   
-	  
-	   if(F12_equal(f4,f5))
-	      printf("R(kt*Q,ks*P) == R(Q,P)^(kt*ks)\n");  
-	   printf(" f4 = \n");
-	   F12_toString_d(f4);
-	   printf(" f5 = \n");
-	   F12_toString_d(f5);
-   */     
-	  printf("BNPairing test: over!\n");	
- 
- 
-  }
+}
 
 
 void test_Paiiring()
@@ -313,181 +179,29 @@ void test_Paiiring()
 	BNField12 g,f1,f2,f3,f4,f5;
     clock_t start,finish;
 	int i,n;
-	double time;
-   // mpz_init(ks);
-
 	Get(&a,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD",HEX);
 	Get(&b,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
 	Get(&c,"85AEF3D078640C98597B6027B441A01FF1DD2C190F5E93C454806C11D8806141",HEX);
 	Get(&d,"3722755292130B08D2AAB97FD34EC120EE265948D19C17ABF9B7213BAF82D65B",HEX);
 	Get(&e,"17509B092E845C1266BA0D262CBEE6ED0736A96FA347C8BD856DC76B84EBEB96",HEX);
 	Get(&f,"A7CF28D519BE3DA65F3170153D278FF247EFBA98A71A08116215BBA5C999A7C7",HEX);
-
-
-
-
     printf("BNPairing test: begin!\n");
-
     P_construct_xy(&P,a,b);
 
 	F2_construct(&b1,d,c);
 	F2_construct(&b2,f,e);    
     P2_construct_xy(&Q,b1,b2);
- 
-	Pairing_opt(&g,Q,P);
-    //F12_toString_d(g,DEC);
-	P_twice(&P1,P);
-	P_normorlize(&P1,P1);
-	Pairing_opt(&f1,Q,P1);
 
-	P2_twice(&Q1,Q);
-	Pairing_opt(&f2,Q1,P);
+	printf("单次双线性对延时测试...\n");
 
-	F12_square(&f3,g);
-
-	if(F12_equal(f1,f2))
-		printf("Paring right 1!\n");
-	if(F12_equal(f2,f3))
-		printf("Paring right 2!\n");  
-    printf("BNPairing test: over!\n");
-	
-	printf("SM9双线性对计算：\n");
-  /* 	printf("P = \n");
-	P_toString(P,DEC);
-	printf("Q = \n");
-	P2_toString_d(Q,DEC);
-	printf("SM9_Opt(Q,P) = \n");
-    F12_toString_d(g,DEC);
-	printf("SM9_Opt(Q,2P) = \n");
-    F12_toString_d(f1,DEC);
-	printf("SM9_Opt(2Q,P) = \n");
-    F12_toString_d(f2,DEC);
-	printf("SM9_Opt(Q,P)^2 = \n");
-    F12_toString_d(f3,DEC);
-	*/
-	//printf("SM9_Opt(Q,2P) = SM9_Opt(2Q,P) = SM9_Opt(Q,P)^2 \n");
-
-    printf("测试开始：\n");
-    int count = 10;
     struct timeval tv1, tv2;
     gettimeofday(&tv1,NULL);//获取开始时间
-    //输出程序开始的时刻
-    printf("sign 10 time:\n");
-    printf("second: %d\n", tv1.tv_sec);  //秒
-    printf("millisecond: %d\n", tv1.tv_sec*1000 + tv1.tv_usec/1000);  //毫秒
-    printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
     //程序运行
-    while(count){
-
-        Pairing_opt(&g,Q,P);
-        //res = SM9_Verify(msg, 20, &sign, &pk, NULL);
-        count--;
-    }
-    //......
+    Pairing_opt(&g,Q,P);
 
     gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
-    printf("second: %d s\n",tv2.tv_sec - tv1.tv_sec);  //秒
-    printf("millisecond: %d ms\n", tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
-    printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
-
-   //  Pairing_opt(&g,Q,P);
-       n = 10;
-	   start = clock();
-	   for(i = 0; i<n; i++)
-	     Pairing_opt(&g,Q,P);
-	   finish = clock();
-      time = (double)(finish-start)/n;
-      printf("SM9 Pairing time cost：%f ms\n",time);
-
-	  Get(&ks,"0130E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2DC5F4",HEX);
-   
-       P2_multiply(&Q3,Q,ks);
-	// P2_normorlize(&Q1,Q1);
-       Pairing_opt(&g,Q3,P);
-	    printf("P = \n");
-	   P_toString(P,HEX);
-	   printf("Q = \n");
-	   P2_toString(Q,HEX);
-	   printf("SM9_Opt(Q,P) = \n");
-       printf("ks = %s\n",Put(ks,HEX));
-       printf("SM9_Opt(ks*Q,P) = \n"); 	   
-       F12_toString(g,HEX);
-/*
-       Get(&ks,"0130E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2DC5F4",HEX);
-       g = Pairing_opt(Q,P);
-	
-       P1 = P_multiply(P,ks);
-       P1 = P_normorlize(P1);
-       f1 = Pairing_opt(Q,P1);
-
-       Q4 = P2_multiply(Q,ks);
-	   f2 = Pairing_opt(Q4,P);
-
-	   f3 = F12_exp(g,ks);
-       printf("ks 测试\n");  
-	   if(F12_equal(f1,f2))
-		  printf("Paring right 1!\n");
-	   if(F12_equal(f2,f3))
-	      printf("Paring right 2!\n");  
-      
-	   
-       F12_toString(f1,HEX);
-	   printf("\n");  
-       F12_toString(f2,HEX);
-	   printf("\n"); 
-       F12_toString(f3,HEX); 
-
-	   P2 = P_multiply(P1,BN.n);
-	   P2 = P_normorlize(P2);
-	   P_toString(P2,DEC);
-       printf("Q = \n"); 
-	   P2_toString(Q,DEC);
-       printf("Q4 = \n"); 
-	   P2_toString(Q4,DEC);
-	   Q5 = P2_multiply(Q4,BN.n);
-	   Q5 = P2_normorlize(Q5);
-	   P2_toString(Q5,DEC);
-	   f3 = F12_exp(f3,BN.n);
-	   F12_toString(f3,DEC);
-	
-	   //测试 R(kt*Q,ks*P) = R(Q,P)^(kt*ks)
-       ks = Get("0130E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2DC5F4",16);
-       kt = Get("5730E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2D4571",16);
- //      mpz_init_set_str(ks,"4",16);
- //      mpz_init_set_str(kt,"3",16);
-       g = Pairing_opt(Q,P);
-	
-       P1 = P_multiply(P,ks);
-       P1 = P_normorlize(P1);
-    // Pairing_opt(&f1,Q,P1);
-    	if(P_isOnBNCurve(P1))
-		{
-           printf("BNPoint test:　p1 is  on the Curve \n");
-		}       
-       Q4 = P2_multiply(Q,kt);
-	   if(P2_isOnBNTCurve(Q4))
-	   {
-          printf("BNPoint2 test:　p2 is on the BNT Curve \n");
-	   } 
-        printf(" 测试开始\n");
-		P_toString(P1,DEC);
-		P2_toString(Q4,DEC);
-	    f5 = Pairing_opt(Q4,P1);
-    //    mpz_mul(kt,kt,ks);
-	   f4 = F12_exp(g,ks);
-	   f4 = F12_exp(f4,kt);
-     
-	  
-	   if(!F12_equal(f4,f5))
-	      printf("R(kt*Q,ks*P) != R(Q,P)^(kt*ks)\n");  
-	   printf(" f4 = \n");
-	   F12_toString(f4,DEC);
-	   printf(" f5 = \n");
-	   F12_toString(f5,DEC);
-       
-	  printf("BNPairing test: over!\n");	
-/*
-  */
+    printf("单次双线性对运算用时 %d ms\n", tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
+    
   }
 
 
@@ -1233,7 +947,7 @@ void test_BNField4()
 
 void test_BNField2()
 {
-	CBigInt a,b,c,d,e,f;
+	CBigInt a,b,c,d,e,f,x,y,z;
 	BNField2 b1,b2,b3,t1,t2,t3;
 /*
     b1 = BNField2_init();
@@ -1249,7 +963,23 @@ void test_BNField2()
 	Get(&d,"3722755292130B08D2AAB97FD34EC120EE265948D19C17ABF9B7213BAF82D65B",HEX);
 	Get(&e,"17509B092E845C1266BA0D262CBEE6ED0736A96FA347C8BD856DC76B84EBEB96",HEX);
 	Get(&f,"A7CF28D519BE3DA65F3170153D278FF247EFBA98A71A08116215BBA5C999A7C7",HEX);
+	Get(&x,"17509B092E845C1266BA0D262CBEE6ED0736A96FA347C8BD856DC76B84EBEB96",HEX);
+	Get(&y,"A7CF28D519BE3DA65F3170153D278FF247EFBA98A71A08116215BBA5C999A7C7",HEX);
+    struct timeval tv1,tv2;
+	long time_begin,time_end;
+    printf("测试模乘运算...\n");  
+    gettimeofday(&tv1,NULL);//获取开始时间
+    //printf("sign %d time... \n", num);
+    //printf("second: %d\n", tv1.tv_sec);  //秒
+    //printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
+    
+    Mul_Big_Big(&z,x,y);
 
+    gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
+    //printf("second: %d s\n",tv2.tv_sec - tv1.tv_sec);  //秒
+    printf("一次用时: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec));  //毫秒
+    //printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
+    exit(-1);
 	printf("BNField2 test: Begin! \n");
 
 	//printf("a = %s\n",Put(a,DEC));
@@ -1870,6 +1600,7 @@ void test_Mod_Big_Big_para(){
     free(YY);
     
 }
+
 
 void test_Mod_Big_Long_para(){
     printf("test_Mod_Big_Big_para test: Begin! \n");

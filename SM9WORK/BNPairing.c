@@ -92,7 +92,7 @@ void Final_exp(BNField12 *f, BNField12 p)
 	F12_multiply(&b,b,a);
 
 	F12_frobenius(&ff1,f1);
-	F12_square(&ff2,ff1);
+	F12_speedsquare(&ff2,ff1);
 	F12_multiply(&ff2,b,ff2);
 	F12_GFrobenius(&ff3,f1,2);     // e = 2
 	F12_multiply(&ff2,ff2,ff3);
@@ -136,7 +136,7 @@ void Pairing_opt(BNField12 *f,BNPoint2 Q, BNPoint P)
 
      for(i=1; i<len; i++)
 	 {
-		F12_square(f,*f);
+		F12_speedsquare(f,*f);
 	    Line_Funtion(&ff,T,T,P);				
 		F12_multiply(f,*f,ff);
 		P2_twice(&T,T);

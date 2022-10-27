@@ -1,6 +1,7 @@
 #include "SM9DSA.h"
 #include "Bigintcuda.cuh"
 #include "utilitycuda.cuh"
+#define CLOCK_PER_SEC 1000
 //为g=e(P1,P_pubs)赋值
 void geP1Ppubs_assign(struct SM9DSAParams *signpre, BNPoint2 P_pub, BNPoint P1){
     BNField12 g;
@@ -8,22 +9,18 @@ void geP1Ppubs_assign(struct SM9DSAParams *signpre, BNPoint2 P_pub, BNPoint P1){
     F12_construct(&signpre->geP1Ppubs,g.re,g.im,g.sq);
 }
 
-#if 0
 void DSA_Demo()
 {
 	CBigInt a,b,c,d,e,f,ks,h,h2;
 	BNField2 b1,b2;
 	BNPoint2 P2,P_pub_s;
 	BNPoint P1,dsA,S;
+
 	BYTE id[]="Alice";
 	BYTE M[] = "Chinese IBS standard";
 	int sign;
 	clock_t start,finish;
 	double time1,time2,time3;
-
-    //printf("begin!!! \n");
-    //char *str1 = "93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD";
-    //printf("this is a test for string ggg: %s \n",str1);
 
 	Get(&a,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD",HEX);
 	Get(&b,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
@@ -32,91 +29,25 @@ void DSA_Demo()
 	Get(&e,"17509B092E845C1266BA0D262CBEE6ED0736A96FA347C8BD856DC76B84EBEB96",HEX);
 	Get(&f,"A7CF28D519BE3DA65F3170153D278FF247EFBA98A71A08116215BBA5C999A7C7",HEX);
 
-    //printf("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee = %s\n",Put(a,HEX));
-     //getchar();
     P_construct_xy(&P1,a,b);
 	F2_construct(&b1,d,c);
 	F2_construct(&b2,f,e);    
     P2_construct_xy(&P2,b1,b2);
-    
-	
-	//密钥生成阶段
-	Get(&ks,"0130E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2DC5F4",HEX);
+
+    Get(&ks,"0130E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2DC5F4",HEX);
 	P2_multiply(&P_pub_s,P2,ks);
 	P2_normorlize(&P_pub_s,P_pub_s);
-	start = clock();
-	
+    
+    start = clock();
 	DSA_Keygen(&dsA,ks,id,P1);
 	finish = clock();
-	
-	time1 = (double)(finish-start);
+    
+	time1 = (double)(finish-start)/CLOCK_PER_SEC;
 	P_normorlize(&dsA,dsA);
 
-    //g预计算阶段
-    geP1Ppubs_assign(&SIGNPRE,P1,P_pub_s);
-
-
-    //数字签名阶段
-	start = clock();
-	int count = 10; //一共需要处理的数量
-    const int num=10;//一次性处理的数量  count为num的整数倍
-
-
-    struct timeval tv1,tv2;
-	long time_begin,time_end;
-    gettimeofday(&tv1,NULL);//获取开始时间
-    printf("sign 10 time:\n");
-    printf("second: %d\n", tv1.tv_sec);  //秒
-    printf("millisecond: %d\n", tv1.tv_sec*1000 + tv1.tv_usec/1000);  //毫秒
-    printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
-
-	/*
-	//sequential
-    while(count){
-
-        DSA_Sign(&h, &S, M, P1, P_pub_s, dsA);
-        //res = SM9_Verify(msg, 20, &sign, &pk, NULL);
-        count--;
-    }*/
-    
-    //parallel
-    /*
-	CBigInt *para_h[num];
-	BNPoint *para_S[num];
-	BNPoint para_dsA[num];
-	for(int i=0;i<num;i++)
-	{
-		para_h[i]=&h;
-		para_S[i]= &S;
-		para_dsA[i]=dsA;
-	}
-    */
-	for(int i=0;i<(count/num);i++)
-	{
-        DSA_Sign(&h, &S, M, P1, P_pub_s,dsA);	
-	}
-    
-
-	gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
-    printf("second: %d s\n",tv2.tv_sec - tv1.tv_sec);  //秒
-    printf("millisecond: %d ms\n", tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
-    printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
-
-
-	finish = clock();
-	time2 = (double)(finish-start);
-	//数字签名验证阶段
-	start = clock();
-	sign = DSA_Verify(&h2, h, S, M, id, P1, P2, P_pub_s);
-	finish = clock();	
-	time3 = (double)(finish-start);
-	printf("\n********************************************\n");
-	printf("*********SM9 数字签名算法实例演示*********** \n");
-	printf("********************************************\n");
-	printf("***********************\n");
-	printf("****1、密钥生成阶段****\n");
-	printf("***********************\n");
-	printf("G1生成元P1 = \n");
+	printf("单次SM9 数字签名算法实例演示\n");
+	printf("密钥生成阶段...\n");
+	printf("G1生成元P1 = ");
 	P_toString(P1,HEX);
 	printf("G2生成元P2 = \n");
 	P2_toString(P2,HEX);
@@ -124,74 +55,20 @@ void DSA_Demo()
 	printf("签名主公钥 P_pub_s = [ks]P2 = \n");
 	P2_toString(P_pub_s,HEX);
 	printf("实体A的标识IDA: %s\n",id);
-	printf("签名私钥dsA = \n");
+	printf("签名私钥dsA = ");
 	P_toString(dsA,HEX);
-	printf("\n***********************\n");
-	printf("****2、数字签名阶段****\n");
-	printf("***********************\n");
-	printf("待签名的消息M: %s\n",M);
-	printf("消息M的签名为（h,S）: \n");
-	printf("h = %s\n",Put(h,HEX));
-	printf("S = \n");
-	P_toString(S,HEX);
-	printf("\n***************************\n");
-	printf("****3、数字签名验证阶段****\n");
-	printf("***************************\n");
-	printf("h2 = %s\n",Put(h2,HEX));
-	if(sign)
-		printf("h2 = h, 签名验证能过！\n");
-	else
-		printf("h2 != h, 签名验证失败！\n");
 
-	printf("\nSM9 数字签名密钥生成时间：%f ms\n",time1);
-	printf("SM9 数字签名时间：%f ms\n",time2);
-	printf("SM9 数字签名验证时间：%f ms\n",time3);
-}
-#endif
-
-void DSA_Demo()
-{
-	CBigInt a,b,c,d,e,f,ks,h,h2;
-	BNField2 b1,b2;
-	BNPoint2 P2,P_pub_s;
-	BNPoint P1,dsA,S;
-
-	BYTE id[]="Alice";
-	BYTE M[] = "Chinese IBS standard";
-	int sign;
-	clock_t start,finish;
-	double time1,time2,time3;
-
-	Get(&a,"93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD",HEX);
-	Get(&b,"21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616",HEX);
-	Get(&c,"85AEF3D078640C98597B6027B441A01FF1DD2C190F5E93C454806C11D8806141",HEX);
-	Get(&d,"3722755292130B08D2AAB97FD34EC120EE265948D19C17ABF9B7213BAF82D65B",HEX);
-	Get(&e,"17509B092E845C1266BA0D262CBEE6ED0736A96FA347C8BD856DC76B84EBEB96",HEX);
-	Get(&f,"A7CF28D519BE3DA65F3170153D278FF247EFBA98A71A08116215BBA5C999A7C7",HEX);
-
-    P_construct_xy(&P1,a,b);
-	F2_construct(&b1,d,c);
-	F2_construct(&b2,f,e);    
-    P2_construct_xy(&P2,b1,b2);
     
-	printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-	//密钥生成阶段
-	Get(&ks,"0130E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2DC5F4",HEX);
-	P2_multiply(&P_pub_s,P2,ks);
-	P2_normorlize(&P_pub_s,P_pub_s);
-    
-	start = clock();
-	DSA_Keygen(&dsA,ks,id,P1);
-	finish = clock();
-    
-	time1 = (double)(finish-start);
-	P_normorlize(&dsA,dsA);
+
     //g预计算阶段
     
     geP1Ppubs_assign(&SIGNPRE,P_pub_s,P1);
 
     //数字签名阶段
     
+
+	printf("数字签名阶段...\n");
+	printf("待签名的消息M: %s\n",M);
 	start = clock();
     int count = 10; //一共需要处理的数量
     const int num=10;//一次性处理的数量  count为num的整数倍
@@ -200,68 +77,44 @@ void DSA_Demo()
     struct timeval tv1,tv2;
 	long time_begin,time_end;
     gettimeofday(&tv1,NULL);//获取开始时间
-    printf("sign 1 time:\n");
-    printf("second: %d\n", tv1.tv_sec);  //秒
-    printf("millisecond: %d\n", tv1.tv_sec*1000 + tv1.tv_usec/1000);  //毫秒
-    printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
-    for(int i=0;i<count/num;i++)
-	{
-        DSA_Sign(&h, &S, M, P1, P_pub_s, dsA);	
-	}
+    printf("单次SM9签名开始...\n");
+    //printf("second: %d\n", tv1.tv_sec);  //秒
+    //printf("millisecond: %d\n", tv1.tv_sec*1000 + tv1.tv_usec/1000);  //毫秒
+    //printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
+    DSA_Sign(&h, &S, M, P1, P_pub_s, dsA);	
+	
 
 
 	//DSA_Sign(&h, &S, M, P1, P_pub_s, dsA);
     gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
-    printf("second: %d s\n",tv2.tv_sec - tv1.tv_sec);  //秒
-    printf("millisecond: %d ms\n", tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
-    printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
+    //printf("second: %d s\n",tv2.tv_sec - tv1.tv_sec);  //秒
+    printf("单次SM9签名用时: %d ms\n", tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
+    //printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
 	finish = clock();
     
-	time2 = (double)(finish-start);
-	//数字签名验证阶段
-    
-	start = clock();
-    
-	sign = DSA_Verify(&h2, h, S, M, id, P1, P2, P_pub_s);
-	finish = clock();
-     	
-	time3 = (double)(finish-start);
-	printf("\n********************************************\n");
-	printf("*********SM9 数字签名算法实例演示*********** \n");
-	printf("********************************************\n");
-	printf("***********************\n");
-	printf("****1、密钥生成阶段****\n");
-	printf("***********************\n");
-	printf("G1生成元P1 = \n");
-	P_toString(P1,HEX);
-	printf("G2生成元P2 = \n");
-	P2_toString(P2,HEX);
-	printf("签名主私钥ks = %s\n",Put(ks,HEX));
-	printf("签名主公钥 P_pub_s = [ks]P2 = \n");
-	P2_toString(P_pub_s,HEX);
-	printf("实体A的标识IDA: %s\n",id);
-	printf("签名私钥dsA = \n");
-	P_toString(dsA,HEX);
-	printf("\n***********************\n");
-	printf("****2、数字签名阶段****\n");
-	printf("***********************\n");
-	printf("待签名的消息M: %s\n",M);
+	time2 = (double)(finish-start)/CLOCK_PER_SEC;
+
 	printf("消息M的签名为（h,S）: \n");
 	printf("h = %s\n",Put(h,HEX));
-	printf("S = \n");
+	printf("S = ");
 	P_toString(S,HEX);
-	printf("\n***************************\n");
-	printf("****3、数字签名验证阶段****\n");
-	printf("***************************\n");
+
+	//数字签名验证阶段
+	printf("数字签名验证阶段...\n");
+	start = clock();
+	sign = DSA_Verify(&h2, h, S, M, id, P1, P2, P_pub_s);
+	finish = clock();
+
+	time3 = (double)(finish-start)/CLOCK_PER_SEC;
 	printf("h2 = %s\n",Put(h2,HEX));
 	if(sign)
-		printf("h2 = h, 签名验证能过！\n");
+		printf("验签能过！\n");
 	else
-		printf("h2 != h, 签名验证失败！\n");
+		printf("h2 != h, 验签失败！\n");
 
-	printf("\nSM9 数字签名密钥生成时间：%f ms\n",time1);
-	printf("SM9 数字签名时间：%f ms\n",time2);
-	printf("SM9 数字签名验证时间：%f ms\n",time3);
+	//printf("\nSM9 数字签名密钥生成时间：%f ms\n",time1);
+	//printf("SM9 数字签名时间：%f ms\n",time2);
+	//printf("SM9 数字签名验证时间：%f ms\n",time3);
 }
 
 /*
@@ -305,7 +158,7 @@ void parallel_DSA_Demo()  //实际并行测试函数
 	DSA_Keygen(&dsA,ks,id,P1);
 	finish = clock();
     
-	time1 = (double)(finish-start);
+	time1 = (double)(finish-start)/CLOCK_PER_SEC;
 	P_normorlize(&dsA,dsA);
     //g预计算阶段
     
@@ -314,40 +167,116 @@ void parallel_DSA_Demo()  //实际并行测试函数
     //数字签名阶段
     
 	start = clock();
-    int count = 32; //一共需要处理的数量
-    const int num=32;//一次性处理的数量  count为num的整数倍
+    //int count = 32; //一共需要处理的数量
+    const int num= 128;//一次性处理的数量  count为num的整数倍
 
-
-    struct timeval tv1,tv2;
-	long time_begin,time_end;
-    gettimeofday(&tv1,NULL);//获取开始时间
-    printf("sign %d time... \n", num);
-    //printf("second: %d\n", tv1.tv_sec);  //秒
-    printf("签名%d次用时: %d\n", num, tv1.tv_sec*1000 + tv1.tv_usec/1000);  //毫秒
-    //printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
 	CBigInt *para_h =  (CBigInt *)malloc(num*sizeof(CBigInt));
 	BNPoint *para_S = (BNPoint *)malloc(num *sizeof(BNPoint));
-    
+    struct timeval tv1,tv2;
+	long time_begin,time_end;
+    printf("签名 %d 次开始...\n", num);  //毫秒
+    gettimeofday(&tv1,NULL);//获取开始时间
+    //printf("sign %d time... \n", num);
+    //printf("second: %d\n", tv1.tv_sec);  //秒
+    //printf("microsecond: %d\n", tv1.tv_sec*1000000 + tv1.tv_usec); //微秒
     parallel_DSA_Sign_v2(para_h, para_S, M, P1, P_pub_s,dsA,num);	
+
+    # if 0 //直接用，不调函数
+    BNField12 g[num],w[num];
+	CBigInt l[num];
+    
+	unsigned int len1,len2;
+    CBigInt *r = (CBigInt *) malloc(num*sizeof(CBigInt));
+	BYTE *msg;
+    //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    //F12_assign(&g,SIGNPRE.geP1Ppubs);//可以并行
+    //BNField12 WW;
+
+    
+    
+	for(int i=0;i<num;i++)
+	{
+		//Pairing_opt(&g[i],P_pub,P1);
+		F12_assign(&(g[i]),SIGNPRE.geP1Ppubs);
+		Get(&r[i],"033C8616B06704813203DFD00965022ED15975C662337AED648835DC4B1CBE",HEX);
+		F12_exp(&w[i],g[i],r[i]);
+	}
+    //F12_exp(&WW,g[0],r[0]);
+    
+
+    //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+	//F12_exp 中BNField12*变量&w[i]在使用数组的时候，定义para_w
+    //F12_exp(&w[i],g[i],r[i]);
+
+    int nNUM = num;
+    len1 = strlen((const char*)M);;
+    len2 = len1+384;
+    msg = (BYTE*)malloc(len2);//
+    memcpy(msg,M,len1);
+    F12toByte(&msg[len1],w[0]);
+    for(int i=0;i<num;i++){
+
+        Hash_2(&(para_h[i]), msg, len2, BN.n);
+        //printf("original hh[%d] = %s\n",i , Put(hh[i],HEX));
+    }
+    
+
+    CBigInt *para_l =  (CBigInt *)malloc(num*sizeof(CBigInt));
+    CBigInt *BNn = (CBigInt *) malloc(num*sizeof(CBigInt));
+    //Mov_Big_Big_para(BNn,BN.n,num);
+    
+    for(int i=0;i<num;i++){
+        Mov_Big_Big(&(BNn[i]), BN.n);
+        //printf("BNn[%d] = %s\n", i, Put(BNn[i],HEX));
+    }
+    
+
+	printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    CBigInt_substract_modN_para(para_l,r,para_h,BNn,num); //
+    printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    
+    //for(int i=0;i<num;i++){
+        //CBigInt_substract_modN(&(para_l[0]),r[0],para_h[0]);//可以并行
+        //printf("original hh[%d] = %s\n",i , Put(para_l[i],HEX));
+    //}
+    
+	
+	//printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+
+	for(int i=0;i<num;i++)
+	{
+		//CBigInt_substract_modN(&l[i],r[i],*h[i]);//测试parallel_CBigInt_substract_modN的时候将这一行注释掉
+		P_multiply(&(para_S[i]),dsA,para_l[0]);//可以
+		P_normorlize(&(para_S[i]),para_S[i]);//可以
+	}
+    //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    free(msg);
+    free(r);
+    free(para_l);
+    free(BNn);
+    #endif
+
+
+
 
     gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
     //printf("second: %d s\n",tv2.tv_sec - tv1.tv_sec);  //秒
-    printf("验签%d次用时: %d\n", num, tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
+    printf("签名 %d 次结束，用时: %d ms\n", num, tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
     //printf("microsecond: %d us\n", tv2.tv_sec*1000000 + tv2.tv_usec - (tv1.tv_sec*1000000 + tv1.tv_usec)); //微秒
 	finish = clock();
     
-	time2 = (double)(finish-start);
+	time2 = (double)(finish-start)/CLOCK_PER_SEC;
 	//数字签名验证阶段
     start = clock();
     CBigInt *para_h2 =  (CBigInt *)malloc(num*sizeof(CBigInt));
-	printf("verify %d time... \n", num);
+	printf("验签 %d 次开始...\n", num);
     gettimeofday(&tv1,NULL);//获取开始时间
 	sign = parallel_DSA_Verify(para_h2, para_h, para_S, M, id, P1, P2, P_pub_s,num);
     gettimeofday(&tv2,NULL);//获取程序结束的时刻，两个时刻作差即可获得运行时间
-    printf("millisecond: %d ms\n", tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
+    printf("验签 %d 次结束，用时: %d ms\n", num, tv2.tv_sec*1000 + tv2.tv_usec/1000 - (tv1.tv_sec*1000 + tv1.tv_usec/1000));  //毫秒
 	finish = clock();
-     	
-	time3 = (double)(finish-start);
+	time3 = (double)(finish-start)/CLOCK_PER_SEC;
+    /*
 	printf("\n********************************************\n");
 	printf("*********SM9 数字签名算法实例演示*********** \n");
 	printf("********************************************\n");
@@ -376,14 +305,17 @@ void parallel_DSA_Demo()  //实际并行测试函数
 	printf("****3、数字签名验证阶段****\n");
 	printf("***************************\n");
 	printf("h2 = %s\n",Put(para_h2[0],HEX));
+    */
 	if(sign)
 		printf("h2 = h, 签名验证能过！\n");
 	else
 		printf("h2 != h, 签名验证失败！\n");
 
-	printf("\nSM9 数字签名密钥生成时间：%f ms\n",time1);
-	printf("SM9 数字签名时间：%f ms\n",time2);
-	printf("SM9 数字签名验证时间：%f ms\n",time3);
+	//printf("\nSM9 数字签名密钥生成时间：%f ms\n",time1);
+	printf("一万次 SM9 数字签名时间：%f ms\n",time2/num*10000);
+	printf("一次 SM9 数字签名验证时间：%f ms\n",time3/num*10000);
+    //printf("一次 SM9 数字签名时间：%f ms\n",time2/num);
+	//printf("一次 SM9 数字签名验证时间：%f ms\n",time3/num);
     free(para_h);
     free(para_S);
     //free(para_h2); //容易引起报错 bug待解决
@@ -396,12 +328,17 @@ void parallel_DSA_Demo()  //实际并行测试函数
 void parallel_DSA_Sign_v2(CBigInt *hh, BNPoint *SS, BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoint dsA, const int num)
 {
 	BNField12 g[num],w[num];
-	CBigInt r[num],l[num];
+	CBigInt l[num];
+    
 	unsigned int len1,len2;
+    CBigInt *r = (CBigInt *) malloc(num*sizeof(CBigInt));
 	BYTE *msg;
     //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     //F12_assign(&g,SIGNPRE.geP1Ppubs);//可以并行
-    BNField12 WW;
+    //BNField12 WW;
+
+    
+    
 	for(int i=0;i<num;i++)
 	{
 		//Pairing_opt(&g[i],P_pub,P1);
@@ -409,7 +346,7 @@ void parallel_DSA_Sign_v2(CBigInt *hh, BNPoint *SS, BYTE *M, BNPoint P1, BNPoint
 		Get(&r[i],"033C8616B06704813203DFD00965022ED15975C662337AED648835DC4B1CBE",HEX);
 		F12_exp(&w[i],g[i],r[i]);
 	}
-    F12_exp(&WW,g[0],r[0]);
+    //F12_exp(&WW,g[0],r[0]);
     
 
     //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
@@ -421,47 +358,47 @@ void parallel_DSA_Sign_v2(CBigInt *hh, BNPoint *SS, BYTE *M, BNPoint P1, BNPoint
     len2 = len1+384;
     msg = (BYTE*)malloc(len2);//
     memcpy(msg,M,len1);
-    F12toByte(&msg[len1],WW);
-    for(int i=0;i<32;i++){
+    F12toByte(&msg[len1],w[0]);
+    for(int i=0;i<num;i++){
 
         Hash_2(&(hh[i]), msg, len2, BN.n);
         //printf("original hh[%d] = %s\n",i , Put(hh[i],HEX));
     }
     
-	//Hash_2(&(hh[2]), msg, len2, BN.n);
-    //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    //printf("original hh = %s\n", Put(hh[0],HEX));
+
+    CBigInt *para_l =  (CBigInt *)malloc(num*sizeof(CBigInt));
+    CBigInt *BNn = (CBigInt *) malloc(num*sizeof(CBigInt));
+    //Mov_Big_Big_para(BNn,BN.n,num);
     
-    //Put_para((CBigInt *)hh,HEX,nNUM);
+    for(int i=0;i<num;i++){
+        Mov_Big_Big(&(BNn[i]), BN.n);
+        //printf("BNn[%d] = %s\n", i, Put(BNn[i],HEX));
+    }
     
 
-    //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
-    
-    CBigInt para_l[32];
-
-	//先测试一下这个函数
 	//printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    //CBigInt_substract_modN_para(para_l,r,hh,BNn,num); //
+    //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
+    
     for(int i=0;i<num;i++){
         CBigInt_substract_modN(&(para_l[i]),r[i],hh[i]);//可以并行
         //printf("original hh[%d] = %s\n",i , Put(para_l[i],HEX));
     }
+    
 	
 	//printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
 
 	for(int i=0;i<num;i++)
 	{
-		
 		//CBigInt_substract_modN(&l[i],r[i],*h[i]);//测试parallel_CBigInt_substract_modN的时候将这一行注释掉
-		//printf("here=%d \n",i);
 		P_multiply(&(SS[i]),dsA,para_l[i]);//可以
-		//printf("end=%d \n",i);
 		P_normorlize(&(SS[i]),SS[i]);//可以
-		//printf("end=%d \n",i);
-		//free(msg[i]);
-		//printf("end=%d \n",i);
 	}
     //printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     free(msg);
+    free(r);
+    free(para_l);
+    free(BNn);
 }
 
 void DSA_Keygen(BNPoint *dsA,CBigInt ks, BYTE *ID,BNPoint P1)
@@ -503,8 +440,8 @@ void DSA_Sign(CBigInt *h, BNPoint *S, BYTE *M, BNPoint P1, BNPoint2 P_pub, BNPoi
 	CBigInt r,l;
 	unsigned int len1,len2;
 	BYTE *msg;
-	Pairing_opt(&g,P_pub,P1);
-    //F12_assign(&g,SIGNPRE.geP1Ppubs);//可以并行
+	//Pairing_opt(&g,P_pub,P1);
+    F12_assign(&g,SIGNPRE.geP1Ppubs);//可以并行
 	Get(&r,"033C8616B06704813203DFD00965022ED15975C662337AED648835DC4B1CBE",HEX);  //r=rand();
 	//printf("r = %s\n",Put(r,HEX));
 	F12_exp(&w,g,r);
@@ -589,7 +526,7 @@ int parallel_DSA_Verify(CBigInt *h2h2, CBigInt *hh, BNPoint *SS, BYTE *M, BYTE *
 	memcpy(msg1,ID,len1-1);
 	msg1[len1-1] = hid;
     
-    for(int i=0;i<32;i++){
+    for(int i=0;i<num;i++){
 
         Hash_1(&(h1[i]), msg1, len2, BN.n);
         //printf("original hh[%d] = %s\n",i , Put(h1[i],HEX));
@@ -601,8 +538,8 @@ int parallel_DSA_Verify(CBigInt *h2h2, CBigInt *hh, BNPoint *SS, BYTE *M, BYTE *
    
 	P2_add(&P,P,P_pub);
     
-    for(int i=0;i<32;i++){
-        Pairing_opt(&(u[i]),P,SS[i]);
+    for(int i=0;i<num;i++){
+        Pairing_opt(&(u[i]),P,SS[i]);//Pairing_Rate
         F12_multiply(&(w[i]),u[i],t[i]);
     }
 
@@ -613,7 +550,7 @@ int parallel_DSA_Verify(CBigInt *h2h2, CBigInt *hh, BNPoint *SS, BYTE *M, BYTE *
 	memcpy(msg2,M,len1);
 	F12toByte(&msg2[len1],w[0]);
     int ret = 1;
-    for(int i=0;i<32;i++){
+    for(int i=0;i<num;i++){
         Hash_2(&(h2h2[i]), msg2, len2, BN.n);
         //printf("original h2h2[%d] = %s\n",i , Put(h2h2[i],HEX));
         if(Cmp(h2h2[i],hh[i]) ==0){

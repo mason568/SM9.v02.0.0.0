@@ -398,12 +398,12 @@ void  F12_square(BNField12 *p, BNField12 b)
     #else
     BNField4 t1,t2,t3,t4,t5,re,im,sq;
 
-    F4_square(&t1,b.re);
-	F4_square(&t5,b.sq);
+    F4_speedsquare(&t1,b.re);
+	F4_speedsquare(&t5,b.sq);
 
 	F4_add(&t3,b.re,b.sq);
 	F4_substract(&t3,t3,b.im);	
-	F4_square(&t3,t3);             //得到C
+	F4_speedsquare(&t3,t3);             //得到C
 
 	F4_multiply(&t4,b.im,b.sq);
 	F4_add(&t4,t4,t4);       //得到D 这里 *2 即为 两个相加
@@ -438,9 +438,9 @@ void  F12_inverse(BNField12 *p, BNField12 b)
 	BNField4 t1,t2,t3;
 	BNField4 A,B,C;
     
-    F4_square(&t1,b.re);
-	F4_square(&t2,b.im);
-	F4_square(&t3,b.sq);
+    F4_speedsquare(&t1,b.re);
+	F4_speedsquare(&t2,b.im);
+	F4_speedsquare(&t3,b.sq);
 
     F4_multiply(&A,b.im,b.sq);
     F4_multiply_v(&A,A);
@@ -527,7 +527,7 @@ void parallel_F12_exp(BNField12 *p[], BNField12 b[], CBigInt e[],int num)
 				F12_assign(&q[k],b[k]);
 			for(int i=1;i<len[k];i++)
 			{
-				F12_square(&q[k],q[k]);
+				F12_speedsquare(&q[k],q[k]);
 				if(str[k][i]=='1')
 					F12_multiply(&q[k],q[k],b[k]);			   
 			}

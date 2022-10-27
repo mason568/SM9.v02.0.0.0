@@ -1578,7 +1578,7 @@ __global__ void put_para_thread(CBigInt *dev_NN, unsigned int dev_system){
 
 void Put_para(CBigInt *NN, unsigned int system,int parasize)
 {
-    CBigInt *dev_NN, *h_NN;
+    CBigInt *dev_NN;
 
     printf("File: %s Func:%s Line: %d\n",__FILE__ ,__func__,__LINE__); 
     // host alloc and cuda malloc in one time
@@ -1821,3 +1821,4 @@ void Exp_para(CBigInt *ZZ, CBigInt N, CBigInt A, CBigInt B, int parasize)
     cudaFree(dev_ZZ);
 
 }
+
