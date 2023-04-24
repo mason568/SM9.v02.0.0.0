@@ -184,6 +184,25 @@ void Pairing_Rate(BNField12 *f, BNPoint2 Q, BNPoint P)
 	  strcpy(bits,str);
 //	F12_toString_d(*f);
 
+/*
+	i=1
+  	while (i<len)
+	{
+
+		F12_square(f,*f);
+		Line_Funtion(&ff,T,T,P);
+		F12_multiply(f,*f,ff);
+		P2_twice(&T,T);
+	    if(bits[i]=='1')
+		{
+			if (bits[i]=='')
+	    	Line_Funtion(&ff,T,Q,P);
+			F12_multiply(f,*f,ff);
+			P2_add(&T,T,Q);
+		}
+	}
+
+ */
     for(i=1; i<len; i++)
 	{
 		F12_square(f,*f);

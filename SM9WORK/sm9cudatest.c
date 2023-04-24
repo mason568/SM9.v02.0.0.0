@@ -81,6 +81,11 @@ int main(){
     //test_Exp_para();
     
     SM9Params_init(&BN);//一定要有，否则会出现总线错误
+    printf("BN.t = %s\n",Put(BN.t,DEC));
+	printf("BN.q = %s\n",Put(BN.q,DEC));
+	printf("BN.trace = %s\n",Put(BN.tr,DEC));
+	printf("BN.n = %s\n",Put(BN.n,DEC));
+	printf("BN.ord = %s\n",Put(BN.ord,DEC));
     //test_BNField2();
     //test_BNField2();
     //test_BNField12();
@@ -89,8 +94,8 @@ int main(){
     //test_BNField2_speedsqure();
     //test_Paiiring_Rate();
     test_Paiiring();
-    DSA_Demo();
-    parallel_DSA_Demo();
+    //DSA_Demo();
+    //parallel_DSA_Demo();
      //签名demo
     
 
